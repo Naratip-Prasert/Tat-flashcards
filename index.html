@@ -153,6 +153,25 @@ button{font:inherit;color:inherit}
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);
   font-size:13px;padding:8px 14px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;z-index:9}
 .toast.show{opacity:1}
+/* ---------- celebration popup ---------- */
+.cele{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(30,20,15,.45);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.cele.on{display:flex;animation:fadeIn .25s ease-out}
+.cbox{position:relative;width:100%;max-width:340px;background:var(--card);border-radius:24px;padding:26px 22px 20px;text-align:center;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+.cbox img{width:120px;height:120px;border-radius:28px;display:block;margin:-74px auto 10px;box-shadow:0 8px 20px rgba(0,0,0,.18);background:#fff;
+  animation:wiggle 1.6s ease-in-out .4s infinite}
+.cbox .big{font-size:22px;font-weight:700;line-height:1.35}
+.cbox .big .jp{color:var(--accent)}
+.cbox .msg{font-size:17px;margin-top:6px;color:var(--accent);font-weight:600}
+.cbox .sm{font-size:13px;color:var(--muted);margin-top:8px}
+.cbtns{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+.cbtns button{height:48px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:15px;font-weight:600;cursor:pointer}
+.cbtns button.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:21}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
 @media (max-height:620px){.tab .t2{display:none}.face{padding:42px 14px 26px}.nbtn{height:50px}.ctabtn{height:50px}}
 @media (min-width:700px){.card{max-height:460px;height:100%}.stage{align-items:center}}
 </style>
@@ -214,6 +233,16 @@ button{font:inherit;color:inherit}
   </div>
 </section>
 <div class="toast" id="toast"></div>
+<div class="cele" id="cele" role="dialog" aria-modal="true">
+  <div class="cbox">
+    <img src="apple-touch-icon.png" alt="">
+    <div class="big" id="celeTitle"></div>
+    <div class="msg">เก่งมากงับ 🎉</div>
+    <div class="sm" id="celeSub"></div>
+    <div class="cbtns" id="celeBtns"></div>
+  </div>
+</div>
+<canvas id="confetti"></canvas>
 
 <script src="data/vocab.js"></script>
 <script>
@@ -426,8 +455,49 @@ $("card").addEventListener("click",e=>{
 function go(n){ if(!deck.length)return; idx=(idx+n+deck.length)%deck.length; show(); }
 function mark(ok){
   if(!deck.length)return;
-  const c=deck[idx]; status[c.id]=ok?"k":"l"; saveStatus();
+  const c=deck[idx], was=stOf(c); status[c.id]=ok?"k":"l"; saveStatus();
   if(S.hide&&ok){ deck.splice(idx,1); if(idx>=deck.length) idx=0; show(); } else go(1);
+  if(ok && was!=="k") checkDone(c);
+}
+
+/* ---------- celebration when a section / whole chapter is fully memorised ---------- */
+function checkDone(c){
+  const ch=CH.find(x=>x.id===c.ch);
+  const chAll=ALL.filter(x=>x.ch===c.ch);
+  if(chAll.every(x=>stOf(x)==="k")) { celebrate(ch); return; }
+  const secAll=ALL.filter(x=>x.ch===c.ch&&x.sec===c.sec);
+  if(secAll.every(x=>stOf(x)==="k")) { toast(`🎉 จำหมวด ${c.secJp} ครบแล้ว!`); confetti(900); }
+}
+function celebrate(ch){
+  $("celeTitle").innerHTML=`จำบท ${ch.no} <span class="jp">${ch.jp}</span><br>ได้หมดแล้ว!`;
+  const n=ALL.filter(x=>x.ch===ch.id).length;
+  $("celeSub").textContent=`${ch.th} · ครบทั้ง ${n} คำ`;
+  const next=CH.find(x=>x.no>ch.no && !ALL.filter(y=>y.ch===x.id).every(y=>stOf(y)==="k"));
+  $("celeBtns").innerHTML=(next?`<button class="pri" data-go="${next.id}">ไปบท ${next.no} <span class="jp">${next.jp}</span> ต่อ</button>`:"")+
+    `<button class="${next?"":"pri"}" data-go="list">กลับไปหน้ารวม</button><button data-go="stay">อยู่หน้านี้ต่อ</button>`;
+  $("cele").classList.add("on"); confetti(2600);
+}
+$("celeBtns").onclick=e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  $("cele").classList.remove("on");
+  const g=b.dataset.go;
+  if(g==="list") backToList();
+  else if(g!=="stay"){ S.ch=g; store.set("fc3-ch",g); S.stat=null; S.starOnly=false; S.q=""; $("q").value=""; setHash(g); showView("list"); $("scroll").scrollTop=0; }
+};
+$("cele").onclick=e=>{ if(e.target.id==="cele") $("cele").classList.remove("on"); };
+function confetti(ms){
+  const cv=$("confetti"), x=cv.getContext("2d"), dpr=window.devicePixelRatio||1;
+  cv.width=innerWidth*dpr; cv.height=innerHeight*dpr; x.scale(dpr,dpr);
+  const cols=["#e5702f","#f2b134","#2f8f5b","#ef6f8f","#5b8def","#fbe6d8"];
+  const P=Array.from({length:120},()=>({x:Math.random()*innerWidth,y:-20-Math.random()*innerHeight*.5,vx:(Math.random()-.5)*2.4,
+    vy:2+Math.random()*3,r:Math.random()*6.28,vr:(Math.random()-.5)*.25,w:6+Math.random()*6,h:8+Math.random()*8,c:cols[Math.random()*cols.length|0]}));
+  const t0=performance.now();
+  (function frame(t){
+    x.clearRect(0,0,innerWidth,innerHeight);
+    const fade=Math.max(0,1-Math.max(0,t-t0-ms+700)/700);
+    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.03;p.r+=p.vr;x.save();x.globalAlpha=fade;x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.cos(p.r*2));x.restore()});
+    if(t-t0<ms) requestAnimationFrame(frame); else x.clearRect(0,0,innerWidth,innerHeight);
+  })(t0);
 }
 $("prevBtn").onclick=()=>go(-1); $("nextBtn").onclick=()=>go(1);
 $("goodBtn").onclick=()=>mark(true); $("badBtn").onclick=()=>mark(false);
