@@ -2,7 +2,7 @@
 
 เว็บแอปแฟลชการ์ดสำหรับท่องคำศัพท์ญี่ปุ่น → ไทย ติดตั้งลงหน้าจอโฮมได้ (PWA) และใช้ออฟไลน์ได้
 
-**เปิดใช้:** https://naratip-prasert.github.io/tango-flashcards/
+**เปิดใช้:** https://naratip-prasert.github.io/Tat-flashcards/
 
 | บท | หัวข้อ | จำนวนคำ |
 |---|---|---|
