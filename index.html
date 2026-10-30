@@ -153,6 +153,79 @@ button{font:inherit;color:inherit}
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);
   font-size:13px;padding:8px 14px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;z-index:9}
 .toast.show{opacity:1}
+/* ---------- home ---------- */
+.home{flex:1;min-height:0;overflow-y:auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
+.hhead{display:flex;align-items:center;gap:12px;margin:6px 0 22px}
+.hhead img{width:58px;height:58px;border-radius:16px;box-shadow:var(--shadow);background:#fff}
+.hhead h1{font-size:24px;font-weight:700;line-height:1.2}
+.hhead p{font-size:13.5px;color:var(--muted)}
+.mode{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px 18px 16px;
+  box-shadow:var(--shadow2);cursor:pointer;position:relative;overflow:hidden;margin-bottom:14px}
+.mode:active{transform:scale(.985)}
+.mode .mico{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:12px}
+.mode h2{font-size:21px;font-weight:700}
+.mode p{font-size:13.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+.mode .mbar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:14px}
+.mode .mbar i{display:block;height:100%;border-radius:99px}
+.mode .mfoot{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+.mode .arrow{position:absolute;right:16px;top:20px;color:var(--muted)}
+.mode .arrow svg{width:22px;height:22px}
+.mode .deco{position:absolute;right:-8px;bottom:-22px;font-size:84px;opacity:.07;font-weight:700;pointer-events:none}
+.toprow{display:grid;grid-template-columns:40px 1fr;gap:8px;align-items:center}
+.hbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.hbtn svg{width:20px;height:20px}
+
+/* ---------- write (sentence) ---------- */
+.wscroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 12px 24px}
+.wchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 10px}
+.wchips::-webkit-scrollbar{display:none}
+.wstat{font-size:12.5px;color:var(--muted);margin:0 0 10px;display:flex;gap:12px;flex-wrap:wrap}
+.wstat b{color:var(--ink)}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow2);padding:16px 16px 14px;position:relative}
+.pcard .tag{position:static;margin-bottom:10px}
+.pth{font-size:25px;font-weight:600;line-height:1.4;padding-right:8px}
+.hintbtn{margin-top:10px;border:1px dashed var(--line);background:var(--bg);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--muted);cursor:pointer}
+.hinttx{margin-top:10px;font-size:13.5px;line-height:1.6;background:var(--accent-soft);border-radius:10px;padding:8px 10px;display:none}
+.hinttx.on{display:block}
+.ans{width:100%;margin-top:12px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);font-size:21px;line-height:1.5;
+  padding:12px 14px;min-height:96px;resize:none;outline:none;font-family:"Noto Sans JP","Hiragino Sans",sans-serif}
+.ans:focus{border-color:var(--accent)}
+.ans:disabled{opacity:.75}
+.kbtip{font-size:11.5px;color:var(--muted);margin-top:6px}
+.wbtns{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-top:12px}
+.wbtn{height:50px;border-radius:14px;border:1px solid var(--line);background:var(--card);font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.wbtn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.wbtn:disabled{opacity:.45}
+.res{margin-top:14px;display:none}
+.res.on{display:block}
+.verdict{border-radius:16px;padding:12px 14px;font-weight:700;font-size:17px;display:flex;align-items:center;gap:8px}
+.verdict.ok{background:var(--good-soft);color:var(--good)}
+.verdict.near{background:#fdf1d6;color:#a8740a}
+.verdict.no{background:#f9dfdb;color:#b9483a}
+@media (prefers-color-scheme: dark){.verdict.near{background:#3a3016;color:#f2c560}.verdict.no{background:#3a2420;color:#e3796b}}
+.rbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:10px}
+.rlab{font-size:11.5px;font-weight:600;color:var(--accent);margin-bottom:2px}
+.rja{font-size:22px;line-height:2;font-family:"Noto Sans JP","Hiragino Sans",sans-serif;display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap}
+.rja ruby rt{font-size:11px;color:var(--muted)}
+.rmine{font-size:17px;font-family:"Noto Sans JP","Hiragino Sans",sans-serif;overflow-wrap:anywhere}
+.ralt{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6}
+.ralt span{font-family:"Noto Sans JP","Hiragino Sans",sans-serif;color:var(--ink)}
+.selfok{background:none;border:none;color:var(--muted);text-decoration:underline;font-size:12.5px;margin-top:8px;cursor:pointer}
+.speakbox{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;text-align:center}
+.speakbox h3{font-size:15px;font-weight:700}
+.speakbox p{font-size:12.5px;color:var(--muted);margin-top:2px}
+.mic{width:76px;height:76px;border-radius:50%;border:none;background:var(--accent);color:#fff;margin:14px auto 6px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 6px 18px rgba(229,112,47,.35)}
+.mic svg{width:32px;height:32px}
+.mic.rec{background:#d6453b;animation:pulse 1.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(214,69,59,.5)}100%{box-shadow:0 0 0 22px rgba(214,69,59,0)}}
+.micst{font-size:12.5px;color:var(--muted);min-height:18px}
+.heard{margin-top:10px;text-align:left;display:none}
+.heard.on{display:block}
+.nextbtn{width:100%;margin-top:14px;height:54px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(229,112,47,.3)}
+.wdone{text-align:center;padding:30px 10px}
+.wdone h3{font-size:20px;margin-bottom:6px}
+
 /* ---------- celebration popup ---------- */
 .cele{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(30,20,15,.45);
   -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
@@ -179,8 +252,71 @@ button{font:inherit;color:inherit}
 <body>
 
 <!-- ================= LIST VIEW ================= -->
+<!-- ================= HOME ================= -->
+<section class="view" id="homeView">
+  <div class="home"><div class="col">
+    <div class="hhead"><img src="apple-touch-icon.png" alt=""><div><h1>Tat Card</h1><p>ท่องศัพท์ญี่ปุ่นกันเถอะ がんばって！</p></div></div>
+    <button class="mode" id="goVocab">
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      <div class="mico" style="background:var(--accent-soft)">📚</div>
+      <h2>คำศัพท์อิอิ</h2>
+      <p>แฟลชการ์ดคำศัพท์ทั้ง 3 บท · ติดดาว · ฟังเสียง</p>
+      <div class="mbar"><i id="hVocBar" style="background:var(--good)"></i></div>
+      <div class="mfoot"><span id="hVocTx"></span><span id="hVocTx2"></span></div>
+      <span class="deco jp">語</span>
+    </button>
+    <button class="mode" id="goWrite">
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      <div class="mico" style="background:#e3ecfb">✍️</div>
+      <h2>เขียนประโยคอิอิ</h2>
+      <p>สุ่มประโยคไทยสั้น ๆ → เขียนเป็นภาษาญี่ปุ่น → พูดตามให้ฟัง</p>
+      <div class="mbar"><i id="hWrBar" style="background:#5b8def"></i></div>
+      <div class="mfoot"><span id="hWrTx"></span><span></span></div>
+      <span class="deco jp">文</span>
+    </button>
+  </div></div>
+</section>
+
+<!-- ================= WRITE ================= -->
+<section class="view" id="writeView">
+  <div class="cbar col">
+    <button class="back" id="wBack" aria-label="กลับหน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>
+    <div class="ctitle"><b>เขียนประโยคอิอิ ✍️</b>แปลไทย → ญี่ปุ่น แล้วพูดตาม</div>
+  </div>
+  <div class="wscroll"><div class="col" id="wBody">
+    <div class="wchips" id="wChips"></div>
+    <div class="wstat" id="wStat"></div>
+    <div class="pcard">
+      <div class="tag" id="wTag"></div>
+      <div class="pth" id="wTh"></div>
+      <button class="hintbtn" id="wHintBtn">💡 ดูคำใบ้</button>
+      <div class="hinttx" id="wHint"></div>
+    </div>
+    <textarea class="ans" id="wAns" lang="ja" rows="2" placeholder="พิมพ์เป็นภาษาญี่ปุ่นที่นี่…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+    <div class="kbtip">พิมพ์คันจิ ฮิรางานะ หรือผสมกันก็ได้ (ต้องเปิดคีย์บอร์ดญี่ปุ่นในเครื่อง)</div>
+    <div class="wbtns" id="wBtns">
+      <button class="wbtn" id="wGive">ดูเฉลย</button>
+      <button class="wbtn pri" id="wCheck">ตรวจคำตอบ</button>
+    </div>
+    <div class="res" id="wRes">
+      <div class="verdict" id="wVerdict"></div>
+      <div class="rbox" id="wMineBox"><div class="rlab">คำตอบของคุณ</div><div class="rmine" id="wMine"></div></div>
+      <div class="rbox"><div class="rlab">เฉลย</div><div class="rja" id="wModel"></div><div class="ralt" id="wAlt"></div>
+        <button class="selfok" id="wSelfOk">ระบบตรวจพลาด ฉันตอบถูกนะ</button></div>
+      <div class="speakbox">
+        <h3>🎤 พูดตามประโยคนี้</h3>
+        <p>กดปุ่มไมค์แล้วอ่านเฉลยออกเสียง (ฟังตัวอย่างก่อนได้ที่ 🔊)</p>
+        <button class="mic" id="wMic" aria-label="พูด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+        <div class="micst" id="wMicSt">แตะเพื่อเริ่มพูด</div>
+        <div class="heard" id="wHeard"><div class="verdict" id="wSpVerdict"></div><div class="rbox"><div class="rlab">ระบบได้ยินว่า</div><div class="rmine" id="wHeardTx"></div></div></div>
+      </div>
+      <button class="nextbtn" id="wNext">ข้อต่อไป →</button>
+    </div>
+  </div></div>
+</section>
+
 <section class="view" id="listView">
-  <div class="top"><div class="col"><div class="tabs" id="tabs"></div></div></div>
+  <div class="top"><div class="col toprow"><button class="hbtn" id="homeBtn" aria-label="หน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></button><div class="tabs" id="tabs"></div></div></div>
   <div class="scroll" id="scroll"><div class="col">
     <div class="stats" id="stats"></div>
     <div class="lhead">
@@ -245,6 +381,7 @@ button{font:inherit;color:inherit}
 <canvas id="confetti"></canvas>
 
 <script src="data/vocab.js"></script>
+<script src="data/sentences.js"></script>
 <script>
 const CH = window.VOCAB;
 const ALL = [];
@@ -280,7 +417,8 @@ const ST = {n:{th:"ยังไม่เริ่ม",c:"var(--new)"}, l:{th:"�
 let tt; function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>el.classList.remove("show"),1500)}
 
 /* ---------- routing (#ch1 = list, #ch1-cards = flashcards) ---------- */
-function parseHash(){ const m=location.hash.slice(1).match(/^(ch\d)(-cards)?$/); return m&&ids.has(m[1])?{ch:m[1],cards:!!m[2]}:null; }
+function parseHash(){ const h=location.hash.slice(1); if(h==="home"||h==="write") return {page:h};
+  const m=h.match(/^(ch\d)(-cards)?$/); return m&&ids.has(m[1])?{page:m[2]?"cards":"list",ch:m[1],cards:!!m[2]}:null; }
 function setHash(h){ try{ history.replaceState(null,"","#"+h) }catch(e){} }
 
 /* ---------- scope & list filtering ---------- */
@@ -396,10 +534,15 @@ function startStudy(){
   idx=0; showView("cards"); setHash(S.ch+"-cards");
 }
 function shuffle(d){for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}}
+const VIEWS={home:"homeView",list:"listView",cards:"cardView",write:"writeView"};
 function showView(v){
-  S.view=v; $("listView").classList.toggle("on",v==="list"); $("cardView").classList.toggle("on",v==="cards");
-  if(v==="cards"){ $("cTitle").innerHTML=studyLabel; renderTools(); show(); } else { try{speechSynthesis.cancel()}catch(e){} renderList(); }
+  S.view=v; Object.entries(VIEWS).forEach(([k,id])=>$(id).classList.toggle("on",k===v));
+  if(v!=="write") W.stopMic();
+  if(v==="cards"){ $("cTitle").innerHTML=studyLabel; renderTools(); show(); return; }
+  try{speechSynthesis.cancel()}catch(e){}
+  if(v==="list") renderList(); else if(v==="home") renderHome(); else if(v==="write") W.enter();
 }
+function goHome(){ setHash("home"); showView("home"); }
 function backToList(){ setHash(S.ch); showView("list"); }
 $("backBtn").onclick=backToList; $("emptyBack").onclick=backToList;
 
@@ -520,11 +663,148 @@ $("stage").addEventListener("touchend",e=>{
   if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3){e.preventDefault();go(dx<0?1:-1)}
 });
 window.addEventListener("hashchange",()=>{ const h=parseHash(); if(!h) return;
+  if(h.page==="home"||h.page==="write"){ if(S.view!==h.page) showView(h.page); return; }
   if(h.ch!==S.ch){S.ch=h.ch;store.set("fc3-ch",S.ch)}
   if(h.cards && S.view!=="cards") startStudy(); else if(!h.cards && S.view!=="list") showView("list"); else renderList(true); });
 
+/* ================= HOME ================= */
+function renderHome(){
+  const k=ALL.filter(c=>stOf(c)==="k").length, l=ALL.filter(c=>stOf(c)==="l").length;
+  $("hVocBar").style.width=(k/ALL.length*100)+"%";
+  $("hVocTx").textContent=`จำได้แล้ว ${k} / ${ALL.length} คำ`;
+  $("hVocTx2").textContent=l?`กำลังเรียน ${l}`:"";
+  const SEN=window.SENTENCES||[], sr=store.get("fc3-sent",{}), ok=SEN.filter(s=>sr[s.id]&&sr[s.id].best==="ok").length;
+  $("hWrBar").style.width=(SEN.length?ok/SEN.length*100:0)+"%";
+  $("hWrTx").textContent=`เขียนถูกแล้ว ${ok} / ${SEN.length} ประโยค`;
+}
+$("goVocab").onclick=()=>{ setHash(S.ch); showView("list"); $("scroll").scrollTop=0; };
+$("goWrite").onclick=()=>{ setHash("write"); showView("write"); };
+$("homeBtn").onclick=goHome;
+
+/* ================= WRITE (sentence practice) ================= */
+const W=(function(){
+  const SEN=window.SENTENCES||[];
+  const PUNCT=/[\s　。、．，,.!！?？・「」『』（）()〜~…‥:：;；"'“”‘’]/g;
+  const N=s=>s.normalize("NFKC").replace(PUNCT,"").replace(/[ァ-ヶ]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0x60));
+  const reEsc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  const PREFIX=/^(?:私|わたし)は/;
+  function parse(p){ const segs=[]; let last=0; p.replace(/\{([^|}]+)\|([^}]+)\}/g,(m,k,r,i)=>{ if(i>last) segs.push({t:p.slice(last,i)}); segs.push({k,r}); last=i+m.length; return m; });
+    if(last<p.length) segs.push({t:p.slice(last)}); return segs; }
+  // pre-compile every accepted answer
+  SEN.forEach(s=>{ s._v=s.ja.map(p=>{ const segs=parse(p);
+    const re=new RegExp("^(?:(?:私|わたし)は)?"+segs.map(g=>g.k?`(?:${reEsc(N(g.k))}|${reEsc(N(g.r))})`:reEsc(N(g.t))).join("")+"$");
+    return {segs,re,kanji:N(segs.map(g=>g.k||g.t).join("")),kana:N(segs.map(g=>g.r||g.t).join("")),say:segs.map(g=>g.r||g.t).join("")}; }); });
+  function lev(a,b){ a=[...a]; b=[...b]; const d=Array.from({length:b.length+1},(_,i)=>i);
+    for(let i=1;i<=a.length;i++){ let prev=d[0]; d[0]=i; for(let j=1;j<=b.length;j++){ const t=d[j]; d[j]=Math.min(d[j]+1,d[j-1]+1,prev+(a[i-1]===b[j-1]?0:1)); prev=t; } } return d[b.length]; }
+  function score(s,input){
+    const n=N(input); if(!n) return {exact:false,ratio:0};
+    if(s._v.some(v=>v.re.test(n))) return {exact:true,ratio:1};
+    const m=n.replace(PREFIX,""); let best=0;
+    s._v.forEach(v=>{
+      const mix=N(v.segs.map(g=>g.k?(m.includes(N(g.k))?g.k:g.r):g.t).join(""));   // kanji where the user typed kanji, kana elsewhere
+      [v.kanji,v.kana,mix].forEach(t=>{ const r=1-lev(m,t)/Math.max(m.length,t.length); if(r>best) best=r; }); });
+    return {exact:false,ratio:best};
+  }
+  const ruby=segs=>segs.map(g=>g.k?`<ruby>${esc(g.k)}<rt>${esc(g.r)}</rt></ruby>`:esc(g.t)).join("");
+  const plain=segs=>segs.map(g=>g.k||g.t).join("");
+  const CHN={ch1:"บท 1 科学",ch2:"บท 2 病気",ch3:"บท 3 料理"};
+
+  let filt=store.get("fc3-wfilt","all"), queue=[], cur=null, res=store.get("fc3-sent",{}), sess={n:0,ok:0}, answered=false;
+  const save=()=>store.set("fc3-sent",res);
+  const rank={ok:3,near:2,no:1};
+  function setBest(id,v){ const r=res[id]||{}; if(!r.best||rank[v]>rank[r.best]) r.best=v; res[id]=r; save(); }
+
+  function pool(){ return SEN.filter(s=>filt==="all"||s.ch===filt); }
+  function refill(){ const p=pool(); const notOk=p.filter(s=>!(res[s.id]&&res[s.id].best==="ok")), ok=p.filter(s=>res[s.id]&&res[s.id].best==="ok");
+    shuffle(notOk); shuffle(ok); queue=[...notOk,...ok]; if(cur&&queue.length>1&&queue[0]===cur){ queue.push(queue.shift()); } }
+  function chips(){
+    const opts=[["all","ทั้งหมด"],["ch1","บท 1 <span class='jp'>科学</span>"],["ch2","บท 2 <span class='jp'>病気</span>"],["ch3","บท 3 <span class='jp'>料理</span>"]];
+    $("wChips").innerHTML=opts.map(([k,l])=>{ const p=SEN.filter(s=>k==="all"||s.ch===k), ok=p.filter(s=>res[s.id]&&res[s.id].best==="ok").length;
+      return `<button class="chip ${filt===k?"on":""}" data-f="${k}">${l}<span class="n">${ok}/${p.length}</span></button>`; }).join("");
+    $("wChips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ if(filt===b.dataset.f) return; filt=b.dataset.f; store.set("fc3-wfilt",filt); cur=null; refill(); next(); });
+  }
+  function stat(){ $("wStat").innerHTML=`<span>ข้อที่ <b>${sess.n+(answered?0:1)}</b></span><span>ถูกรอบนี้ <b>${sess.ok}</b></span><span>เหลือในชุด <b>${queue.length}</b></span>`; }
+  function next(){
+    stopMic();
+    if(!queue.length) refill();
+    cur=queue.shift(); answered=false;
+    $("wTag").innerHTML=`<b class="jp">${CHN[cur.ch].split(" ").pop()}</b>${CHN[cur.ch].split(" ").slice(0,2).join(" ")}`;
+    $("wTh").textContent=cur.th;
+    $("wHint").textContent=cur.hint||"ไม่มีคำใบ้สำหรับข้อนี้"; $("wHint").classList.remove("on"); $("wHintBtn").style.display="";
+    $("wAns").value=""; $("wAns").disabled=false;
+    $("wCheck").textContent="ตรวจคำตอบ"; $("wBtns").style.display="";
+    $("wRes").classList.remove("on"); $("wHeard").classList.remove("on");
+    $("wMicSt").textContent=SR?"แตะเพื่อเริ่มพูด":"เครื่องนี้ไม่รองรับการฟังเสียงพูด — กด 🔊 แล้วพูดตามได้เลย";
+    $("wMic").style.display=SR?"":"none";
+    chips(); stat(); $("wBody").parentElement.scrollTop=0;
+  }
+  function showResult(kind,input){
+    const v=cur._v[0];
+    const V={ok:["ok","✓ ถูกต้อง! เก่งมากงับ"],near:["near","〜 เกือบถูกแล้ว ลองเทียบกับเฉลยดู"],no:["no","✗ ยังไม่ถูก ดูเฉลยแล้วลองอีกทีนะ"],give:["near","👀 เฉลยอยู่นี่ ลองพิมพ์ตามแล้วตรวจอีกครั้งได้"]}[kind];
+    $("wVerdict").className="verdict "+V[0]; $("wVerdict").textContent=V[1];
+    $("wMineBox").style.display=input?"":"none"; $("wMine").textContent=input;
+    $("wModel").innerHTML=`<span>${ruby(v.segs)}</span><button class="ic spk" id="wSay" aria-label="ฟังเสียง">${IC.spk}</button>`;
+    $("wSay").onclick=e=>sayModel(e.currentTarget);
+    const alts=cur._v.slice(1).map(x=>plain(x.segs));
+    $("wAlt").innerHTML=alts.length?`ตอบแบบนี้ก็ถูก: ${alts.map(a=>`<span>${esc(a)}</span>`).join(" / ")}`:"";
+    $("wSelfOk").style.display=(kind==="near"||kind==="no")?"":"none";
+    $("wRes").classList.add("on");
+    if(kind==="ok"){ $("wAns").disabled=true; $("wBtns").style.display="none"; } else { $("wCheck").textContent="ตรวจอีกครั้ง"; }
+    setTimeout(()=>$("wRes").scrollIntoView({behavior:"smooth",block:"start"}),60);
+  }
+  function check(){
+    const input=$("wAns").value.trim();
+    if(!input){ toast("พิมพ์คำตอบก่อนนะ"); $("wAns").focus(); return; }
+    const sc=score(cur,input), kind=sc.exact?"ok":sc.ratio>=0.75?"near":"no";
+    if(!answered){ sess.n++; answered=true; }
+    if(kind==="ok"){ sess.ok++; confetti(900); }
+    setBest(cur.id,kind); showResult(kind,input); stat(); chips();
+    if(kind==="ok" && pool().every(s=>res[s.id]&&res[s.id].best==="ok")) toast("🎉 เขียนถูกครบทุกประโยคในชุดนี้แล้ว!");
+  }
+  function give(){ if(!answered){ sess.n++; answered=true; } setBest(cur.id,"no"); showResult("give",$("wAns").value.trim()); stat(); }
+  function sayModel(btn){ speak({r:cur._v[0].say,w:""},btn); }
+
+  /* ----- speech recognition ----- */
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  let rec=null, heard=[];
+  function stopMic(){ if(rec){ try{rec.abort()}catch(e){} rec=null; } const m=$("wMic"); if(m) m.classList.remove("rec"); }
+  function startMic(){
+    if(!SR) return;
+    if(rec){ try{rec.stop()}catch(e){} return; }
+    try{speechSynthesis.cancel()}catch(e){}
+    heard=[]; rec=new SR(); rec.lang="ja-JP"; rec.interimResults=true; rec.maxAlternatives=3; rec.continuous=false;
+    $("wMic").classList.add("rec"); $("wMicSt").textContent="กำลังฟัง… พูดได้เลย (แตะอีกครั้งเพื่อหยุด)"; $("wHeard").classList.remove("on");
+    rec.onresult=e=>{ let interim=""; heard=[];
+      for(let i=0;i<e.results.length;i++){ const r=e.results[i]; if(r.isFinal){ for(let j=0;j<r.length;j++) heard.push(r[j].transcript); } else interim+=r[0].transcript; }
+      if(interim) $("wMicSt").textContent="ได้ยิน: "+interim; };
+    rec.onerror=e=>{ const msg={"not-allowed":"ยังไม่ได้อนุญาตให้ใช้ไมค์ — เปิดสิทธิ์ไมโครโฟนให้เว็บนี้ก่อนนะ","service-not-allowed":"ยังไม่ได้อนุญาตให้ใช้ไมค์ / การรู้จำเสียง","no-speech":"ไม่ได้ยินเสียงเลย ลองใหม่อีกครั้ง","audio-capture":"หาไมโครโฟนไม่เจอ","network":"ต้องต่อเน็ตเพื่อใช้การฟังเสียง"}[e.error];
+      if(msg) $("wMicSt").textContent=msg; };
+    rec.onend=()=>{ $("wMic").classList.remove("rec"); rec=null;
+      if(!heard.length){ if(/กำลังฟัง|ได้ยิน:/.test($("wMicSt").textContent)) $("wMicSt").textContent="ไม่ได้ยินเสียงเลย ลองใหม่อีกครั้ง"; return; }
+      let best={ratio:-1}, bestTx=heard[0];
+      heard.forEach(t=>{ const s=score(cur,t); if(s.ratio>best.ratio){best=s;bestTx=t;} });
+      const r=best.ratio, V= r>=0.95?["ok","🎉 ออกเสียงชัดมาก! สุดยอด"]: r>=0.7?["ok","👍 พูดได้ดีเลย"]: r>=0.45?["near","〜 ใกล้แล้ว ลองพูดช้า ๆ ชัด ๆ อีกที"]:["no","✗ ยังไม่ตรง ลองฟัง 🔊 แล้วพูดใหม่นะ"];
+      $("wSpVerdict").className="verdict "+V[0]; $("wSpVerdict").textContent=V[1]; $("wHeardTx").textContent=bestTx; $("wHeard").classList.add("on");
+      $("wMicSt").textContent="แตะเพื่อพูดอีกครั้ง";
+      if(r>=0.7){ const x=res[cur.id]||{}; x.spoke=true; res[cur.id]=x; save(); if(r>=0.95) confetti(900); }
+      setTimeout(()=>$("wHeard").scrollIntoView({behavior:"smooth",block:"nearest"}),60);
+    };
+    try{ rec.start(); }catch(e){ stopMic(); $("wMicSt").textContent="เริ่มฟังเสียงไม่ได้ ลองใหม่อีกครั้ง"; }
+  }
+
+  $("wCheck").onclick=check; $("wGive").onclick=give; $("wNext").onclick=next; $("wMic").onclick=startMic;
+  $("wSelfOk").onclick=()=>{ setBest(cur.id,"ok"); sess.ok++; showResult("ok",$("wAns").value.trim()); stat(); chips(); toast("โอเค นับว่าถูกนะ 👍"); };
+  $("wHintBtn").onclick=()=>{ $("wHint").classList.toggle("on"); };
+  $("wAns").addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing&&e.keyCode!==229){ e.preventDefault(); check(); } });
+  $("wBack").onclick=goHome;
+  return { enter(){ if(!cur){ refill(); next(); } else { chips(); stat(); } }, stopMic, score, N };
+})();
+
 /* ---------- boot ---------- */
-(function(){ const h=parseHash(); if(h){S.ch=h.ch;store.set("fc3-ch",S.ch)} showView("list"); if(h&&h.cards) startStudy(); else setHash(S.ch); })();
+(function(){ const h=parseHash();
+  if(!h||h.page==="home"){ goHome(); return; }
+  if(h.page==="write"){ showView("write"); return; }
+  S.ch=h.ch; store.set("fc3-ch",S.ch); showView("list"); if(h.cards) startStudy(); })();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 </script>
 </body>
