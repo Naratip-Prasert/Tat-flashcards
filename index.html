@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>แฟลชการ์ดคำศัพท์ญี่ปุ่น</title>
+<meta name="theme-color" content="#f6f1ea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="単語カード">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f1ea; --ink:#2a2420; --muted:#7c716a; --line:#e3d9cf;
+  --card:#fffdf9; --accent:#e5702f; --accent-soft:#fbe6d8;
+  --good:#2f8f5b; --good-soft:#dcf1e4; --bad:#c26a1e; --bad-soft:#f9e6d2;
+  --new:#8a8fa8; --star:#e8a516;
+  --shadow:0 1px 2px rgba(60,40,20,.05),0 4px 14px rgba(60,40,20,.07);
+  --shadow2:0 1px 2px rgba(60,40,20,.06),0 8px 24px rgba(60,40,20,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#1c1917;--ink:#f3ede7;--muted:#a69a90;--line:#38312c;--card:#26211e;
+  --accent:#f08a4b;--accent-soft:#3d2a1f;--good:#5cc28a;--good-soft:#1f3328;--bad:#f0a35e;--bad-soft:#3a2a1c;--new:#9da2bb;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);--shadow2:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);}
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink)}
+body{font-family:"Noto Sans Thai","Noto Sans JP",system-ui,sans-serif;-webkit-tap-highlight-color:transparent;
+  display:flex;flex-direction:column;height:100dvh}
+button{font:inherit;color:inherit}
+.jp{font-family:"Noto Sans JP","Hiragino Sans","Noto Sans Thai",sans-serif}
+.view{flex:1;min-height:0;display:none;flex-direction:column}
+.view.on{display:flex}
+.col{max-width:620px;margin:0 auto;width:100%}
+
+/* ---------- top / tabs ---------- */
+.top{flex:none;padding:calc(8px + env(safe-area-inset-top)) 12px 8px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:var(--line);padding:3px;border-radius:12px}
+.tab{border:none;background:transparent;border-radius:10px;padding:5px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.tab .t1{font-size:14px;font-weight:700}
+.tab .t2{font-size:10.5px;color:var(--muted)}
+.tab.on{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.tab.on .t1{color:var(--accent)}
+
+/* ---------- list view ---------- */
+.scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 12px 16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;text-align:center;box-shadow:var(--shadow)}
+.stat.on{border-color:var(--accent);background:var(--accent-soft)}
+.ring{flex:none;width:46px;height:46px;position:relative}
+.ring svg{width:46px;height:46px;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.stat .lb{font-size:11.5px;line-height:1.3;color:var(--muted);white-space:nowrap}
+@media (min-width:520px){.stat{flex-direction:row;justify-content:center;text-align:left;gap:10px}}
+.stat .lb strong{display:block;color:var(--ink);font-size:13px;font-weight:600}
+.lhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0 8px}
+.lhead h2{font-size:22px;font-weight:700}
+.lhead h2 .jp{color:var(--accent)}
+.sort{display:flex;align-items:center;gap:4px;color:var(--muted);font-size:13px;position:relative}
+.sort select{appearance:none;-webkit-appearance:none;border:none;background:transparent;font:inherit;color:var(--muted);padding:6px 20px 6px 4px;cursor:pointer;text-align:right}
+.sort svg{width:16px;height:16px;position:absolute;right:0;pointer-events:none}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:0 0 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 11px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.chip .n{color:var(--muted);font-size:11px;margin-left:4px}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.on .n{color:rgba(255,255,255,.8)}
+.search{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 10px;margin:10px 0 12px}
+.search svg{width:16px;height:16px;color:var(--muted);flex:none}
+.search input{flex:1;border:none;background:transparent;font:inherit;font-size:16px;color:var(--ink);padding:9px 0;outline:none;min-width:0}
+.search .clr{border:none;background:none;color:var(--muted);font-size:18px;cursor:pointer;display:none;padding:0 2px}
+.items{display:flex;flex-direction:column;gap:10px}
+.item{background:var(--card);border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--line);padding:12px 8px 12px 16px;position:relative;cursor:pointer}
+.item .st{position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0}
+.item .st.k{background:var(--good)} .item .st.l{background:var(--bad)}
+.irow{display:flex;align-items:flex-start;gap:4px}
+.itxt{flex:1;min-width:0}
+.iw{font-size:19px;font-weight:500;line-height:1.35;overflow-wrap:anywhere}
+.ir{font-size:12.5px;color:var(--muted);margin-top:1px}
+.ith{font-size:15.5px;margin-top:8px;line-height:1.4}
+.iact{display:flex;gap:0;flex:none}
+.ic{width:40px;height:40px;border:none;background:none;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted)}
+.ic svg{width:21px;height:21px}
+.ic.star.on{color:var(--star)}
+.ic.star.on svg{fill:var(--star)}
+.ic.speaking{color:var(--accent)}
+.idet{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:13.5px;line-height:1.55}
+.item.open .idet{display:block}
+.idet .lbl{font-size:11px;font-weight:600;color:var(--accent);display:block}
+.idet div+div{margin-top:6px}
+.nores{text-align:center;color:var(--muted);font-size:14px;padding:30px 10px}
+.lfoot{text-align:center;margin:18px 0 6px}
+.link{background:none;border:none;color:var(--muted);font-size:12.5px;text-decoration:underline;cursor:pointer}
+.cta{flex:none;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(0,0,0,0),var(--bg) 30%)}
+.ctabtn{width:100%;height:56px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;
+  box-shadow:0 6px 18px rgba(229,112,47,.35);display:flex;align-items:center;justify-content:center;gap:8px}
+.ctabtn small{font-weight:500;opacity:.85;font-size:13px}
+.ctabtn:disabled{opacity:.45;box-shadow:none}
+
+/* ---------- card view ---------- */
+.cbar{flex:none;display:flex;align-items:center;gap:6px;padding:calc(8px + env(safe-area-inset-top)) 12px 6px}
+.back{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);flex:none}
+.back svg{width:20px;height:20px}
+.ctitle{flex:1;min-width:0;font-size:13px;color:var(--muted);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctitle b{display:block;color:var(--ink);font-size:15px}
+.ibtn{flex:none;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;font-weight:700;padding:0}
+.ibtn svg{width:17px;height:17px}
+.ibtn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.cwrap{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 12px}
+.progress{flex:none;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:4px 0 10px}
+.bar{flex:1;height:6px;background:var(--line);border-radius:99px;overflow:hidden;display:flex}
+.bar i{display:block;height:100%;transition:width .3s}
+.bar i.k{background:var(--good)} .bar i.l{background:var(--bad)}
+.stage{flex:1;min-height:0;display:flex;perspective:1400px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.card{position:relative;flex:1;height:100%;cursor:pointer;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.3,.7,.3,1)}
+.card.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;background:var(--card);border-radius:20px;box-shadow:var(--shadow2);border:1px solid var(--line);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:48px 16px 34px;text-align:center;overflow-y:auto}
+.face.back{transform:rotateY(180deg);background:linear-gradient(180deg,var(--card),var(--accent-soft) 260%)}
+.tag{position:absolute;top:14px;left:16px;font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.tag b{color:var(--accent);font-weight:600}
+.fact{position:absolute;top:6px;right:6px;display:flex}
+.pill{position:absolute;top:50px;right:14px;font-size:11px;padding:2px 8px;border-radius:99px}
+.pill.k{background:var(--good-soft);color:var(--good)} .pill.l{background:var(--bad-soft);color:var(--bad)}
+.word{font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.reading{margin-top:10px;font-size:20px;color:var(--muted);font-weight:500;line-height:1.4}
+.thai{font-weight:600;line-height:1.35}
+.sub{margin-top:12px;font-size:15px;color:var(--muted);line-height:1.5}
+.ex{margin-top:12px;font-size:14px;line-height:1.6;max-width:94%;text-align:left;border-left:3px solid var(--accent);padding:2px 0 2px 10px}
+.ex span{display:block;font-size:11px;color:var(--accent);font-weight:600}
+.note{margin-top:10px;font-size:13px;line-height:1.5;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:7px 10px;max-width:94%}
+.note b{color:var(--accent)}
+.hint{position:absolute;bottom:11px;left:0;right:0;font-size:11.5px;color:var(--muted)}
+.empty{flex:1;display:none;flex-direction:column;justify-content:center;text-align:center;padding:30px 20px;background:var(--card);border-radius:20px;border:1px solid var(--line)}
+.empty h3{font-size:19px;margin-bottom:6px}
+.empty p{color:var(--muted);font-size:14px;margin-bottom:16px}
+.bottom{flex:none;padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
+.nav{display:grid;grid-template-columns:56px 1fr 1fr 56px;gap:8px}
+.nbtn{border:1px solid var(--line);background:var(--card);border-radius:14px;height:56px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.nbtn svg{width:20px;height:20px}
+.nbtn.bad{background:var(--bad-soft);border-color:transparent;color:var(--bad)}
+.nbtn.good{background:var(--good-soft);border-color:transparent;color:var(--good)}
+.nbtn:active,.ctabtn:active{transform:scale(.98)}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);
+  font-size:13px;padding:8px 14px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;z-index:9}
+.toast.show{opacity:1}
+@media (max-height:620px){.tab .t2{display:none}.face{padding:42px 14px 26px}.nbtn{height:50px}.ctabtn{height:50px}}
+@media (min-width:700px){.card{max-height:460px;align-self:center}.stage{align-items:center}}
+</style>
+</head>
+<body>
+
+<!-- ================= LIST VIEW ================= -->
+<section class="view" id="listView">
+  <div class="top"><div class="col"><div class="tabs" id="tabs"></div></div></div>
+  <div class="scroll" id="scroll"><div class="col">
+    <div class="stats" id="stats"></div>
+    <div class="lhead">
+      <h2 id="lTitle"></h2>
+      <label class="sort">
+        <select id="sortSel" aria-label="เรียงลำดับ">
+          <option value="sheet">ตามชีท</option>
+          <option value="star">ติดดาวก่อน</option>
+          <option value="weak">ยังไม่จำก่อน</option>
+        </select>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M7 12h10M10 17h4"/></svg>
+      </label>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="ค้นหาคำศัพท์ / คำอ่าน / คำแปล" autocomplete="off"><button class="clr" id="qclr" aria-label="ล้าง">×</button></div>
+    <div class="items" id="items"></div>
+    <div class="lfoot"><button class="link" id="resetCh">ล้างสถานะการเรียนของบทนี้</button></div>
+  </div></div>
+  <div class="cta"><div class="col"><button class="ctabtn" id="studyBtn"></button></div></div>
+</section>
+
+<!-- ================= CARD VIEW ================= -->
+<section class="view" id="cardView">
+  <div class="cbar col">
+    <button class="back" id="backBtn" aria-label="กลับไปหน้ารวม"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>
+    <div class="ctitle" id="cTitle"></div>
+    <button class="ibtn" id="dirBtn" aria-label="สลับด้านหน้า"></button>
+    <button class="ibtn" id="shufBtn" aria-label="สุ่มลำดับ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></button>
+    <button class="ibtn" id="hideBtn" aria-label="ซ่อนคำที่จำได้"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><path d="M3 3l18 18"/></svg></button>
+  </div>
+  <div class="cwrap col">
+    <div class="progress"><span id="pos">–</span><div class="bar" id="cbar"><i class="k"></i><i class="l"></i></div><span id="knownCt">–</span></div>
+    <div class="stage" id="stage">
+      <div class="card" id="card">
+        <div class="face front" id="front"></div>
+        <div class="face back" id="back"></div>
+      </div>
+    </div>
+    <div class="empty" id="empty">
+      <h3>จำได้ครบทุกคำในชุดนี้แล้ว 🎉</h3>
+      <p>ปิดปุ่ม "ซ่อนคำที่จำได้" เพื่อทบทวนอีกรอบ หรือกลับไปเลือกชุดใหม่</p>
+      <button class="nbtn" style="margin:0 auto;padding:0 18px" id="emptyBack">กลับไปหน้ารวม</button>
+    </div>
+  </div>
+  <div class="bottom col">
+    <div class="nav" id="nav">
+      <button class="nbtn" id="prevBtn" aria-label="ก่อนหน้า"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <button class="nbtn bad" id="badBtn">ยังไม่จำ</button>
+      <button class="nbtn good" id="goodBtn">จำได้แล้ว</button>
+      <button class="nbtn" id="nextBtn" aria-label="ถัดไป"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+  </div>
+</section>
+<div class="toast" id="toast"></div>
+
+<script>
+const CH = [{"id": "ch1", "no": 1, "jp": "科学", "th": "วิทยาศาสตร์", "secs": [{"id": "general", "jp": "科学", "th": "ทั่วไป", "items": [{"w": "科学", "r": "かがく", "th": "วิทยาศาสตร์"}, {"w": "理科", "r": "りか", "th": "วิทยาศาสตร์"}, {"w": "理学", "r": "りがく", "th": "วิทยาศาสตร์"}, {"w": "物理", "r": "ぶつり", "th": "ฟิสิกส์"}, {"w": "化学", "r": "かがく", "th": "เคมี"}, {"w": "生物", "r": "せいぶつ", "th": "ชีววิทยา"}, {"w": "地学", "r": "ちがく", "th": "ธรณีวิทยา"}, {"w": "天文学", "r": "てんもんがく", "th": "ดาราศาสตร์"}]}, {"id": "physics", "jp": "物理", "th": "ฟิสิกส์", "items": [{"w": "物体", "r": "ぶったい", "th": "สสาร", "note": "ตรงตัวแปลว่า วัตถุ (object)"}, {"w": "反射", "r": "はんしゃ", "th": "สะท้อน"}, {"w": "凸レンズ", "r": "とつレンズ", "th": "เลนส์นูน"}, {"w": "凹レンズ", "r": "おうレンズ", "th": "เลนส์เว้า"}, {"w": "重力", "r": "じゅうりょく", "th": "แรงโน้มถ่วง"}, {"w": "磁力", "r": "じりょく", "th": "พลังงานแม่เหล็ก", "note": "ตรงตัวคือ แรงแม่เหล็ก"}, {"w": "磁気", "r": "じき", "th": "แม่เหล็ก"}, {"w": "磁極", "r": "じきょく", "th": "ขั้วแม่เหล็ก"}, {"w": "電源", "r": "でんげん", "th": "แหล่งไฟฟ้า"}, {"w": "電力", "r": "でんりょく", "th": "พลังงานไฟฟ้า"}, {"w": "電流", "r": "でんりゅう", "th": "กระแสไฟฟ้า"}, {"w": "電圧", "r": "でんあつ", "th": "แรงดันไฟฟ้า"}, {"w": "抵抗", "r": "ていこう", "th": "ความต้านทาน"}, {"w": "電子", "r": "でんし", "th": "อิเลคตรอน"}, {"w": "発電機", "r": "はつでんき", "th": "เครื่องผลิตไฟฟ้า", "note": "ตรงตัวคือ เครื่องผลิตไฟฟ้า (generator)"}, {"w": "摩擦力", "r": "まさつりょく", "th": "แรงเสียดทาน"}, {"w": "静電気", "r": "せいでんき", "th": "ไฟฟ้าสถิต"}, {"w": "交流電流", "r": "こうりゅうでんりゅう", "th": "ไฟฟ้ากระแสสลับ"}]}, {"id": "chemistry", "jp": "化学", "th": "เคมี", "items": [{"w": "物質", "r": "ぶっしつ", "th": "สสาร"}, {"w": "分子", "r": "ぶんし", "th": "โมเลกุล"}, {"w": "固体", "r": "こたい", "th": "ของแข็ง", "note": "ที่ถูกเขียนว่า 固体 (こたい) — 個体 แปลว่า ปัจเจก/ตัวตน"}, {"w": "液体", "r": "えきたい", "th": "ของเหลว"}, {"w": "気体", "r": "きたい", "th": "ก๊าซ"}, {"w": "沸点", "r": "ふってん", "th": "จุดเดือด"}, {"w": "二酸化炭素", "r": "にさんかたんそ", "th": "คาร์บอนไดออกไซด์"}, {"w": "酸素", "r": "さんそ", "th": "ออกซิเจน"}, {"w": "水素", "r": "すいそ", "th": "ไฮโดรเจน"}, {"w": "アンモニア", "r": "", "th": "แอมโมเนีย"}, {"w": "二酸化硫黄", "r": "にさんかいおう", "th": "ซัลเฟอร์ไดออกไซด์"}, {"w": "塩素", "r": "えんそ", "th": "คลอรีน"}, {"w": "融点", "r": "ゆうてん", "th": "จุดหลอมเหลว"}, {"w": "元素", "r": "げんそ", "th": "ธาตุ"}, {"w": "化合物", "r": "かごうぶつ", "th": "สารประกอบ"}, {"w": "純物質", "r": "じゅんぶっしつ", "th": "สารบริสุทธิ์"}, {"w": "混合物", "r": "こんごうぶつ", "th": "สารผสม"}, {"w": "原子（核）", "r": "げんし（かく）", "th": "นิวเคลียส", "note": "原子 = อะตอม, 原子核 = นิวเคลียส"}, {"w": "電子", "r": "でんし", "th": "อิเลคตรอน"}, {"w": "陽子", "r": "ようし", "th": "โปรตอน"}, {"w": "中性子", "r": "ちゅうせいし", "th": "นิวตรอน"}, {"w": "酸", "r": "さん", "th": "กรด"}, {"w": "アルカリ", "r": "", "th": "ด่าง, แอลคาไลน์"}, {"w": "塩", "r": "えん", "th": "เกลือ"}, {"w": "溶液", "r": "ようえき", "th": "สารละลาย"}, {"w": "溶媒", "r": "ようばい", "th": "ตัวทำละลาย"}, {"w": "有機化合物", "r": "ゆうきかごうぶつ", "th": "สารประกอบอินทรีย์"}, {"w": "炭化水素", "r": "たんかすいそ", "th": "สารไฮโดรคาร์บอน"}, {"w": "陽イオン", "r": "ようイオン", "th": "อิออนบวก"}, {"w": "陰イオン", "r": "いんイオン", "th": "อิออนลบ"}, {"w": "放射線", "r": "ほうしゃせん", "th": "รังสี"}, {"w": "放射能", "r": "ほうしゃのう", "th": "กัมมันตรังสี"}, {"w": "X線", "r": "エックスせん", "th": "รังสีเอกซ์"}, {"w": "ラジウム", "r": "", "th": "เรเดียม"}, {"w": "ウラン", "r": "", "th": "ยูเรเนียม"}, {"w": "天然ガス", "r": "てんねんガス", "th": "ก๊าซธรรมชาติ"}, {"w": "半減期", "r": "はんげんき", "th": "ครึ่งชีวิต"}, {"w": "塩化水素", "r": "えんかすいそ", "th": "กรดไฮโดรคลอริก"}, {"w": "一酸化炭素", "r": "いっさんかたんそ", "th": "คาร์บอนมอนอกไซด์", "note": "ในชีทเขียน いちさんかたんそ แต่อ่านมาตรฐานคือ いっさんかたんそ"}, {"w": "窒素", "r": "ちっそ", "th": "ไนโตรเจน"}, {"w": "ヘリウム", "r": "", "th": "ฮีเลียม"}, {"w": "希ガス", "r": "きガス", "th": "ก๊าซเฉื่อย"}, {"w": "配合", "r": "はいごう", "th": "สารผสม"}, {"w": "酸化", "r": "さんか", "th": "ออกซิไดซ์, ขึ้นสนิม"}, {"w": "エタノール", "r": "", "th": "เอทานอล"}, {"w": "硫酸", "r": "りゅうさん", "th": "กรดกำมะถัน"}, {"w": "蒸留水", "r": "じょうりゅうすい", "th": "น้ำกลั่น"}, {"w": "水蒸気", "r": "すいじょうき", "th": "ไอน้ำ"}, {"w": "メタン", "r": "", "th": "มีเทน"}, {"w": "エタン", "r": "", "th": "อีเทน"}, {"w": "プロパン", "r": "", "th": "โปรเพน, แก๊สหุงต้ม"}, {"w": "炭素", "r": "たんそ", "th": "คาร์บอน"}, {"w": "リン", "r": "", "th": "ฟอสฟอรัส"}, {"w": "鉄", "r": "てつ", "th": "เหล็ก"}, {"w": "銅", "r": "どう", "th": "ทองแดง"}, {"w": "ナトリウム", "r": "", "th": "โซเดียม"}, {"w": "カリウム", "r": "", "th": "โปแตสเซียม"}, {"w": "カルシウム", "r": "", "th": "แคลเซียม"}, {"w": "ヨウ素", "r": "ヨウそ", "th": "ไอโอดีน"}, {"w": "フッ素", "r": "フッそ", "th": "ฟลูออรีน, ฟลูออไรด์"}, {"w": "マンガン", "r": "", "th": "แมงกานีส"}, {"w": "亜鉛", "r": "あえん", "th": "สังกะสี"}, {"w": "乾電池", "r": "かんでんち", "th": "แบตเตอรี่แห้ง"}, {"w": "発泡スチロール", "r": "はっぽうスチロール", "th": "โฟม"}, {"w": "ペットボトル", "r": "", "th": "ขวด PET"}, {"w": "アルミ（ニウム）", "r": "", "th": "อลูมิเนียม"}, {"w": "ビニル袋", "r": "ビニルぶくろ", "th": "ถุงพลาสติก"}, {"w": "ポリエステル", "r": "", "th": "ใยสังเคราะห์, โพลีเอสเตอร์"}, {"w": "ゲルマニウム", "r": "", "th": "เจอร์มาเนียม"}, {"w": "鋼鉄・鉄鋼・スチール", "r": "こうてつ・てっこう・スチール", "th": "เหล็กกล้า"}, {"w": "グラファイト・黒鉛", "r": "グラファイト・こくえん", "th": "กราไฟต์"}, {"w": "クロム", "r": "", "th": "โครเมียม"}, {"w": "鉛", "r": "なまり", "th": "ตะกั่ว"}, {"w": "水銀", "r": "すいぎん", "th": "ปรอท"}, {"w": "マグネシウム", "r": "", "th": "แมกนีเซียม"}, {"w": "白金・プラチナ", "r": "はっきん・プラチナ", "th": "ทองคำขาว, แพลตินั่ม"}, {"w": "チタン", "r": "", "th": "ไทเทเนียม"}, {"w": "リチウム", "r": "", "th": "ลิเทียม"}, {"w": "ヒ素", "r": "ヒそ", "th": "สารหนู, อาร์เซนิค"}, {"w": "プルトニウム", "r": "", "th": "พลูโตเนียม"}, {"w": "青銅・ブロンズ", "r": "せいどう・ブロンズ", "th": "สำริด"}, {"w": "錫", "r": "すず", "th": "ดีบุก"}]}, {"id": "biology", "jp": "生物", "th": "ชีววิทยา", "items": [{"w": "顕微鏡", "r": "けんびきょう", "th": "กล้องจุลทรรศน์"}, {"w": "アメーバ", "r": "", "th": "อมีบา"}, {"w": "微生物", "r": "びせいぶつ", "th": "จุลชีพ, เชื้อโรค"}, {"w": "ゾウリムシ", "r": "", "th": "Paramecium (พารามีเซียม)"}, {"w": "細菌", "r": "さいきん", "th": "แบคทีเรีย"}, {"w": "真菌", "r": "しんきん", "th": "เห็ด, รา"}, {"w": "苔", "r": "こけ", "th": "มอส, ตะไคร่"}, {"w": "樹脂", "r": "じゅし", "th": "ยางไม้"}, {"w": "花粉", "r": "かふん", "th": "ละอองเกสร"}, {"w": "藻類", "r": "そうるい", "th": "สาหร่าย"}, {"w": "海藻", "r": "かいそう", "th": "สาหร่ายทะเล"}, {"w": "脊椎動物", "r": "せきついどうぶつ", "th": "สัตว์มีกระดูกสันหลัง"}, {"w": "草食", "r": "そうしょく", "th": "สัตว์กินพืช"}, {"w": "肉食", "r": "にくしょく", "th": "สัตว์กินเนื้อ"}, {"w": "雑食", "r": "ざっしょく", "th": "สัตว์กินพืชและสัตว์"}, {"w": "ひづめ", "r": "", "th": "กีบ"}, {"w": "えら", "r": "", "th": "เหงือก (ปลา)"}, {"w": "冬眠", "r": "とうみん", "th": "หลับจำศีล"}, {"w": "神経", "r": "しんけい", "th": "ประสาท"}, {"w": "ホルモン", "r": "", "th": "ฮอร์โมน"}, {"w": "甲状腺", "r": "こうじょうせん", "th": "ต่อมไทรอยด์"}, {"w": "関節", "r": "かんせつ", "th": "ข้อต่อ"}, {"w": "リンパ", "r": "", "th": "น้ำเหลือง"}, {"w": "動脈", "r": "どうみゃく", "th": "เส้นเลือดแดง"}, {"w": "無脊椎動物", "r": "むせきついどうぶつ", "th": "สัตว์ไม่มีกระดูกสันหลัง"}, {"w": "背骨", "r": "せぼね", "th": "กระดูกสันหลัง"}, {"w": "膜", "r": "まく", "th": "เยื่อบุ"}, {"w": "哺乳類", "r": "ほにゅうるい", "th": "สัตว์เลี้ยงลูกด้วยนม"}, {"w": "げっ歯類", "r": "げっしるい", "th": "สัตว์ฟันแทะ"}, {"w": "有袋類", "r": "ゆうたいるい", "th": "สัตว์มีกระเป๋าหน้าท้อง"}, {"w": "羽毛", "r": "うもう", "th": "ขนนก"}, {"w": "くちばし", "r": "", "th": "จะงอยปาก"}, {"w": "爬虫類", "r": "はちゅうるい", "th": "สัตว์เลื้อยคลาน"}, {"w": "節足動物", "r": "せっそくどうぶつ", "th": "สัตว์ขาปล้อง"}, {"w": "変態", "r": "へんたい", "th": "การกลายร่าง"}, {"w": "甲殻類", "r": "こうかくるい", "th": "สัตว์เปลือกแข็ง"}, {"w": "幼虫", "r": "ようちゅう", "th": "หนอน"}, {"w": "さなぎ", "r": "", "th": "ดักแด้"}, {"w": "成虫", "r": "せいちゅう", "th": "แมลงตัวเต็มวัย"}, {"w": "軟体動物", "r": "なんたいどうぶつ", "th": "สัตว์ลำตัวนิ่ม"}, {"w": "両生類", "r": "りょうせいるい", "th": "สัตว์ครึ่งบกครึ่งน้ำ"}, {"w": "えら呼吸", "r": "えらこきゅう", "th": "หายใจด้วยเหงือก"}, {"w": "肺呼吸", "r": "はいこきゅう", "th": "หายใจด้วยปอด"}, {"w": "静脈", "r": "じょうみゃく", "th": "เส้นเลือดดำ"}, {"w": "免疫", "r": "めんえき", "th": "ภูมิต้านทาน"}, {"w": "呼吸器官", "r": "こきゅうきかん", "th": "ระบบหายใจ"}, {"w": "排出器官", "r": "はいしゅつきかん", "th": "ระบบขับถ่าย"}, {"w": "消化器官", "r": "しょうかきかん", "th": "ระบบย่อยอาหาร"}, {"w": "循環器官", "r": "じゅんかんきかん", "th": "ระบบหมุนเวียนโลหิต"}, {"w": "遺伝子", "r": "いでんし", "th": "ยีน, พันธุกรรม"}, {"w": "優性", "r": "ゆうせい", "th": "ความเด่น"}, {"w": "劣性", "r": "れっせい", "th": "ความด้อย"}, {"w": "細胞", "r": "さいぼう", "th": "เซลล์"}, {"w": "染色体", "r": "せんしょくたい", "th": "โครโมโซม"}, {"w": "進化論", "r": "しんかろん", "th": "ทฤษฎีวิวัฒนาการ"}, {"w": "食物連鎖", "r": "しょくもつれんさ", "th": "ห่วงโซ่อาหาร"}, {"w": "分解者", "r": "ぶんかいしゃ", "th": "ผู้ย่อยสลาย"}, {"w": "うろこ", "r": "", "th": "เกล็ด"}, {"w": "甲羅", "r": "こうら", "th": "กระดอง"}, {"w": "ひれ", "r": "", "th": "ครีบ"}]}, {"id": "earth", "jp": "地学", "th": "ธรณีวิทยา", "items": [{"w": "土砂", "r": "どしゃ", "th": "ดินกรวด"}, {"w": "火山灰", "r": "かざんばい", "th": "เถ้าภูเขาไฟ"}, {"w": "化石", "r": "かせき", "th": "ฟอสซิล"}, {"w": "氷河期", "r": "ひょうがき", "th": "ยุคน้ำแข็ง"}, {"w": "アンモナイト", "r": "", "th": "หอยแอมโมไนท์"}, {"w": "プレシオサウルス", "r": "", "th": "เพลซิโอซอรัส"}, {"w": "カルデラ", "r": "", "th": "ปล่องภูเขาไฟ"}, {"w": "マグマ", "r": "", "th": "แมกมา"}, {"w": "余震", "r": "よしん", "th": "แผ่นดินไหว", "note": "ตรงตัวคือ แผ่นดินไหวตาม (aftershock)"}, {"w": "ジュラ紀", "r": "ジュラき", "th": "ยุคจูราสสิค"}, {"w": "白亜紀", "r": "はくあき", "th": "ยุคครีเตเชียส"}, {"w": "三畳紀", "r": "さんじょうき", "th": "ยุคไทรแอสซิค"}, {"w": "カブトガニ", "r": "", "th": "แมงดาทะเล"}, {"w": "オウムガイ", "r": "", "th": "หอยนอติลุส"}, {"w": "シーラカンス", "r": "", "th": "ปลาซีลาคานธ์"}, {"w": "恐竜", "r": "きょうりゅう", "th": "ไดโนเสาร์"}, {"w": "ティラノサウルス", "r": "", "th": "ไทราโนซอรัส"}, {"w": "トリケラトプス", "r": "", "th": "ไทรเซอราทอป"}, {"w": "プテラノドン", "r": "", "th": "เทราโนดอน"}, {"w": "恒星", "r": "こうせい", "th": "ดาวฤกษ์"}, {"w": "光年", "r": "こうねん", "th": "ปีแสง"}, {"w": "銀河系", "r": "ぎんがけい", "th": "ระบบกาแลคซี่"}, {"w": "天の川", "r": "あまのがわ", "th": "ทางช้างเผือก"}, {"w": "宇宙", "r": "うちゅう", "th": "จักรวาล"}, {"w": "マンモス", "r": "", "th": "ช้างแมมมอธ"}, {"w": "赤道", "r": "せきどう", "th": "เส้นศูนย์สูตร"}, {"w": "経線", "r": "けいせん", "th": "เส้นลองจิจูด"}, {"w": "緯線", "r": "いせん", "th": "เส้นละติจูด"}, {"w": "日食", "r": "にっしょく", "th": "สุริยุปราคา"}, {"w": "月食", "r": "げっしょく", "th": "จันทรุปราคา"}, {"w": "北極星", "r": "ほっきょくせい", "th": "ดาวเหนือ"}, {"w": "北斗七星", "r": "ほくとしちせい", "th": "กลุ่มดาวหมีเล็ก", "note": "จริง ๆ คือ ดาวจระเข้/กระบวยใหญ่ (Big Dipper) ในกลุ่มดาวหมีใหญ่"}, {"w": "惑星", "r": "わくせい", "th": "ดาวเคราะห์"}, {"w": "太陽系", "r": "たいようけい", "th": "ระบบสุริยะ"}, {"w": "小惑星", "r": "しょうわくせい", "th": "ดาวเคราะห์น้อย"}, {"w": "彗星", "r": "すいせい", "th": "ดาวหาง"}, {"w": "ほうき星", "r": "ほうきぼし", "th": "ผีพุ่งใต้"}, {"w": "流星", "r": "りゅうせい", "th": "ดาวตก"}, {"w": "隕石", "r": "いんせき", "th": "อุกกาบาต"}, {"w": "星座", "r": "せいざ", "th": "กลุ่มดาว"}, {"w": "星雲", "r": "せいうん", "th": "เนบิวล่า"}, {"w": "ブラックホール", "r": "", "th": "แบล็คโฮล, หลุมดำ"}]}]}, {"id": "ch2", "no": 2, "jp": "病気", "th": "โรคและการรักษา", "secs": [{"id": "symptom", "jp": "症状・けが", "th": "อาการ/บาดเจ็บ", "items": [{"w": "病気", "r": "びょうき", "th": "โรค"}, {"w": "症状", "r": "しょうじょう", "th": "อาการ"}, {"w": "風邪をひく", "r": "かぜをひく", "th": "(เป็น) หวัด"}, {"w": "インフルエンザにかかる", "r": "", "th": "(ติด) ไข้หวัดใหญ่", "note": "ใช้ にかんせんする / になる ได้ด้วย"}, {"w": "アレルギーがある", "r": "", "th": "(เป็น) ภูมิแพ้", "ex": "卵のアレルギーがある"}, {"w": "花粉症になる", "r": "かふんしょうになる", "th": "แพ้เกสรดอกไม้"}, {"w": "熱中症になる", "r": "ねっちゅうしょうになる", "th": "ลมแดด / ฮีทสโตรก"}, {"w": "けがをする", "r": "", "th": "บาดเจ็บ"}, {"w": "のどが痛い", "r": "のどがいたい", "th": "เจ็บคอ"}, {"w": "頭が痛い", "r": "あたまがいたい", "th": "ปวดหัว"}, {"w": "頭痛がする", "r": "ずつうがする", "th": "ปวดหัว"}, {"w": "お腹が痛い", "r": "おなかがいたい", "th": "ปวดท้อง"}, {"w": "腹痛がする", "r": "ふくつうがする", "th": "ปวดท้อง"}, {"w": "くしゃみが出る", "r": "くしゃみがでる", "th": "จาม"}, {"w": "体がだるい", "r": "からだがだるい", "th": "อ่อนเพลีย"}, {"w": "全身がだるい", "r": "ぜんしんがだるい", "th": "อ่อนเพลีย (ทั้งตัว)"}, {"w": "下痢になる", "r": "げりになる", "th": "ท้องเสีย"}, {"w": "便秘になる", "r": "べんぴになる", "th": "ท้องผูก (ขี้ไม่ออก)"}, {"w": "お腹を壊す", "r": "おなかをこわす", "th": "ท้องเสีย"}, {"w": "咳が出る", "r": "せきがでる", "th": "ไอ (แห้ง)", "note": "ช่องคำอ่านในชีทพิมพ์ผิดเป็น 嘔吐する+C15"}, {"w": "痰が出る", "r": "たんがでる", "th": "ไอ (มีเสมหะ)"}, {"w": "熱（が出る・がある）", "r": "ねつ（がでる・がある）", "th": "มีไข้"}, {"w": "高熱（が出る・がある）", "r": "こうねつ（がでる・がある）", "th": "มีไข้สูง"}, {"w": "寒気がする", "r": "さむけがする", "th": "รู้สึกหนาว ๆ ร้อน ๆ"}, {"w": "鼻水が詰まる", "r": "はなみずがつまる", "th": "คัดจมูก / จมูกตัน"}, {"w": "鼻水が出る", "r": "はなみずがでる", "th": "มีน้ำมูก"}, {"w": "めまいがする", "r": "", "th": "เวียนหัว"}, {"w": "気持ち悪い・気持ちが悪い", "r": "きもちわるい・きもちがわるい", "th": "เวียนหัวจะอ้วก", "note": "吐きそう → จะอ้วก"}, {"w": "吐き気がする", "r": "はきけがする", "th": "จะอ้วก (คลื่นไส้)", "ex": "二回吐きました"}, {"w": "吐く", "r": "はく", "th": "อ้วก"}, {"w": "嘔吐する", "r": "おうとする", "th": "อาเจียน", "note": "嘔吐物 = อ้วก (ที่พื้น)"}, {"w": "手が腫れる", "r": "てがはれる", "th": "มือพอง", "note": "腫れる ตรงตัวคือ บวม"}, {"w": "手を火傷する", "r": "てをやけどする", "th": "มือโดนลวก (ของร้อน)"}, {"w": "骨が折れる", "r": "ほねがおれる", "th": "กระดูกหัก", "ex": "足の骨が折れる"}, {"w": "骨折する", "r": "こっせつする", "th": "กระดูกหัก", "ex": "足を骨折する"}, {"w": "指が切れる", "r": "ゆびがきれる", "th": "นิ้วถูกบาด"}, {"w": "血が出る", "r": "ちがでる", "th": "เลือดออก"}, {"w": "膝を擦りむく", "r": "ひざをすりむく", "th": "เข่าถลอก", "note": "すり → ถูไถ, むく → ปลอก"}, {"w": "足首を捻る", "r": "あしくびをひねる", "th": "เท้าพลิก", "note": "足首 = ข้อเท้า · ひねくれている = นิสัยปากไม่ตรงใจ"}, {"w": "足首を捻挫する", "r": "あしくびをねんざする", "th": "ข้อเท้าแพลง (หมอพูด)"}, {"w": "湿疹が出る", "r": "しっしんがでる", "th": "ผื่นขึ้น", "note": "ひふがかゆい = คันตัว"}, {"w": "じんましんが出る", "r": "じんましんがでる", "th": "ลมพิษ (ผื่นที่ขึ้นมาแล้วหายไป)"}, {"w": "目が痒い", "r": "めがかゆい", "th": "คันตา", "note": "目が痛い = แสบ / เจ็บตา"}]}, {"id": "treat", "jp": "治療・薬", "th": "การรักษา/ยา", "items": [{"w": "治療する", "r": "ちりょうする", "th": "รักษา", "note": "ちりょうをうける = ได้รับการรักษา"}, {"w": "予防する", "r": "よぼうする", "th": "ป้องกัน"}, {"w": "胸の音を聞く", "r": "むねのおとをきく", "th": "ฟังเสียงหัวใจ"}, {"w": "レントゲンを撮る", "r": "レントゲンをとる", "th": "ถ่ายเอ็กซเรย์"}, {"w": "飲み薬を飲む", "r": "のみぐすりをのむ", "th": "กินยากิน", "note": "薬を飲むようにしてください = ทำให้เป็นกิจวัตร (ไม่ใช่ครั้งเดียว)"}, {"w": "服用する", "r": "ふくようする", "th": "กิน (ยา) [ศัพท์ทางการ]"}, {"w": "塗り薬を塗る", "r": "ぬりぐすりをぬる", "th": "ทายาทา", "ex": "この薬を足にぬってください。"}, {"w": "目薬をさす", "r": "めぐすりをさす", "th": "หยอดยาหยอดตา"}, {"w": "カプセル", "r": "", "th": "ยาแคปซูล"}, {"w": "粉薬", "r": "こなぐすり", "th": "ยาผง"}, {"w": "錠剤", "r": "じょうざい", "th": "ยาเม็ด", "note": "〜錠 = ลักษณนามนับเม็ด เช่น 1錠 = 1 เม็ด"}, {"w": "湿布", "r": "しっぷ", "th": "แผ่นแปะแก้ปวด"}, {"w": "下痢止め", "r": "げりどめ", "th": "ยาแก้ท้องเสีย"}, {"w": "せき止め", "r": "せきどめ", "th": "ยาแก้ไอ", "note": "〜止め = 〜を止める薬"}, {"w": "痛み止め", "r": "いたみどめ", "th": "ยาแก้ปวด"}, {"w": "かゆみ止め", "r": "かゆみどめ", "th": "ยาแก้คัน"}, {"w": "解熱剤", "r": "げねつざい", "th": "ยาลดไข้", "note": "= 熱を下げる薬"}, {"w": "注射（を打つ・する）", "r": "ちゅうしゃ（をうつ・する）", "th": "ฉีดยา", "ex": "注射を打ってしまった"}, {"w": "点滴（を打つ・する）", "r": "てんてき（をうつ・する）", "th": "ให้น้ำเกลือ", "note": "ความหมายกว้าง ทั้งให้ยาทางสายเลือดและให้น้ำเกลือ"}, {"w": "うがいをする", "r": "", "th": "กลั้วคอ", "note": "ガラガラペー → ใช้สอนเด็ก"}, {"w": "睡眠をとる", "r": "すいみんをとる", "th": "นอนหลับพักผ่อน"}, {"w": "手洗いをする", "r": "てあらいをする", "th": "ล้างมือ"}, {"w": "マスクをする", "r": "", "th": "ใส่แมส"}, {"w": "栄養をとる", "r": "えいようをとる", "th": "กินอาหารที่มีประโยชน์"}, {"w": "水分をとる", "r": "すいぶんをとる", "th": "กินน้ำ (น้ำอะไรก็ได้)", "note": "เช่น น้ำเปล่า น้ำหวาน เกลือแร่ ชา"}, {"w": "ビタミンをとる", "r": "", "th": "กินอาหารที่มีวิตามิน", "note": "ビタミンざいをとる = กินวิตามิน (แบบเม็ด)"}, {"w": "処方せん", "r": "しょほうせん", "th": "ใบสั่งยา", "ex": "処方せんを出す"}, {"w": "薬局", "r": "やっきょく", "th": "ร้านยา"}, {"w": "薬を出す", "r": "くすりをだす", "th": "สั่งยา"}, {"w": "処方する", "r": "しょほうする", "th": "สั่งยา"}, {"w": "診察（する・を受ける）", "r": "しんさつ（する・をうける）", "th": "ตรวจโรค", "note": "診察を受ける = รับการตรวจ"}, {"w": "診察室", "r": "しんさつしつ", "th": "ห้องตรวจ"}, {"w": "保険証", "r": "ほけんしょう", "th": "บัตรประกันสุขภาพ"}, {"w": "お薬手帳", "r": "おくすりてちょう", "th": "สมุดบันทึกประวัติยา"}]}]}, {"id": "ch3", "no": 3, "jp": "料理", "th": "อาหาร", "secs": [{"id": "method", "jp": "調理法", "th": "วิธีทำอาหาร", "items": [{"w": "火を通す（他）・火が通る（自）", "r": "ひをとおす・ひがとおる", "th": "ทำให้สุก / สุก", "note": "ในชีทเว้นช่องคำแปลไว้ — คำแปลนี้เติมให้"}, {"w": "〜を煮る・〜を煮込む", "r": "〜をにる・〜をにこむ", "th": "ต้ม / เคี่ยว (ใช้เวลานานจนเข้าเนื้อ)", "note": "〜を茹でる (ゆでる) = ต้ม (ไข่ / ผัก)"}, {"w": "〜をほぐす", "r": "", "th": "คลาย / ทำให้แยกออก", "ex": "豚肉を入れてほぐしながら炒める。"}, {"w": "〜をからめる", "r": "", "th": "คลุกเคล้า (ซอสเคลือบเส้น)", "ex": "玉ねぎに油をからめる。"}, {"w": "〜がなじむ", "r": "", "th": "(เครื่องปรุง) เข้าเนื้อ", "ex": "調味料の風味が素材になじんでまろやかになる。"}, {"w": "水気を切る・水を切る", "r": "みずけをきる・みずをきる", "th": "สะเด็ดน้ำ", "ex": "茹でためんの水を切る。(สะเด็ดน้ำเส้นที่ลวกแล้ว)"}, {"w": "〜を千切りにする", "r": "〜をせんぎりにする", "th": "ซอย (ผัก) ให้เป็นเส้น"}, {"w": "〜を焼く・〜を炒める", "r": "〜をやく・〜をいためる", "th": "ย่าง / ปิ้ง · ผัด", "note": "やさいいため = ผัดผัก · 〜をあげる = ทอด (น้ำมันท่วม)", "ex": "オーブンで肉などを焼く / 直火で焼く"}, {"w": "{ギョーザ・もち米} を蒸す", "r": "{ギョーザ・もちごめ} をむす", "th": "นึ่ง (เช่น นึ่งข้าวเหนียว)", "ex": "肉まん (ซาลาเปา) を蒸す"}, {"w": "〜に〜を染み込ませる", "r": "〜に〜をしみこませる", "th": "ทำให้ซึมเข้าไป", "ex": "ココナッツミルクをもち米にしっかり染み込ませます。(มูนข้าวเหนียว — ให้ข้าวดูดน้ำกะทิ)"}, {"w": "〜を〜に浸す", "r": "〜を〜にひたす", "th": "แช่ / จุ่ม", "ex": "干しエビをぬるま湯に浸しておく。"}, {"w": "〜を叩きつぶす", "r": "〜をたたきつぶす", "th": "ตำ / ทุบให้แหลก", "note": "ในชีทเว้นช่องคำแปลไว้ — คำแปลนี้เติมให้", "ex": "すり鉢にニンニクと唐辛子を入れて叩きつぶします。"}, {"w": "〜に香りづけをする", "r": "〜にかおりづけをする", "th": "ทำให้มีกลิ่นหอม (อบควันเทียน)", "ex": "お菓子の材料の粉に香りづけをする時にティアン・オップ (เทียนอบ) を使います。"}, {"w": "〜を散らす", "r": "〜をちらす", "th": "โรย / ทำให้กระจาย", "ex": "パッタイを器に盛り、パクチーを添えてピーナッツを散らす。"}, {"w": "{粗く・細かく} 刻む", "r": "{あらく・こまかく} きざむ", "th": "ซอยหยาบ / ซอยละเอียด"}]}, {"id": "tools", "jp": "調理道具・食器", "th": "อุปกรณ์ครัว", "items": [{"w": "すり鉢・すりこぎ", "r": "すりばち・すりこぎ", "th": "ครกกับสาก", "ex": "(すりこぎで) たたきつぶす"}, {"w": "真鍮製の鍋・フライパン", "r": "しんちゅうせいのなべ・フライパン", "th": "กระทะทองเหลือง"}, {"w": "両耳鍋", "r": "りょうみみなべ", "th": "หม้อสองหู"}, {"w": "中華包丁", "r": "ちゅうかぼうちょう", "th": "มีดอีโต้", "note": "中華 = จีน · ในชีทเขียนคำอ่าน ちゅうかほうちょう แต่ปกติอ่าน ぼうちょう"}, {"w": "竹ざる", "r": "たけざる", "th": "กระจาดไม้ไผ่สาน"}, {"w": "三段弁当箱", "r": "さんだんべんとうばこ", "th": "ปิ่นโตสามชั้น"}, {"w": "レンゲ", "r": "", "th": "ช้อนตักน้ำแกง"}]}, {"id": "ingr", "jp": "材料・調味料", "th": "วัตถุดิบ/เครื่องปรุง", "items": [{"w": "青パパイヤ", "r": "あおパパイヤ", "th": "มะละกอดิบ"}, {"w": "ナムプリック（チリペースト）", "r": "", "th": "น้ำพริก"}, {"w": "えびペースト・えび発酵ペースト", "r": "えびペースト・えびはっこうペースト", "th": "กะปิ"}, {"w": "ココナッツミルク", "r": "", "th": "กะทิ"}, {"w": "干しエビ", "r": "ほしエビ", "th": "กุ้งแห้ง"}, {"w": "パームシュガー", "r": "", "th": "น้ำตาลปี๊บ", "note": "เรียก ココナッツシュガー ก็ได้"}, {"w": "唐辛子の酢漬け", "r": "とうがらしのすづけ", "th": "พริกน้ำส้ม"}, {"w": "タマリンドペースト", "r": "", "th": "มะขามเปียก"}, {"w": "シーフードソース", "r": "", "th": "น้ำจิ้มซีฟู้ด"}]}, {"id": "texture", "jp": "食感のことば", "th": "คำบอกสัมผัส", "items": [{"w": "濃厚な {豚骨ラーメン}", "r": "のうこうな {とんこつラーメン}", "th": "(ราเมนซุปกระดูกหมู) เข้มข้น"}, {"w": "こってり {スープ}", "r": "", "th": "(ซุป) เข้มข้น"}, {"w": "あっさりした {ラーメン}", "r": "", "th": "(ราเมน) น้ำใส"}, {"w": "歯応えがいい {メンマ}", "r": "はごたえがいい {メンマ}", "th": "(หน่อไม้ดอง) เคี้ยวเพลิน"}, {"w": "口溶けがいい {チョコ・アイス}", "r": "くちどけがいい {チョコ・アイス}", "th": "(ช็อกโกแลต ไอศกรีม) ละลายในปาก"}, {"w": "なめらかな {カスタードクリーム}", "r": "", "th": "(คัสตาร์ด) เนื้อเนียน"}, {"w": "しっとり {スポンジケーキ}", "r": "", "th": "(เค้กชิฟฟ่อน) เนื้อนุ่มฉ่ำ ไม่กระด้าง", "ex": "しっとりしたとりにく → ข้าวมันไก่ juicy"}]}, {"id": "onoma", "jp": "オノマトペ", "th": "คำเลียนเสียง", "items": [{"w": "ふわふわ {わたあめ}", "r": "", "th": "สายไหมฟูฟ่อง", "ex": "カステラ、マシュマロ、フレンチトースト、生クリーム"}, {"w": "もちもち {ドーナツ}", "r": "", "th": "โดนัทเคี้ยวหนึบ", "ex": "おもち、うどん"}, {"w": "とろとろ {チーズ}", "r": "", "th": "ชีสเยิ้ม ๆ", "ex": "半熟カステラ、シチュー、生卵"}, {"w": "シャリシャリ {かき氷}", "r": "シャリシャリ {かきごおり}", "th": "น้ำแข็งใสเกล็ด ๆ กรุบ ๆ", "ex": "洋梨 (ようなし) สาลี่ (เนื้อทราย)"}, {"w": "サクサク {天ぷら}", "r": "サクサク {てんぷら}", "th": "เท็มปุระแป้งกรอบ ๆ", "ex": "ขนมขบเคี้ยว เช่น cracker"}, {"w": "カリカリ {ベーコン}", "r": "", "th": "เบคอนกรอบ ๆ", "ex": "カリカリ梅、ビスケット、軟骨 (なんこつ) กระดูกอ่อน、中華クラゲ (ยำแมงกะพรุน)"}, {"w": "バリバリ {せんべい}", "r": "", "th": "เซมเบ้กรอบ ๆ"}, {"w": "ぷりぷり {えび}", "r": "", "th": "กุ้งต้มเนื้อเด้ง ๆ"}, {"w": "ツルツル {そうめん}", "r": "", "th": "เส้นโซเมนลื่น ๆ สูดคล่องคอ"}, {"w": "ホカホカ {焼き芋}", "r": "ホカホカ {やきいも}", "th": "มันเผาร้อน ๆ", "ex": "焼き芋、肉まん"}, {"w": "ネバネバ {納豆}", "r": "ネバネバ {なっとう}", "th": "นัตโตเหนียวหนืด"}, {"w": "プルプル {プリン}", "r": "", "th": "พุดดิ้งเด้งดึ๋ง", "ex": "ゼリー"}, {"w": "コリコリ {軟骨}", "r": "コリコリ {なんこつ}", "th": "กระดูกอ่อนเคี้ยวกรุบ ๆ", "note": "ลองเทียบความต่างกับ カリカリ"}, {"w": "シャキシャキ {刻みキャベツ}", "r": "シャキシャキ {きざみキャベツ}", "th": "กะหล่ำปลีซอยกรอบ ๆ"}, {"w": "パラパラ {チャーハン}", "r": "", "th": "ข้าวผัดร่วน ๆ"}]}]}];
+const ALL = [];
+CH.forEach(ch => ch.secs.forEach(s => s.items.forEach((it,i) => ALL.push({
+  id:ch.id+"-"+s.id+"-"+(i+1), ch:ch.id, sec:s.id, secJp:s.jp, secTh:s.th, no:i+1, ord:ALL.length,
+  w:it.w, r:it.r||"", th:it.th, note:it.note||"", ex:it.ex||""
+}))));
+
+/* ---------- storage ---------- */
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let status = store.get("fc3-status", null);           // id -> "k" (จำได้) | "l" (กำลังเรียน)
+if(!status){ status={}; store.get("fc2-known",[]).forEach(id=>status[id]="k"); }
+let stars = new Set(store.get("fc3-star",[]));
+const saveStatus=()=>store.set("fc3-status",status), saveStars=()=>store.set("fc3-star",[...stars]);
+
+const ids = new Set(CH.map(c=>c.id));
+let S = {
+  ch: store.get("fc3-ch","ch1"), secBy: store.get("fc3-sec",{}), stat:null, starOnly:false,
+  sort: store.get("fc3-sort","sheet"), q:"",
+  dir: store.get("fc3-dir","jp"), hide: store.get("fc3-hide",false), shuffled:false, view:"list"
+};
+let deck=[], idx=0, flipped=false, studyLabel="";
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const curCh = () => CH.find(c=>c.id===S.ch);
+const curSec = () => S.secBy[S.ch]||"all";
+const stOf = c => status[c.id]||"n";
+const ST = {n:{th:"ยังไม่เริ่ม",c:"var(--new)"}, l:{th:"กำลังเรียน",c:"var(--bad)"}, k:{th:"จำได้แล้ว",c:"var(--good)"}};
+let tt; function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>el.classList.remove("show"),1500)}
+
+/* ---------- routing (#ch1 = list, #ch1-cards = flashcards) ---------- */
+function parseHash(){ const m=location.hash.slice(1).match(/^(ch\d)(-cards)?$/); return m&&ids.has(m[1])?{ch:m[1],cards:!!m[2]}:null; }
+function setHash(h){ try{ history.replaceState(null,"","#"+h) }catch(e){} }
+
+/* ---------- scope & list filtering ---------- */
+const inSec = c => c.ch===S.ch && (curSec()==="all"||c.sec===curSec());
+const norm = s => s.toLowerCase().replace(/[\s〜~{}（）()・]/g,"");
+function listItems(){
+  let a = ALL.filter(inSec);
+  if(S.starOnly) a=a.filter(c=>stars.has(c.id));
+  if(S.stat) a=a.filter(c=>stOf(c)===S.stat);
+  if(S.q){ const q=norm(S.q); a=a.filter(c=>norm(c.w+c.r+c.th).includes(q)); }
+  const rank={l:0,n:1,k:2};
+  if(S.sort==="star") a.sort((x,y)=>(stars.has(y.id)-stars.has(x.id))||x.ord-y.ord);
+  if(S.sort==="weak") a.sort((x,y)=>(rank[stOf(x)]-rank[stOf(y)])||x.ord-y.ord);
+  return a;
+}
+
+/* ---------- speech ---------- */
+let jaVoice=null;
+function pickVoice(){ try{ const v=speechSynthesis.getVoices(); jaVoice=v.find(x=>/ja[-_]JP/i.test(x.lang))||v.find(x=>/^ja/i.test(x.lang))||null; }catch(e){} }
+try{ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }catch(e){}
+function speak(c, btn){
+  try{
+    const txt=(c.r||c.w).replace(/[〜~]/g,"").replace(/[{}]/g,"").replace(/（[他自]）/g,"").replace(/・/g,"、");
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(txt); u.lang="ja-JP"; u.rate=0.9; if(jaVoice) u.voice=jaVoice;
+    if(btn){ btn.classList.add("speaking"); u.onend=u.onerror=()=>btn.classList.remove("speaking"); }
+    speechSynthesis.speak(u);
+  }catch(e){ toast("อุปกรณ์นี้เล่นเสียงไม่ได้"); }
+}
+
+/* ---------- icons ---------- */
+const IC = {
+  spk:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>`,
+  star:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>`
+};
+
+/* ================= LIST VIEW ================= */
+function renderTabs(){
+  $("tabs").innerHTML = CH.map(c=>`<button class="tab ${c.id===S.ch?"on":""}" data-c="${c.id}">
+    <span class="t1"><span style="font-weight:500;font-size:11px">บท ${c.no}</span> <span class="jp">${c.jp}</span></span>
+    <span class="t2">${c.th}</span></button>`).join("");
+  $("tabs").querySelectorAll(".tab").forEach(b=>b.onclick=()=>{ if(b.dataset.c!==S.ch){ S.ch=b.dataset.c; store.set("fc3-ch",S.ch); S.stat=null; S.starOnly=false; S.q=""; $("q").value=""; setHash(S.ch); renderList(true);} });
+}
+function ring(n,total,color){
+  const r=17, C=2*Math.PI*r, f=total?n/total:0;
+  return `<div class="ring"><svg viewBox="0 0 42 42"><circle cx="21" cy="21" r="${r}" fill="none" stroke="var(--line)" stroke-width="4"/>
+    <circle cx="21" cy="21" r="${r}" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" stroke-dasharray="${(C*f).toFixed(1)} ${C.toFixed(1)}"/></svg><b>${n}</b></div>`;
+}
+function renderStats(){
+  const scope=ALL.filter(inSec), cnt={n:0,l:0,k:0}; scope.forEach(c=>cnt[stOf(c)]++);
+  $("stats").innerHTML=["n","l","k"].map(k=>`<button class="stat ${S.stat===k?"on":""}" data-s="${k}">${ring(cnt[k],scope.length,ST[k].c)}
+    <span class="lb"><strong>${ST[k].th}</strong>${cnt[k]} / ${scope.length}</span></button>`).join("");
+  $("stats").querySelectorAll(".stat").forEach(b=>b.onclick=()=>{ S.stat = S.stat===b.dataset.s?null:b.dataset.s; renderList(); });
+}
+function renderChips(){
+  const ch=curCh(), items=ALL.filter(c=>c.ch===ch.id);
+  const opts=[["all","ทั้งหมด",items.length],...ch.secs.map(s=>[s.id,`<span class="jp">${s.jp}</span> ${s.th}`,s.items.length])];
+  const nStar=items.filter(c=>stars.has(c.id)).length;
+  $("chips").innerHTML = `<button class="chip ${S.starOnly?"on":""}" id="starChip">★ ติดดาว<span class="n">${nStar}</span></button>` +
+    opts.map(([k,l,n])=>`<button class="chip ${curSec()===k?"on":""}" data-k="${k}">${l}<span class="n">${n}</span></button>`).join("");
+  $("starChip").onclick=()=>{S.starOnly=!S.starOnly;renderList()};
+  $("chips").querySelectorAll(".chip[data-k]").forEach(b=>b.onclick=()=>{S.secBy[S.ch]=b.dataset.k;store.set("fc3-sec",S.secBy);renderList()});
+}
+function itemHtml(c){
+  const st=stOf(c);
+  const det=(c.ex?`<div><span class="lbl">ตัวอย่าง</span><span class="jp">${esc(c.ex)}</span></div>`:"")+(c.note?`<div><span class="lbl">หมายเหตุ</span>${esc(c.note)}</div>`:"");
+  return `<div class="item" data-id="${c.id}">${st!=="n"?`<span class="st ${st}"></span>`:""}
+    <div class="irow"><div class="itxt"><div class="iw jp">${esc(c.w)}</div>${c.r?`<div class="ir jp">${esc(c.r)}</div>`:""}</div>
+      <div class="iact"><button class="ic spk" aria-label="ฟังเสียง">${IC.spk}</button><button class="ic star ${stars.has(c.id)?"on":""}" aria-label="ติดดาว">${IC.star}</button></div></div>
+    <div class="ith">${esc(c.th)}</div>${det?`<div class="idet">${det}</div>`:""}</div>`;
+}
+function renderList(resetScroll){
+  renderTabs(); renderStats(); renderChips();
+  const ch=curCh();
+  $("lTitle").innerHTML=`<span class="jp">用語</span> <span style="font-size:14px;font-weight:500;color:var(--muted)">คำศัพท์</span>`;
+  $("sortSel").value=S.sort;
+  const a=listItems();
+  $("items").innerHTML = a.length ? a.map(itemHtml).join("") : `<div class="nores">ไม่มีคำที่ตรงกับตัวกรองนี้</div>`;
+  const sb=$("studyBtn");
+  sb.disabled=!a.length;
+  sb.innerHTML=`ทบทวนชุดนี้ <small>· ${a.length} คำ</small>`;
+  $("qclr").style.display=S.q?"block":"none";
+  if(resetScroll) $("scroll").scrollTop=0;
+}
+$("items").addEventListener("click",e=>{
+  const it=e.target.closest(".item"); if(!it) return;
+  const c=ALL.find(x=>x.id===it.dataset.id);
+  if(e.target.closest(".spk")){ speak(c,e.target.closest(".spk")); return; }
+  if(e.target.closest(".star")){ const b=e.target.closest(".star");
+    if(stars.has(c.id)){stars.delete(c.id);b.classList.remove("on")} else {stars.add(c.id);b.classList.add("on")}
+    saveStars(); renderChips(); return; }
+  it.classList.toggle("open");
+});
+$("sortSel").onchange=e=>{S.sort=e.target.value;store.set("fc3-sort",S.sort);renderList()};
+$("q").oninput=e=>{S.q=e.target.value.trim();renderList()};
+$("qclr").onclick=()=>{S.q="";$("q").value="";renderList()};
+let armed=false;
+$("resetCh").onclick=()=>{
+  if(!armed){armed=true;$("resetCh").textContent="แตะอีกครั้งเพื่อยืนยันการล้าง";setTimeout(()=>{armed=false;$("resetCh").textContent="ล้างสถานะการเรียนของบทนี้"},3000);return}
+  armed=false;$("resetCh").textContent="ล้างสถานะการเรียนของบทนี้";
+  ALL.filter(c=>c.ch===S.ch).forEach(c=>delete status[c.id]); saveStatus(); renderList(); toast("ล้างแล้ว");
+};
+$("studyBtn").onclick=()=>startStudy();
+
+/* ================= CARD VIEW ================= */
+function startStudy(){
+  deck=listItems(); if(!deck.length) return;
+  const ch=curCh(), sec=ch.secs.find(s=>s.id===curSec());
+  const parts=[sec?sec.th:"ทั้งบท"]; if(S.starOnly) parts.push("★ ติดดาว"); if(S.stat) parts.push(ST[S.stat].th); if(S.q) parts.push(`"${S.q}"`);
+  studyLabel=`<b>บท ${ch.no} <span class="jp">${ch.jp}</span></b>${esc(parts.join(" · "))}`;
+  if(S.hide){ const d=deck.filter(c=>stOf(c)!=="k"); if(d.length) deck=d; }
+  if(S.shuffled) shuffle(deck);
+  idx=0; showView("cards"); setHash(S.ch+"-cards");
+}
+function shuffle(d){for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}}
+function showView(v){
+  S.view=v; $("listView").classList.toggle("on",v==="list"); $("cardView").classList.toggle("on",v==="cards");
+  if(v==="cards"){ $("cTitle").innerHTML=studyLabel; renderTools(); show(); } else { try{speechSynthesis.cancel()}catch(e){} renderList(); }
+}
+function backToList(){ setHash(S.ch); showView("list"); }
+$("backBtn").onclick=backToList; $("emptyBack").onclick=backToList;
+
+function wordSize(w){const n=[...w].length; return n<=2?72:n<=4?60:n<=6?48:n<=8?40:n<=11?32:n<=15?27:23}
+function thaiSize(t){const n=[...t].length; return n<=8?38:n<=14?32:n<=22?27:n<=30?23:20}
+const jpBlock=c=>`<div class="word jp" style="font-size:${wordSize(c.w)}px">${esc(c.w)}</div>`+(c.r?`<div class="reading jp">(${esc(c.r)})</div>`:"");
+const thBlock=c=>`<div class="thai" style="font-size:${thaiSize(c.th)}px">${esc(c.th)}</div>`;
+
+function renderTools(){
+  $("dirBtn").innerHTML = S.dir==="jp" ? `<span class="jp">あ</span>` : `<span>ก</span>`;
+  $("shufBtn").classList.toggle("on",S.shuffled);
+  $("hideBtn").classList.toggle("on",S.hide);
+}
+function show(){
+  const has=deck.length>0;
+  $("stage").style.display=has?"":"none"; $("nav").style.visibility=has?"":"hidden";
+  $("empty").style.display=has?"none":"flex";
+  const k=deck.filter(c=>stOf(c)==="k").length, l=deck.filter(c=>stOf(c)==="l").length, n=deck.length||1;
+  const bars=$("cbar").children; bars[0].style.width=(k/n*100)+"%"; bars[1].style.width=(l/n*100)+"%";
+  $("knownCt").textContent=`จำได้ ${k}/${deck.length}`;
+  if(!has){$("pos").textContent="0 / 0";return}
+  const c=deck[idx], st=stOf(c);
+  $("pos").textContent=`${idx+1} / ${deck.length}`;
+  const tag=`<div class="tag"><b class="jp">${esc(c.secJp)}</b>${esc(c.secTh)} · ${c.no}</div>`;
+  const act=`<div class="fact"><button class="ic spk" data-a="spk" aria-label="ฟังเสียง">${IC.spk}</button><button class="ic star ${stars.has(c.id)?"on":""}" data-a="star" aria-label="ติดดาว">${IC.star}</button></div>`;
+  const pill=st!=="n"?`<div class="pill ${st}">${ST[st].th}</div>`:"";
+  const extra=(c.ex?`<div class="ex"><span>ตัวอย่าง</span><span class="jp" style="display:inline;font-size:14px;color:var(--ink);font-weight:400">${esc(c.ex)}</span></div>`:"")+
+              (c.note?`<div class="note"><b>หมายเหตุ:</b> ${esc(c.note)}</div>`:"");
+  const front=tag+act+pill+(S.dir==="jp"?jpBlock(c):thBlock(c))+`<div class="hint">แตะเพื่อดูคำตอบ</div>`;
+  const back=S.dir==="jp"
+    ? tag+act+pill+thBlock(c)+`<div class="sub jp">${esc(c.w)}${c.r?" ("+esc(c.r)+")":""}</div>`+extra
+    : tag+act+pill+jpBlock(c)+`<div class="sub">${esc(c.th)}</div>`+extra;
+  const card=$("card");
+  if(flipped){card.style.transition="none";card.classList.remove("flip");void card.offsetWidth;card.style.transition="";flipped=false}
+  $("front").innerHTML=front; $("back").innerHTML=back; $("front").scrollTop=0; $("back").scrollTop=0;
+}
+$("card").addEventListener("click",e=>{
+  const a=e.target.closest("[data-a]");
+  if(a){ const c=deck[idx];
+    if(a.dataset.a==="spk") speak(c,a);
+    else { if(stars.has(c.id)) stars.delete(c.id); else stars.add(c.id); saveStars();
+      document.querySelectorAll('#card [data-a="star"]').forEach(b=>b.classList.toggle("on",stars.has(c.id)));
+      toast(stars.has(c.id)?"ติดดาวแล้ว":"เอาดาวออกแล้ว"); }
+    return; }
+  flipped=!flipped; $("card").classList.toggle("flip",flipped);
+});
+function go(n){ if(!deck.length)return; idx=(idx+n+deck.length)%deck.length; show(); }
+function mark(ok){
+  if(!deck.length)return;
+  const c=deck[idx]; status[c.id]=ok?"k":"l"; saveStatus();
+  if(S.hide&&ok){ deck.splice(idx,1); if(idx>=deck.length) idx=0; show(); } else go(1);
+}
+$("prevBtn").onclick=()=>go(-1); $("nextBtn").onclick=()=>go(1);
+$("goodBtn").onclick=()=>mark(true); $("badBtn").onclick=()=>mark(false);
+$("dirBtn").onclick=()=>{S.dir=S.dir==="jp"?"th":"jp";store.set("fc3-dir",S.dir);renderTools();show();toast(S.dir==="jp"?"ด้านหน้า: ภาษาญี่ปุ่น":"ด้านหน้า: ภาษาไทย")};
+$("shufBtn").onclick=()=>{S.shuffled=!S.shuffled; if(S.shuffled) shuffle(deck); else deck.sort((a,b)=>a.ord-b.ord); idx=0; renderTools(); show(); toast(S.shuffled?"สุ่มลำดับแล้ว":"เรียงตามชีท")};
+$("hideBtn").onclick=()=>{S.hide=!S.hide;store.set("fc3-hide",S.hide);
+  if(S.hide){ const cur=deck[idx]; deck=deck.filter(c=>stOf(c)!=="k"); idx=Math.max(0,deck.indexOf(cur)); }
+  else { const cur=deck[idx]; deck=listItems(); if(S.shuffled) shuffle(deck); idx=Math.max(0,deck.indexOf(cur)); }
+  renderTools(); show(); toast(S.hide?"ซ่อนคำที่จำได้แล้ว":"แสดงทุกคำ")};
+document.addEventListener("keydown",e=>{
+  if(S.view!=="cards") return;
+  if(e.key===" "||e.key==="Enter"){e.preventDefault();flipped=!flipped;$("card").classList.toggle("flip",flipped)}
+  else if(e.key==="ArrowRight")go(1); else if(e.key==="ArrowLeft")go(-1);
+  else if(e.key==="1")mark(false); else if(e.key==="2")mark(true); else if(e.key==="Escape")backToList();
+});
+let sx=null,sy=null;
+$("stage").addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+$("stage").addEventListener("touchend",e=>{
+  if(sx==null)return; const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy; sx=null;
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3){e.preventDefault();go(dx<0?1:-1)}
+});
+window.addEventListener("hashchange",()=>{ const h=parseHash(); if(!h) return;
+  if(h.ch!==S.ch){S.ch=h.ch;store.set("fc3-ch",S.ch)}
+  if(h.cards && S.view!=="cards") startStudy(); else if(!h.cards && S.view!=="list") showView("list"); else renderList(true); });
+
+/* ---------- boot ---------- */
+(function(){ const h=parseHash(); if(h){S.ch=h.ch;store.set("fc3-ch",S.ch)} showView("list"); if(h&&h.cards) startStudy(); else setHash(S.ch); })();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+</script>
+</body>
+</html>
