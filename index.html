@@ -168,17 +168,25 @@ button{font:inherit;color:inherit}
 .mode .arrow{position:absolute;right:16px;top:20px;color:var(--muted)}
 .mode .arrow svg{width:22px;height:22px}
 .mode .deco{position:absolute;right:-8px;bottom:-22px;font-size:84px;opacity:.07;font-weight:700;pointer-events:none}
-.toprow{display:grid;grid-template-columns:40px 1fr;gap:8px;align-items:center}
+.toprow{display:grid;grid-template-columns:40px 1fr auto;gap:8px;align-items:center}
 .hbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .hbtn svg{width:20px;height:20px}
 
-.clock{position:absolute;top:-6px;right:0;display:flex;flex-direction:column;align-items:flex-end;background:#fff;border:1px solid var(--line);
+.home-slot{position:absolute;top:-6px;right:0;z-index:2}
+.cslot{flex:none;display:flex;align-items:center}
+.cslot:empty{display:none}
+.clock{display:flex;flex-direction:column;align-items:flex-end;background:#fff;border:1px solid var(--line);
   border-radius:14px;padding:5px 10px 4px;box-shadow:var(--shadow);line-height:1.15;z-index:2}
 .clock .ct{font-size:15px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:.3px}
 .clock .ct i{font-style:normal;animation:blink 1s steps(1) infinite}
 .clock .cd{font-size:10.5px;color:var(--muted);font-weight:600;letter-spacing:.2px}
 @keyframes blink{50%{opacity:.25}}
 .hhead{padding-right:86px}
+.clock.mini{padding:4px 8px 3px;border-radius:12px}
+.clock.mini .ct{font-size:13px}
+.clock.mini .cd{font-size:9.5px}
+.toprow .tab{min-width:0}.toprow .tab .t1,.toprow .tab .t2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+@media (max-width:400px){.toprow .tab .t2{font-size:9.5px}}
 
 /* ---------- write (sentence) ---------- */
 .wscroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 12px 24px}
@@ -286,7 +294,7 @@ button{font:inherit;color:inherit}
 <!-- ================= HOME ================= -->
 <section class="view" id="homeView">
   <div class="home"><div class="col" style="position:relative">
-    <div class="clock" id="clock" aria-label="เวลา"><span class="ct" id="clockT"></span><span class="cd" id="clockD"></span></div>
+    <div class="cslot home-slot" data-clock="home"><div class="clock" id="clock" aria-label="เวลา"><span class="ct" id="clockT"></span><span class="cd" id="clockD"></span></div></div>
     <div class="hhead"><img src="apple-touch-icon.png" alt=""><div><h1>Tat Card</h1><p>ท่องศัพท์ญี่ปุ่นกันงับแทต♥ がんばって！</p></div></div>
     <button class="mode" id="goVocab">
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
@@ -314,6 +322,7 @@ button{font:inherit;color:inherit}
   <div class="cbar col">
     <button class="back" id="wBack" aria-label="กลับหน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>
     <div class="ctitle"><b>เขียนประโยคอิอิ ✍️</b>แปลไทย → ญี่ปุ่น แล้วพูดตาม</div>
+    <div class="cslot" data-clock="write"></div>
   </div>
   <div class="wscroll"><div class="col" id="wBody">
     <div class="wmode" id="wMode"><button data-m="gen">🎲 สุ่มแต่งประโยค</button><button data-m="set">🎯 เลือกหมวด</button></div>
@@ -355,7 +364,7 @@ button{font:inherit;color:inherit}
 </section>
 
 <section class="view" id="listView">
-  <div class="top"><div class="col toprow"><button class="hbtn" id="homeBtn" aria-label="หน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></button><div class="tabs" id="tabs"></div></div></div>
+  <div class="top"><div class="col toprow"><button class="hbtn" id="homeBtn" aria-label="หน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></button><div class="tabs" id="tabs"></div><div class="cslot" data-clock="list"></div></div></div>
   <div class="scroll" id="scroll"><div class="col">
     <div class="stats" id="stats"></div>
     <div class="lhead">
@@ -383,6 +392,7 @@ button{font:inherit;color:inherit}
   <div class="cbar col">
     <button class="back" id="backBtn" aria-label="กลับไปหน้ารวม"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>
     <div class="ctitle" id="cTitle"></div>
+    <div class="cslot" data-clock="cards"></div>
     <button class="ibtn" id="dirBtn" aria-label="สลับด้านหน้า"></button>
     <button class="ibtn" id="shufBtn" aria-label="สุ่มลำดับ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></button>
     <button class="ibtn" id="hideBtn" aria-label="ซ่อนคำที่จำได้"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><path d="M3 3l18 18"/></svg></button>
@@ -575,8 +585,9 @@ function startStudy(){
 }
 function shuffle(d){for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}}
 const VIEWS={home:"homeView",list:"listView",cards:"cardView",write:"writeView"};
+function placeClock(v){ const slot=document.querySelector(`[data-clock="${v}"]`), c=$("clock"); if(slot&&c.parentElement!==slot){ slot.appendChild(c); } c.classList.toggle("mini",v!=="home"); }
 function showView(v){
-  S.view=v; Object.entries(VIEWS).forEach(([k,id])=>$(id).classList.toggle("on",k===v));
+  S.view=v; Object.entries(VIEWS).forEach(([k,id])=>$(id).classList.toggle("on",k===v)); placeClock(v);
   if(v!=="write") W.stopMic();
   if(v==="cards"){ $("cTitle").innerHTML=studyLabel; renderTools(); show(); return; }
   try{speechSynthesis.cancel()}catch(e){}

@@ -1,7 +1,7 @@
 // Service worker: เก็บไฟล์ไว้ใช้ออฟไลน์
 // - ไฟล์ของแอป (หน้าเว็บ, คำศัพท์): โหลดจากเน็ตก่อน → อัปเดตขึ้นทันทีที่ push, ถ้าออฟไลน์ใช้ตัวที่เก็บไว้
 // - ฟอนต์จาก Google: ใช้ตัวที่เก็บไว้ก่อน
-const C = "tango-v11";
+const C = "tango-v12";
 const CORE = ["./", "./index.html", "./data/vocab.js", "./data/sentences.js", "./js/sentence-gen.js", "./manifest.webmanifest",
               "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
@@ -21,7 +21,7 @@ self.addEventListener("fetch", e => {
   if (sameOrigin) {
     const key = req.mode === "navigate" ? "./index.html" : req;
     e.respondWith(
-      fetch(req).then(res => {
+      fetch(req, { cache: "no-cache" }).then(res => {   // revalidate with GitHub so new pushes show right away (Pages caches ~10 min)
         if (res.ok) { const cp = res.clone(); caches.open(C).then(c => c.put(key, cp)); }
         return res;
       }).catch(() => caches.match(key, { ignoreSearch: true }))
