@@ -172,6 +172,14 @@ button{font:inherit;color:inherit}
 .hbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .hbtn svg{width:20px;height:20px}
 
+.clock{position:absolute;top:-6px;right:0;display:flex;flex-direction:column;align-items:flex-end;background:#fff;border:1px solid var(--line);
+  border-radius:14px;padding:5px 10px 4px;box-shadow:var(--shadow);line-height:1.15;z-index:2}
+.clock .ct{font-size:15px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:.3px}
+.clock .ct i{font-style:normal;animation:blink 1s steps(1) infinite}
+.clock .cd{font-size:10.5px;color:var(--muted);font-weight:600;letter-spacing:.2px}
+@keyframes blink{50%{opacity:.25}}
+.hhead{padding-right:86px}
+
 /* ---------- write (sentence) ---------- */
 .wscroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 12px 24px}
 .wmode{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#ffe3ee;border-radius:14px;padding:4px;margin:2px 0 10px}
@@ -277,7 +285,8 @@ button{font:inherit;color:inherit}
 <!-- ================= LIST VIEW ================= -->
 <!-- ================= HOME ================= -->
 <section class="view" id="homeView">
-  <div class="home"><div class="col">
+  <div class="home"><div class="col" style="position:relative">
+    <div class="clock" id="clock" aria-label="เวลา"><span class="ct" id="clockT"></span><span class="cd" id="clockD"></span></div>
     <div class="hhead"><img src="apple-touch-icon.png" alt=""><div><h1>Tat Card</h1><p>ท่องศัพท์ญี่ปุ่นกันงับแทต♥ がんばって！</p></div></div>
     <button class="mode" id="goVocab">
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
@@ -872,6 +881,14 @@ const W=(function(){
   $("wBack").onclick=goHome;
   setMode(mode);
   return { enter(){ if(!cur){ refill(); next(); } else { chips(); stat(); } }, stopMic, score, N, compile };
+})();
+
+/* ---------- tiny clock on home ---------- */
+(function tick(){
+  const d=new Date(), p=x=>String(x).padStart(2,"0");
+  $("clockT").innerHTML=`${p(d.getHours())}<i>:</i>${p(d.getMinutes())}`;
+  $("clockD").textContent=d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"}).replace(",","")+" ♡";
+  setTimeout(tick,(60-d.getSeconds())*1000+50);
 })();
 
 /* ---------- boot ---------- */
