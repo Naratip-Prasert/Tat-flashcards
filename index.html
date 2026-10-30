@@ -200,7 +200,13 @@ button{font:inherit;color:inherit}
 .wstat{font-size:12.5px;color:var(--muted);margin:0 0 10px;display:flex;gap:12px;flex-wrap:wrap}
 .wstat b{color:var(--ink)}
 .pcard{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow2);padding:16px 16px 14px;position:relative}
-.pcard .tag{position:static;margin-bottom:10px}
+.pcard .tag{position:static;margin-bottom:10px;padding-right:96px}
+.reroll{position:absolute;top:10px;right:10px;display:flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--accent-soft);color:var(--accent);
+  border-radius:999px;padding:6px 12px 6px 9px;font-size:13px;font-weight:700;cursor:pointer}
+.reroll svg{width:16px;height:16px}
+.reroll:active{transform:scale(.95)}
+.reroll.spin svg{animation:spin .4s ease-out}
+@keyframes spin{to{transform:rotate(360deg)}}
 .pth{font-size:25px;font-weight:600;line-height:1.4;padding-right:8px}
 .hintbtn{margin-top:10px;border:1px dashed var(--line);background:var(--bg);border-radius:10px;padding:6px 10px;font-size:13px;color:var(--muted);cursor:pointer}
 .hinttx{white-space:pre-line;margin-top:10px;font-size:13.5px;line-height:1.6;background:var(--accent-soft);border-radius:10px;padding:8px 10px;display:none}
@@ -310,6 +316,7 @@ button{font:inherit;color:inherit}
     </div>
     <div class="wstat" id="wStat"></div>
     <div class="pcard">
+      <button class="reroll" id="wReroll" aria-label="สุ่มใหม่"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>สุ่มใหม่</button>
       <div class="tag" id="wTag"></div>
       <div class="pth" id="wTh"></div>
       <button class="hintbtn" id="wHintBtn">💡 ดูคำใบ้</button>
@@ -855,6 +862,9 @@ const W=(function(){
     try{ rec.start(); }catch(e){ stopMic(); $("wMicSt").textContent="เริ่มฟังเสียงไม่ได้ ลองใหม่อีกครั้ง"; }
   }
 
+  $("wReroll").onclick=()=>{ const b=$("wReroll"); b.classList.remove("spin"); void b.offsetWidth; b.classList.add("spin");
+    if(mode!=="gen" && cur && !answered) queue.push(cur);   // skipped curated item goes back to the end
+    next(); };
   $("wCheck").onclick=check; $("wGive").onclick=give; $("wNext").onclick=next; $("wMic").onclick=startMic;
   $("wSelfOk").onclick=()=>{ setBest(cur.id,"ok"); sess.ok++; showResult("ok",$("wAns").value.trim()); stat(); chips(); toast("โอเค นับว่าถูกนะ 👍"); };
   $("wHintBtn").onclick=()=>{ $("wHint").classList.toggle("on"); };
