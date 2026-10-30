@@ -177,21 +177,22 @@ button{font:inherit;color:inherit}
 .cslot:empty{display:none}
 .clock{display:flex;flex-direction:column;align-items:flex-end;background:#fff;border:1px solid var(--line);
   border-radius:14px;padding:5px 10px 4px;box-shadow:var(--shadow);line-height:1.15;z-index:2}
-.clock .ct{font-size:15px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:.3px}
-.clock .ct i{font-style:normal;animation:blink 1s steps(1) infinite}
-.clock .cd{font-size:10.5px;color:var(--muted);font-weight:600;letter-spacing:.2px}
-@keyframes blink{50%{opacity:.25}}
-.hhead{padding-right:86px}
+.clock{cursor:pointer;max-width:110px}
+.clock .ct{font-size:13px;font-weight:700;color:var(--accent);line-height:1.3;text-align:right;display:block}
+.clock .ct.pop{animation:cheerpop .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes cheerpop{from{opacity:0;transform:translateY(4px) scale(.9)}to{opacity:1;transform:none}}
+.hhead{padding-right:112px}
+ruby{ruby-align:center}
 .clock.mini{padding:4px 8px 3px;border-radius:12px}
-.clock.mini .ct{font-size:13px}
-.clock.mini .cd{font-size:9.5px}
+.clock.mini{max-width:96px}
+.clock.mini .ct{font-size:11.5px}
 .toprow .tab{min-width:0}.toprow .tab .t1,.toprow .tab .t2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 @media (max-width:400px){.toprow .tab .t2{font-size:9.5px}}
 
 /* ---------- write (sentence) ---------- */
 .wscroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 12px 24px}
-.wmode{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#ffe3ee;border-radius:14px;padding:4px;margin:2px 0 10px}
-.wmode button{border:none;background:none;border-radius:11px;padding:9px 6px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer}
+.wmode{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:#ffe3ee;border-radius:14px;padding:4px;margin:2px 0 10px}
+.wmode button{border:none;background:none;border-radius:11px;padding:9px 2px;font-size:13.5px;white-space:nowrap;font-weight:600;color:var(--muted);cursor:pointer}
 .wmode button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 4px rgba(240,80,140,.18)}
 .wlv{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:0 0 10px}
 .wlv button{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:6px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2}
@@ -265,6 +266,33 @@ button{font:inherit;color:inherit}
 .wdone{text-align:center;padding:30px 10px}
 .wdone h3{font-size:20px;margin-bottom:6px}
 
+/* ---------- 📝 exercise ---------- */
+.exbox{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow2);padding:16px;margin-bottom:12px}
+.exbox h3{font-size:18px;font-weight:700;line-height:1.35}
+.exbox h3 .jp{color:var(--accent)}
+.exbox p{font-size:13.5px;color:var(--muted);margin-top:4px;line-height:1.5}
+.exbadge{display:inline-block;background:var(--accent);color:#fff;border-radius:99px;font-size:12px;font-weight:700;padding:2px 9px;margin-right:6px;vertical-align:2px}
+.exbig{width:100%;margin-top:14px;height:54px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(240,80,140,.3)}
+.exrow{display:grid;grid-template-columns:1fr 1.6fr;gap:8px;margin-top:12px}
+.exrow .wbtn{height:50px;font-size:14px}
+.exwords{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.exw{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:8px 6px 8px 12px}
+.exw .no{flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.exw .wj{font-size:19px;font-family:"Noto Sans JP","Hiragino Sans",sans-serif;line-height:1.9}
+.exw .wj rt{font-size:10px;color:var(--muted)}
+.exw .wt{font-size:13.5px;color:var(--muted);line-height:1.35}
+.exw .wx{flex:1;min-width:0}
+.exw .st{flex:none;font-size:18px;width:26px;text-align:center}
+.exw .sent{font-size:12px;color:var(--muted);margin-top:2px}
+.expbar{display:flex;align-items:center;gap:8px;margin:2px 0 10px;font-size:12.5px;color:var(--muted)}
+.expbar .dots{flex:1;display:flex;gap:3px}
+.expbar .dots i{flex:1;height:6px;border-radius:99px;background:var(--line)}
+.expbar .dots i.ok{background:var(--good)}.expbar .dots i.near{background:#f2c14e}.expbar .dots i.no{background:#f08aa5}.expbar .dots i.cur{background:var(--accent)}
+.expbar button{border:none;background:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;white-space:nowrap}
+.exscore{text-align:center;padding:6px 0 2px}
+.exscore .big{font-size:44px;font-weight:800;color:var(--accent);line-height:1.1}
+.exscore .big small{font-size:20px;color:var(--muted);font-weight:600}
+
 /* ---------- celebration popup ---------- */
 .cele{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(90,25,55,.35);
   -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
@@ -294,7 +322,7 @@ button{font:inherit;color:inherit}
 <!-- ================= HOME ================= -->
 <section class="view" id="homeView">
   <div class="home"><div class="col" style="position:relative">
-    <div class="cslot home-slot" data-clock="home"><div class="clock" id="clock" aria-label="เวลา"><span class="ct" id="clockT"></span><span class="cd" id="clockD"></span></div></div>
+    <div class="cslot home-slot" data-clock="home"><div class="clock" id="clock" role="button" aria-label="ข้อความให้กำลังใจ"><span class="ct" id="clockT"></span></div></div>
     <div class="hhead"><img src="apple-touch-icon.png" alt=""><div><h1>Tat Card</h1><p>ท่องศัพท์ญี่ปุ่นกันงับแทต♥ がんばって！</p></div></div>
     <button class="mode" id="goVocab">
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
@@ -325,13 +353,15 @@ button{font:inherit;color:inherit}
     <div class="cslot" data-clock="write"></div>
   </div>
   <div class="wscroll"><div class="col" id="wBody">
-    <div class="wmode" id="wMode"><button data-m="gen">🎲 สุ่มแต่งประโยค</button><button data-m="set">🎯 เลือกหมวด</button></div>
+    <div class="wmode" id="wMode"><button data-m="gen">🎲 สุ่มแต่ง</button><button data-m="set">🎯 เลือกหมวด</button><button data-m="ex">📝 ทำแบบฝึก</button></div>
     <div class="wlv" id="wLv"></div>
     <div class="wpick" id="wPick">
       <button class="wpickbtn" id="wPickBtn"><span class="wpl">🎯 สุ่มจากหมวด</span><span class="wps"><b id="wPickSum"></b> · <span id="wPickN"></span></span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
       <div class="wpanel" id="wPanel"></div>
     </div>
+    <div id="wEx"></div>
+    <div id="wQ">
     <div class="wstat" id="wStat"></div>
     <div class="pcard">
       <button class="reroll" id="wReroll" aria-label="สุ่มใหม่"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>สุ่มใหม่</button>
@@ -359,6 +389,7 @@ button{font:inherit;color:inherit}
         <div class="heard" id="wHeard"><div class="verdict" id="wSpVerdict"></div><div class="rbox"><div class="rlab">ระบบได้ยินว่า</div><div class="rmine" id="wHeardTx"></div></div></div>
       </div>
       <button class="nextbtn" id="wNext">ข้อต่อไป →</button>
+    </div>
     </div>
   </div></div>
 </section>
@@ -431,6 +462,7 @@ button{font:inherit;color:inherit}
 
 <script src="data/vocab.js"></script>
 <script src="data/sentences.js"></script>
+<script src="js/exercise-bank.js"></script>
 <script src="js/sentence-gen.js"></script>
 <script>
 const CH = window.VOCAB;
@@ -803,22 +835,24 @@ const W=(function(){
   function stat(){ $("wStat").innerHTML=`<span>ข้อที่ <b>${sess.n+(answered?0:1)}</b></span><span>ถูกรอบนี้ <b>${sess.ok}</b></span>`+(mode==="gen"?`<span>🎲 ระดับ <b>${level}</b> · แต่งใหม่ทุกข้อ</span>`:`<span>เหลือในชุด <b>${queue.length}</b></span>`); }
   function setMode(m){ mode=m; store.set("fc3-wmode",m);
     document.querySelectorAll("#wMode button").forEach(b=>b.classList.toggle("on",b.dataset.m===m));
-    $("wPick").style.display=m==="gen"?"none":""; $("wLv").style.display=m==="gen"?"":"none"; lvChips(); }
+    vis(); lvChips(); }
+  function vis(){
+    $("wPick").style.display=mode==="set"?"":"none";
+    $("wLv").style.display=(mode==="gen"||(mode==="ex"&&ex.stage==="setup"))?"":"none";
+    $("wEx").style.display=mode==="ex"?"":"none";
+    $("wQ").style.display=(mode!=="ex"||ex.stage==="q")?"":"none";
+    $("wStat").style.display=mode==="ex"?"none":"";
+  }
   function lvChips(){
     const D={N5:"พื้นฐาน",N4:"ต้น",N3:"กลาง",N2:"กลาง-สูง",N1:"สูง"};
     $("wLv").innerHTML=LV.map(l=>`<button class="${l===level?"on":""}" data-l="${l}"><b>${l}</b><small>${D[l]}</small></button>`).join("");
-    $("wLv").querySelectorAll("button").forEach(b=>b.onclick=()=>{ if(level===b.dataset.l) return; level=b.dataset.l; store.set("fc3-wlv",level); lvChips(); next(); });
+    $("wLv").querySelectorAll("button").forEach(b=>b.onclick=()=>{ if(level===b.dataset.l) return; level=b.dataset.l; store.set("fc3-wlv",level); lvChips(); if(mode==="ex") exRender(); else next(); });
   }
-  document.querySelectorAll("#wMode button").forEach(b=>b.onclick=()=>{ if(mode===b.dataset.m) { if(mode==="gen") next(); return; } setMode(b.dataset.m); $("wPick").classList.remove("open"); cur=null; queue=[]; next(); });
-  function next(){
-    stopMic();
-    if(mode==="gen"){ cur=compile(Object.assign(window.SentenceGen.make(level),{gen:true})); cur.id="gen:"+cur.th; answered=false;
-      $("wTag").innerHTML=`<b>🎲 ${level}</b><span class="jp">${esc(cur.gp)}</span>`; }
-    else {
-    if(!pool().length){ openPanel(); chips(); return; }
-    if(!queue.length) refill();
-    cur=queue.shift(); answered=false;
-    const cat=catOf(KEY(cur)); $("wTag").innerHTML=cat?`<b class="jp">${esc(cat.sec.jp)}</b>${esc(cat.sec.th)}`:""; }
+  document.querySelectorAll("#wMode button").forEach(b=>b.onclick=()=>{ if(mode===b.dataset.m) { if(mode==="gen") next(); return; }
+    stopMic(); setMode(b.dataset.m); $("wPick").classList.remove("open");
+    if(mode==="ex"){ if(ex.stage==="q"&&cur&&cur.ex) exLoad(); else exRender(); return; }
+    cur=null; queue=[]; next(); });
+  function resetQ(){
     $("wTh").textContent=cur.th;
     $("wHint").textContent=cur.hint||"ไม่มีคำใบ้สำหรับข้อนี้"; $("wHint").classList.remove("on"); $("wHintBtn").style.display="";
     $("wAns").value=""; $("wAns").disabled=false;
@@ -826,7 +860,84 @@ const W=(function(){
     $("wRes").classList.remove("on"); $("wHeard").classList.remove("on");
     $("wMicSt").textContent=SR?"แตะเพื่อเริ่มพูด":"เครื่องนี้ไม่รองรับการฟังเสียงพูด — กด 🔊 แล้วพูดตามได้เลย";
     $("wMic").style.display=SR?"":"none";
-    chips(); stat(); $("wBody").parentElement.scrollTop=0;
+    $("wNext").textContent=(mode==="ex"&&ex.i===ex.qs.length-1)?"ดูสรุปผล 🎉":"ข้อต่อไป →";
+    $("wBody").parentElement.scrollTop=0;
+  }
+
+  /* ----- 📝 ทำแบบฝึก: level → random topic + 10 words → 10 sentences → summary ----- */
+  const EXB=window.EX_BANK||{};
+  const ex={stage:"setup",lv:"N5",topic:null,words:[],qs:[],i:0,res:[]};
+  const rubyW=s=>ruby(parse(s));
+  const wLabel=w=>w.w||w.j||w.d;
+  const RK={ok:3,near:2,no:1,give:0};
+  function exRender(){
+    vis(); const box=$("wEx"), D={N5:"พื้นฐาน",N4:"ต้น",N3:"กลาง",N2:"กลาง-สูง",N1:"สูง"};
+    if(ex.stage==="setup"){
+      const tps=EXB[level]||[], nW=tps.reduce((a,t)=>a+t.words.length,0);
+      box.innerHTML=`<div class="exbox"><h3>📝 ทำแบบฝึก <span class="exbadge">${level}</span><span style="font-size:13px;color:var(--muted);font-weight:500">${D[level]}</span></h3>
+        <p>1) เลือกเลเวลด้านบน → 2) สุ่มหมวด + คำศัพท์ 10 คำมาให้อ่านก่อน → 3) แต่งประโยคจากคำเหล่านั้น 10 ข้อ แล้วดูสรุปคะแนน</p>
+        <p>เลเวลนี้มี ${tps.length} หมวด · ${nW} คำ: ${tps.map(t=>esc(t.th)).join(" · ")}</p>
+        <button class="exbig" id="exGo">🎲 สุ่มหมวด + คำศัพท์ 10 คำ</button></div>`;
+      $("exGo").onclick=exStart; return;
+    }
+    if(ex.stage==="words"){
+      box.innerHTML=`<div class="exbox"><h3><span class="exbadge">${ex.lv}</span>หมวด: ${esc(ex.topic.th)} <span class="jp" style="font-size:14px">${esc(ex.topic.jp)}</span></h3>
+        <p>อ่านคำศัพท์ 10 คำนี้ให้คุ้นก่อน กด 🔊 ฟังเสียงได้ แล้วกดถัดไปเพื่อแต่งประโยค</p>
+        <div class="exwords">${ex.words.map((w,i)=>`<div class="exw"><span class="no">${i+1}</span><div class="wx"><div class="wj">${rubyW(wLabel(w))}</div><div class="wt">${esc(w.t)}</div></div>
+          <button class="ic spk" data-i="${i}" aria-label="ฟังเสียง">${IC.spk}</button></div>`).join("")}</div>
+        <div class="exrow"><button class="wbtn" id="exRe">🔄 สุ่มชุดใหม่</button><button class="wbtn pri" id="exBegin">ถัดไป: แต่งประโยค ${ex.words.length} ข้อ →</button></div>
+        <div style="text-align:center;margin-top:10px"><button class="selfok" id="exLv">← เปลี่ยนเลเวล</button></div></div>`;
+      box.querySelectorAll(".spk").forEach(b=>b.onclick=()=>speak({r:window.SentenceGen.kanaOf(wLabel(ex.words[+b.dataset.i])),w:""},b));
+      $("exRe").onclick=exStart; $("exBegin").onclick=exBegin; $("exLv").onclick=()=>{ex.stage="setup";exRender();}; return;
+    }
+    if(ex.stage==="q"){
+      box.innerHTML=`<div class="expbar"><span><b>${ex.lv}</b> · ${esc(ex.topic.th)}</span><div class="dots">${ex.qs.map((q,i)=>`<i class="${i===ex.i?"cur":(ex.res[i]==="give"?"no":ex.res[i]||"")}"></i>`).join("")}</div><button id="exQuit">จบแบบฝึก</button></div>`;
+      $("exQuit").onclick=()=>{ if(confirmQuit()) { ex.stage="done"; stopMic(); exRender(); } }; return;
+    }
+    if(ex.stage==="done"){
+      const ok=ex.res.filter(r=>r==="ok").length, near=ex.res.filter(r=>r==="near").length, n=ex.qs.length;
+      const msg=ok===n?"เพอร์เฟกต์!! เก่งที่สุดเลยงับ 🥇":ok>=n*0.8?"เก่งมากงับ ใกล้เต็มแล้ว 🎉":ok>=n*0.5?"ดีมากเลย ทบทวนข้อที่ผิดอีกนิดนะ 💪":"ไม่เป็นไรงับ ลองอีกรอบ เดี๋ยวก็ได้ 🌱";
+      const ic={ok:"✅",near:"🟡",no:"❌",give:"👀"};
+      box.innerHTML=`<div class="exbox"><div class="exscore"><div class="big">${ok}<small> / ${n}</small></div><p style="margin-top:6px;font-size:15px;color:var(--ink);font-weight:600">${msg}</p>
+          <p>${ex.lv} · หมวด ${esc(ex.topic.th)}${near?` · เกือบถูก ${near} ข้อ`:""}</p></div>
+        <div class="exwords">${ex.qs.map((q,i)=>`<div class="exw"><span class="st">${ic[ex.res[i]]||"⏭️"}</span><div class="wx"><div class="wj">${rubyW(wLabel(q.word))} <span class="wt">${esc(q.word.t)}</span></div>
+          <div class="sent">${esc(q.th)} → <span class="jp" style="color:var(--ink)">${esc(plain(q._v[0].segs))}</span></div></div></div>`).join("")}</div>
+        <div class="exrow"><button class="wbtn" id="exAgain">🔁 ทำชุดนี้อีกรอบ</button><button class="wbtn pri" id="exNew">🎲 สุ่มชุดใหม่</button></div>
+        <div style="text-align:center;margin-top:10px"><button class="selfok" id="exLv2">← เปลี่ยนเลเวล</button></div></div>`;
+      $("exAgain").onclick=exBegin; $("exNew").onclick=exStart; $("exLv2").onclick=()=>{ex.stage="setup";exRender();};
+      if(ok>=n*0.8) confetti(2200);
+      $("wBody").parentElement.scrollTop=0;
+    }
+  }
+  let quitArm=0; function confirmQuit(){ const now=Date.now(); if(now-quitArm<3000) return true; quitArm=now; toast("แตะ \"จบแบบฝึก\" อีกครั้งเพื่อดูสรุปผล"); return false; }
+  function exStart(){
+    const tps=EXB[level]||[]; if(!tps.length) return;
+    let tp; do{ tp=tps[Math.random()*tps.length|0]; }while(tps.length>1&&ex.topic&&tp===ex.topic&&ex.stage!=="setup"&&Math.random()<0.7);
+    const ws=tp.words.slice(); shuffle(ws);
+    Object.assign(ex,{stage:"words",lv:level,topic:tp,words:ws.slice(0,10)}); exRender(); $("wBody").parentElement.scrollTop=0;
+  }
+  function exBegin(){
+    const used=new Set();
+    ex.qs=ex.words.map(w=>compile(Object.assign(window.SentenceGen.exMake(w,ex.lv,used),{gen:true,ex:true})));
+    ex.i=0; ex.res=ex.qs.map(()=>null); ex.stage="q"; exLoad();
+  }
+  function exLoad(){ cur=ex.qs[ex.i]; cur.id="ex:"+ex.i; answered=false; exRender();
+    $("wTag").innerHTML=`<b>📝 ข้อ ${ex.i+1}/${ex.qs.length}</b>ใช้คำ <span class="jp">${esc(window.SentenceGen.kanjiOf(wLabel(cur.word)))}</span>`;
+    resetQ(); }
+  function exMark(kind){ if(mode!=="ex"||ex.stage!=="q") return; const p=ex.res[ex.i]; if(p==null||RK[kind]>RK[p]) ex.res[ex.i]=kind; exRender(); }
+  function exNext(){ stopMic(); if(ex.i<ex.qs.length-1){ ex.i++; exLoad(); } else { ex.stage="done"; exRender(); } }
+
+  function next(){
+    stopMic();
+    if(mode==="ex"){ if(ex.stage==="q") exNext(); else exRender(); return; }
+    if(mode==="gen"){ cur=compile(Object.assign(window.SentenceGen.make(level),{gen:true})); cur.id="gen:"+cur.th; answered=false;
+      $("wTag").innerHTML=`<b>🎲 ${level}</b><span class="jp">${esc(cur.gp)}</span>`; }
+    else {
+    if(!pool().length){ openPanel(); chips(); return; }
+    if(!queue.length) refill();
+    cur=queue.shift(); answered=false;
+    const cat=catOf(KEY(cur)); $("wTag").innerHTML=cat?`<b class="jp">${esc(cat.sec.jp)}</b>${esc(cat.sec.th)}`:""; }
+    resetQ(); chips(); stat();
   }
   function showResult(kind,input){
     const v=cur._v[0];
@@ -848,10 +959,10 @@ const W=(function(){
     const sc=score(cur,input), kind=sc.exact?"ok":sc.ratio>=0.75?"near":"no";
     if(!answered){ sess.n++; answered=true; }
     if(kind==="ok"){ sess.ok++; confetti(900); }
-    setBest(cur.id,kind); showResult(kind,input); stat(); chips();
+    setBest(cur.id,kind); exMark(kind); showResult(kind,input); stat(); chips();
     if(kind==="ok" && !cur.gen && pool().every(s=>res[s.id]&&res[s.id].best==="ok")) toast("🎉 เขียนถูกครบทุกประโยคในชุดนี้แล้ว!");
   }
-  function give(){ if(!answered){ sess.n++; answered=true; } setBest(cur.id,"no"); showResult("give",$("wAns").value.trim()); stat(); }
+  function give(){ if(!answered){ sess.n++; answered=true; } setBest(cur.id,"no"); exMark("give"); showResult("give",$("wAns").value.trim()); stat(); }
   function sayModel(btn){ speak({r:cur._v[0].say,w:""},btn); }
 
   /* ----- speech recognition ----- */
@@ -883,24 +994,33 @@ const W=(function(){
   }
 
   $("wReroll").onclick=()=>{ const b=$("wReroll"); b.classList.remove("spin"); void b.offsetWidth; b.classList.add("spin");
+    if(mode==="ex"){ if(ex.stage==="q"){ const w=cur.word; ex.qs[ex.i]=compile(Object.assign(window.SentenceGen.exMake(w,ex.lv,null),{gen:true,ex:true})); exLoad(); } return; }
     if(mode!=="gen" && cur && !answered) queue.push(cur);   // skipped curated item goes back to the end
     next(); };
   $("wCheck").onclick=check; $("wGive").onclick=give; $("wNext").onclick=next; $("wMic").onclick=startMic;
-  $("wSelfOk").onclick=()=>{ setBest(cur.id,"ok"); sess.ok++; showResult("ok",$("wAns").value.trim()); stat(); chips(); toast("โอเค นับว่าถูกนะ 👍"); };
+  $("wSelfOk").onclick=()=>{ setBest(cur.id,"ok"); exMark("ok"); sess.ok++; showResult("ok",$("wAns").value.trim()); stat(); chips(); toast("โอเค นับว่าถูกนะ 👍"); };
   $("wHintBtn").onclick=()=>{ $("wHint").classList.toggle("on"); };
   $("wAns").addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing&&e.keyCode!==229){ e.preventDefault(); check(); } });
   $("wBack").onclick=goHome;
   setMode(mode);
-  return { enter(){ if(!cur){ refill(); next(); } else { chips(); stat(); } }, stopMic, score, N, compile };
+  return { enter(){ if(mode==="ex"){ if(ex.stage!=="q") exRender(); else if(!cur) exLoad(); return; } if(!cur){ refill(); next(); } else { chips(); stat(); } }, stopMic, score, N, compile };
 })();
 
-/* ---------- tiny clock on home ---------- */
-(function tick(){
-  const d=new Date(), p=x=>String(x).padStart(2,"0");
-  $("clockT").innerHTML=`${p(d.getHours())}<i>:</i>${p(d.getMinutes())}`;
-  $("clockD").textContent=d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"}).replace(",","")+" ♡";
-  setTimeout(tick,(60-d.getSeconds())*1000+50);
-})();
+/* ---------- little cheer-up message (was the clock) — changes every 3 minutes, tap for a new one ---------- */
+const CHEERS=["がんばって！💪","สู้ ๆ นะ ✊","เก่งมากงับ ♡","ทีละนิดก็พอ 🌱","พักบ้างนะ ☕","อีกนิดเดียว! 🔥","ファイト！🌸","วันนี้ก็ดีที่สุด ✨",
+  "จำได้แน่ ๆ 🧠","ภูมิใจในตัวเองนะ 🥹","一歩ずつ 👣","ใจดีกับตัวเองด้วย 💗","คนเก่งของเค้า 🥰","You got this! 🌟","すごい！😆","ดื่มน้ำด้วยนะ 💧",
+  "ยืดเส้นหน่อย 🙆","ค่อย ๆ ไปนะ 🐢","ผิดได้ ไม่เป็นไร 🌈","ทุกคำมีค่า 📚","ยิ้มหน่อยน้า 😊","Keep going! 🚀","เหนื่อยก็พักนะ 🛌","วันนี้ทำดีมาก 👏",
+  "จุ๊ฟ ๆ 😘","大丈夫だよ 🤍","ฝันให้ไกล 🎌","ไปญี่ปุ่นกัน! 🗾","เป็นกำลังใจให้ 💌","よくできました 💮","อีกคำนะ 🍡","ไม่ต้องรีบ 🍵",
+  "เก่งขึ้นทุกวัน 📈","ลุยต่อเลย 🏃","Small steps 🐾","ฮึบ ๆ 🦾","คิดถึงนะ 💭","ตั้งใจมากเลย 🥺","えらい！🐱","กินขนมหน่อย 🍪",
+  "เดี๋ยวก็ N1 🎓","สู้ไปด้วยกัน 🤝","なんとかなる 🌤️","รักษาสุขภาพด้วย 🍎","Proud of you 🫶","หายใจลึก ๆ 🌬️","เจ๋งไปเลย 😎","ปังมาก 🎉",
+  "おつかれさま 🌙","รักนะ 💕","น่ารักที่สุด 🐰","แทตทำได้! 🌟"];
+let cheerLast=-1;
+function cheer(){
+  let i; do{ i=Math.random()*CHEERS.length|0; }while(i===cheerLast&&CHEERS.length>1); cheerLast=i;
+  const el=$("clockT"); el.classList.remove("pop"); void el.offsetWidth; el.textContent=CHEERS[i]; el.classList.add("pop");
+}
+cheer(); setInterval(cheer,3*60*1000);
+$("clock").onclick=cheer;
 
 /* ---------- boot ---------- */
 (function(){ const h=parseHash();

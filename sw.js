@@ -1,8 +1,8 @@
 // Service worker: เก็บไฟล์ไว้ใช้ออฟไลน์
 // - ไฟล์ของแอป (หน้าเว็บ, คำศัพท์): โหลดจากเน็ตก่อน → อัปเดตขึ้นทันทีที่ push, ถ้าออฟไลน์ใช้ตัวที่เก็บไว้
 // - ฟอนต์จาก Google: ใช้ตัวที่เก็บไว้ก่อน
-const C = "tango-v12";
-const CORE = ["./", "./index.html", "./data/vocab.js", "./data/sentences.js", "./js/sentence-gen.js", "./manifest.webmanifest",
+const C = "tango-v13";
+const CORE = ["./", "./index.html", "./data/vocab.js", "./data/sentences.js", "./js/sentence-gen.js", "./js/exercise-bank.js", "./manifest.webmanifest",
               "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
