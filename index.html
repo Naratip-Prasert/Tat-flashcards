@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>แฟลชการ์ดคำศัพท์ญี่ปุ่น</title>
-<meta name="theme-color" content="#f6f1ea">
+<meta name="theme-color" content="#fff4f8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -17,20 +17,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f6f1ea; --ink:#2a2420; --muted:#7c716a; --line:#e3d9cf;
-  --card:#fffdf9; --accent:#e5702f; --accent-soft:#fbe6d8;
-  --good:#2f8f5b; --good-soft:#dcf1e4; --bad:#c26a1e; --bad-soft:#f9e6d2;
-  --new:#8a8fa8; --star:#e8a516;
-  --shadow:0 1px 2px rgba(60,40,20,.05),0 4px 14px rgba(60,40,20,.07);
-  --shadow2:0 1px 2px rgba(60,40,20,.06),0 8px 24px rgba(60,40,20,.10);
-}
-@media (prefers-color-scheme: dark){
-  :root{--bg:#1c1917;--ink:#f3ede7;--muted:#a69a90;--line:#38312c;--card:#26211e;
-  --accent:#f08a4b;--accent-soft:#3d2a1f;--good:#5cc28a;--good-soft:#1f3328;--bad:#f0a35e;--bad-soft:#3a2a1c;--new:#9da2bb;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25);--shadow2:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);}
+  color-scheme:light;
+  --bg:#fff4f8; --ink:#3b2430; --muted:#a3798b; --line:#f7d7e4;
+  --card:#ffffff; --accent:#f0508c; --accent-soft:#ffe3ee;
+  --good:#22a06b; --good-soft:#dcf6ea; --bad:#ee8a35; --bad-soft:#fff0e1;
+  --new:#c4a7d8; --star:#f5b301;
+  --shadow:0 1px 2px rgba(240,80,140,.06),0 4px 14px rgba(240,80,140,.08);
+  --shadow2:0 1px 2px rgba(240,80,140,.08),0 10px 28px rgba(240,80,140,.13);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink)}
+body{background:radial-gradient(120% 60% at 50% -10%,#ffd9e8 0%,rgba(255,217,232,0) 60%),var(--bg)}
 body{font-family:"Noto Sans Thai","Noto Sans JP",system-ui,sans-serif;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-text-size-adjust:100%;
   display:flex;flex-direction:column;height:100dvh}
 button{font:inherit;color:inherit}
@@ -41,7 +38,7 @@ button{font:inherit;color:inherit}
 
 /* ---------- top / tabs ---------- */
 .top{flex:none;padding:calc(8px + env(safe-area-inset-top)) 12px 8px}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:var(--line);padding:3px;border-radius:12px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:#ffe3ee;padding:3px;border-radius:12px}
 .tab{border:none;background:transparent;border-radius:10px;padding:5px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2}
 .tab .t1{font-size:14px;font-weight:700}
 .tab .t2{font-size:10.5px;color:var(--muted)}
@@ -99,7 +96,7 @@ button{font:inherit;color:inherit}
 .link{background:none;border:none;color:var(--muted);font-size:12.5px;text-decoration:underline;cursor:pointer}
 .cta{flex:none;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(0,0,0,0),var(--bg) 30%)}
 .ctabtn{width:100%;height:56px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;
-  box-shadow:0 6px 18px rgba(229,112,47,.35);display:flex;align-items:center;justify-content:center;gap:8px}
+  box-shadow:0 6px 18px rgba(240,80,140,.35);display:flex;align-items:center;justify-content:center;gap:8px}
 .ctabtn small{font-weight:500;opacity:.85;font-size:13px}
 .ctabtn:disabled{opacity:.45;box-shadow:none}
 
@@ -177,8 +174,22 @@ button{font:inherit;color:inherit}
 
 /* ---------- write (sentence) ---------- */
 .wscroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 12px 24px}
-.wchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0 10px}
-.wchips::-webkit-scrollbar{display:none}
+.wpick{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin:2px 0 10px;overflow:hidden}
+.wpickbtn{width:100%;display:grid;grid-template-columns:auto 1fr 20px;align-items:center;gap:8px;padding:11px 12px;border:none;background:none;cursor:pointer;text-align:left}
+.wpl{font-size:13px;font-weight:600;color:var(--accent);white-space:nowrap}
+.wps{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wps b{color:var(--ink);font-weight:600}
+.wpickbtn svg{width:20px;height:20px;color:var(--muted);transition:transform .2s}
+.wpick.open .wpickbtn svg{transform:rotate(180deg)}
+.wpanel{display:none;padding:2px 12px 12px;border-top:1px dashed var(--line)}
+.wpick.open .wpanel{display:block}
+.wgrp{margin-top:10px}
+.wgh{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;margin-bottom:6px}
+.wgh .jp{color:var(--accent)}
+.wgall{margin-left:auto;border:none;background:none;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer}
+.wgc{display:flex;flex-wrap:wrap;gap:6px}
+.wpfoot{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:14px}
+.wpfoot .wbtn{height:44px;font-size:14px}
 .wstat{font-size:12.5px;color:var(--muted);margin:0 0 10px;display:flex;gap:12px;flex-wrap:wrap}
 .wstat b{color:var(--ink)}
 .pcard{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow2);padding:16px 16px 14px;position:relative}
@@ -201,8 +212,7 @@ button{font:inherit;color:inherit}
 .verdict{border-radius:16px;padding:12px 14px;font-weight:700;font-size:17px;display:flex;align-items:center;gap:8px}
 .verdict.ok{background:var(--good-soft);color:var(--good)}
 .verdict.near{background:#fdf1d6;color:#a8740a}
-.verdict.no{background:#f9dfdb;color:#b9483a}
-@media (prefers-color-scheme: dark){.verdict.near{background:#3a3016;color:#f2c560}.verdict.no{background:#3a2420;color:#e3796b}}
+.verdict.no{background:#ffe0e6;color:#d23a5f}
 .rbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:10px}
 .rlab{font-size:11.5px;font-weight:600;color:var(--accent);margin-bottom:2px}
 .rja{font-size:22px;line-height:2;font-family:"Noto Sans JP","Hiragino Sans",sans-serif;display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap}
@@ -215,19 +225,19 @@ button{font:inherit;color:inherit}
 .speakbox h3{font-size:15px;font-weight:700}
 .speakbox p{font-size:12.5px;color:var(--muted);margin-top:2px}
 .mic{width:76px;height:76px;border-radius:50%;border:none;background:var(--accent);color:#fff;margin:14px auto 6px;display:flex;align-items:center;justify-content:center;cursor:pointer;
-  box-shadow:0 6px 18px rgba(229,112,47,.35)}
+  box-shadow:0 6px 18px rgba(240,80,140,.35)}
 .mic svg{width:32px;height:32px}
-.mic.rec{background:#d6453b;animation:pulse 1.2s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(214,69,59,.5)}100%{box-shadow:0 0 0 22px rgba(214,69,59,0)}}
+.mic.rec{background:#e8336f;animation:pulse 1.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(232,51,111,.5)}100%{box-shadow:0 0 0 22px rgba(232,51,111,0)}}
 .micst{font-size:12.5px;color:var(--muted);min-height:18px}
 .heard{margin-top:10px;text-align:left;display:none}
 .heard.on{display:block}
-.nextbtn{width:100%;margin-top:14px;height:54px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(229,112,47,.3)}
+.nextbtn{width:100%;margin-top:14px;height:54px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(240,80,140,.3)}
 .wdone{text-align:center;padding:30px 10px}
 .wdone h3{font-size:20px;margin-bottom:6px}
 
 /* ---------- celebration popup ---------- */
-.cele{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(30,20,15,.45);
+.cele{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(90,25,55,.35);
   -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .cele.on{display:flex;animation:fadeIn .25s ease-out}
 .cbox{position:relative;width:100%;max-width:340px;background:var(--card);border-radius:24px;padding:26px 22px 20px;text-align:center;
@@ -267,10 +277,10 @@ button{font:inherit;color:inherit}
     </button>
     <button class="mode" id="goWrite">
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-      <div class="mico" style="background:#e3ecfb">✍️</div>
+      <div class="mico" style="background:#f3e8ff">✍️</div>
       <h2>เขียนประโยคอิอิ</h2>
       <p>สุ่มประโยคไทยสั้น ๆ → เขียนเป็นภาษาญี่ปุ่น → ให้แทตลองพูดตามงับอิอิ</p>
-      <div class="mbar"><i id="hWrBar" style="background:#5b8def"></i></div>
+      <div class="mbar"><i id="hWrBar" style="background:#b16ee8"></i></div>
       <div class="mfoot"><span id="hWrTx"></span><span></span></div>
       <span class="deco jp">文</span>
     </button>
@@ -284,7 +294,11 @@ button{font:inherit;color:inherit}
     <div class="ctitle"><b>เขียนประโยคอิอิ ✍️</b>แปลไทย → ญี่ปุ่น แล้วพูดตาม</div>
   </div>
   <div class="wscroll"><div class="col" id="wBody">
-    <div class="wchips" id="wChips"></div>
+    <div class="wpick" id="wPick">
+      <button class="wpickbtn" id="wPickBtn"><span class="wpl">🎯 สุ่มจากหมวด</span><span class="wps"><b id="wPickSum"></b> · <span id="wPickN"></span></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="wpanel" id="wPanel"></div>
+    </div>
     <div class="wstat" id="wStat"></div>
     <div class="pcard">
       <div class="tag" id="wTag"></div>
@@ -631,7 +645,7 @@ $("cele").onclick=e=>{ if(e.target.id==="cele") $("cele").classList.remove("on")
 function confetti(ms){
   const cv=$("confetti"), x=cv.getContext("2d"), dpr=window.devicePixelRatio||1;
   cv.width=innerWidth*dpr; cv.height=innerHeight*dpr; x.scale(dpr,dpr);
-  const cols=["#e5702f","#f2b134","#2f8f5b","#ef6f8f","#5b8def","#fbe6d8"];
+  const cols=["#f0508c","#ff9ec4","#ffd1e3","#b16ee8","#ffc94d","#7fd6b0"];
   const P=Array.from({length:120},()=>({x:Math.random()*innerWidth,y:-20-Math.random()*innerHeight*.5,vx:(Math.random()-.5)*2.4,
     vy:2+Math.random()*3,r:Math.random()*6.28,vr:(Math.random()-.5)*.25,w:6+Math.random()*6,h:8+Math.random()*8,c:cols[Math.random()*cols.length|0]}));
   const t0=performance.now();
@@ -707,28 +721,49 @@ const W=(function(){
   }
   const ruby=segs=>segs.map(g=>g.k?`<ruby>${esc(g.k)}<rt>${esc(g.r)}</rt></ruby>`:esc(g.t)).join("");
   const plain=segs=>segs.map(g=>g.k||g.t).join("");
-  const CHN={ch1:"บท 1 科学",ch2:"บท 2 病気",ch3:"บท 3 料理"};
+  // vocab categories that actually have sentences, in vocab order
+  const KEY=s=>s.ch+"-"+s.sec;
+  const CATS=[]; CH.forEach(c=>c.secs.forEach(s=>{ const k=c.id+"-"+s.id, n=SEN.filter(x=>KEY(x)===k).length; if(n) CATS.push({k,ch:c,sec:s,n}); }));
+  const catOf=k=>CATS.find(c=>c.k===k);
+  let sel=new Set(store.get("fc3-wsecs",null)||CATS.map(c=>c.k)); [...sel].forEach(k=>{ if(!catOf(k)) sel.delete(k); });
+  const saveSel=()=>store.set("fc3-wsecs",[...sel]);
 
-  let filt=store.get("fc3-wfilt","all"), queue=[], cur=null, res=store.get("fc3-sent",{}), sess={n:0,ok:0}, answered=false;
+  let queue=[], cur=null, res=store.get("fc3-sent",{}), sess={n:0,ok:0}, answered=false;
   const save=()=>store.set("fc3-sent",res);
   const rank={ok:3,near:2,no:1};
   function setBest(id,v){ const r=res[id]||{}; if(!r.best||rank[v]>rank[r.best]) r.best=v; res[id]=r; save(); }
 
-  function pool(){ return SEN.filter(s=>filt==="all"||s.ch===filt); }
+  function pool(){ return SEN.filter(s=>sel.has(KEY(s))); }
   function refill(){ const p=pool(); const notOk=p.filter(s=>!(res[s.id]&&res[s.id].best==="ok")), ok=p.filter(s=>res[s.id]&&res[s.id].best==="ok");
     shuffle(notOk); shuffle(ok); queue=[...notOk,...ok]; if(cur&&queue.length>1&&queue[0]===cur){ queue.push(queue.shift()); } }
-  function chips(){
-    const opts=[["all","ทั้งหมด"],["ch1","บท 1 <span class='jp'>科学</span>"],["ch2","บท 2 <span class='jp'>病気</span>"],["ch3","บท 3 <span class='jp'>料理</span>"]];
-    $("wChips").innerHTML=opts.map(([k,l])=>{ const p=SEN.filter(s=>k==="all"||s.ch===k), ok=p.filter(s=>res[s.id]&&res[s.id].best==="ok").length;
-      return `<button class="chip ${filt===k?"on":""}" data-f="${k}">${l}<span class="n">${ok}/${p.length}</span></button>`; }).join("");
-    $("wChips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ if(filt===b.dataset.f) return; filt=b.dataset.f; store.set("fc3-wfilt",filt); cur=null; refill(); next(); });
+  let panelDirty=false;
+  function chips(){   // category picker (summary + panel)
+    const p=pool(), all=sel.size===CATS.length;
+    $("wPickSum").innerHTML = all ? `ทุกหมวด` : sel.size ? [...sel].map(k=>`<span class="jp">${esc(catOf(k).sec.jp)}</span>`).join(", ") : "ยังไม่ได้เลือก";
+    $("wPickN").textContent=`${p.length} ประโยค`;
+    let h=""; const groups=[...new Set(CATS.map(c=>c.ch.id))];
+    groups.forEach(g=>{ const cs=CATS.filter(c=>c.ch.id===g), ch=cs[0].ch;
+      h+=`<div class="wgrp"><div class="wgh"><span class="jp">${esc(ch.jp)}</span> ${esc(ch.th)}<button class="wgall" data-g="${g}">${cs.every(c=>sel.has(c.k))?"ไม่เลือกกลุ่มนี้":"เลือกทั้งกลุ่ม"}</button></div><div class="wgc">`+
+        cs.map(c=>{ const ok=SEN.filter(s=>KEY(s)===c.k&&res[s.id]&&res[s.id].best==="ok").length;
+          return `<button class="chip ${sel.has(c.k)?"on":""}" data-k="${c.k}"><span class="jp">${esc(c.sec.jp)}</span> ${esc(c.sec.th)}<span class="n">${ok}/${c.n}</span></button>`; }).join("")+`</div></div>`; });
+    h+=`<div class="wpfoot"><button class="wbtn" id="wSelAll">${all?"ล้างที่เลือก":"เลือกทุกหมวด"}</button><button class="wbtn pri" id="wSelDone">เริ่มสุ่ม · ${p.length} ประโยค</button></div>`;
+    $("wPanel").innerHTML=h;
+    $("wPanel").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ const k=b.dataset.k; sel.has(k)?sel.delete(k):sel.add(k); saveSel(); panelDirty=true; chips(); });
+    $("wPanel").querySelectorAll(".wgall").forEach(b=>b.onclick=()=>{ const cs=CATS.filter(c=>c.ch.id===b.dataset.g), on=cs.every(c=>sel.has(c.k)); cs.forEach(c=>on?sel.delete(c.k):sel.add(c.k)); saveSel(); panelDirty=true; chips(); });
+    $("wSelAll").onclick=()=>{ if(sel.size===CATS.length) sel.clear(); else CATS.forEach(c=>sel.add(c.k)); saveSel(); panelDirty=true; chips(); };
+    $("wSelDone").onclick=()=>closePanel();
+    $("wSelDone").disabled=!p.length;
   }
+  function openPanel(){ panelDirty=false; $("wPick").classList.add("open"); }
+  function closePanel(){ if(!pool().length){ toast("เลือกอย่างน้อย 1 หมวดนะงับ"); return; } $("wPick").classList.remove("open"); if(panelDirty){ cur=null; queue=[]; next(); } }
+  $("wPickBtn").onclick=()=>{ $("wPick").classList.contains("open")?closePanel():openPanel(); };
   function stat(){ $("wStat").innerHTML=`<span>ข้อที่ <b>${sess.n+(answered?0:1)}</b></span><span>ถูกรอบนี้ <b>${sess.ok}</b></span><span>เหลือในชุด <b>${queue.length}</b></span>`; }
   function next(){
     stopMic();
+    if(!pool().length){ openPanel(); chips(); return; }
     if(!queue.length) refill();
     cur=queue.shift(); answered=false;
-    $("wTag").innerHTML=`<b class="jp">${CHN[cur.ch].split(" ").pop()}</b>${CHN[cur.ch].split(" ").slice(0,2).join(" ")}`;
+    const cat=catOf(KEY(cur)); $("wTag").innerHTML=cat?`<b class="jp">${esc(cat.sec.jp)}</b>${esc(cat.sec.th)}`:"";
     $("wTh").textContent=cur.th;
     $("wHint").textContent=cur.hint||"ไม่มีคำใบ้สำหรับข้อนี้"; $("wHint").classList.remove("on"); $("wHintBtn").style.display="";
     $("wAns").value=""; $("wAns").disabled=false;
