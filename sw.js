@@ -1,9 +1,15 @@
 // Service worker: เก็บไฟล์ไว้ใช้ออฟไลน์
 // - ไฟล์ของแอป (หน้าเว็บ, คำศัพท์): โหลดจากเน็ตก่อน → อัปเดตขึ้นทันทีที่ push, ถ้าออฟไลน์ใช้ตัวที่เก็บไว้
 // - ฟอนต์จาก Google: ใช้ตัวที่เก็บไว้ก่อน
-const C = "tango-v17";
-const CORE = ["./", "./index.html", "./data/vocab.js", "./data/sentences.js", "./js/sentence-gen.js", "./js/exercise-bank.js", "./js/firebase-config.js", "./js/sync.js", "./manifest.webmanifest",
-              "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
+const C = "tango-v18";
+const CORE = ["./", "./index.html", "./manifest.webmanifest",
+  "./css/base.css", "./css/vocab.css", "./css/home.css", "./css/write.css", "./css/profile.css", "./css/account.css", "./css/popup.css",
+  "./data/vocab.js", "./data/sentences.js", "./data/exercise-bank.js",
+  "./js/config/firebase.js", "./js/engine/sentence-gen.js",
+  "./js/core/state.js", "./js/core/ui.js", "./js/core/router.js",
+  "./js/features/vocab-list.js", "./js/features/flashcards.js", "./js/features/home.js", "./js/features/write.js", "./js/features/profile.js",
+  "./js/app.js", "./js/services/sync.js",
+  "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(C).then(c => c.addAll(CORE)));

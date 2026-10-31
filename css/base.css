@@ -1,0 +1,29 @@
+/* ธีมสี ตัวแปร เลย์เอาต์พื้นฐาน แท็บ */
+:root{
+  color-scheme:light;
+  --bg:#fff4f8; --ink:#3b2430; --muted:#a3798b; --line:#f7d7e4;
+  --card:#ffffff; --accent:#f0508c; --accent-soft:#ffe3ee;
+  --good:#22a06b; --good-soft:#dcf6ea; --bad:#ee8a35; --bad-soft:#fff0e1;
+  --new:#c4a7d8; --star:#f5b301;
+  --shadow:0 1px 2px rgba(240,80,140,.06),0 4px 14px rgba(240,80,140,.08);
+  --shadow2:0 1px 2px rgba(240,80,140,.08),0 10px 28px rgba(240,80,140,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink)}
+body{background:radial-gradient(120% 60% at 50% -10%,#ffd9e8 0%,rgba(255,217,232,0) 60%),var(--bg)}
+body{font-family:"Noto Sans Thai","Noto Sans JP",system-ui,sans-serif;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-text-size-adjust:100%;
+  display:flex;flex-direction:column;height:100dvh}
+button{font:inherit;color:inherit}
+.jp{font-family:"Noto Sans JP","Hiragino Sans","Noto Sans Thai",sans-serif}
+.view{flex:1;min-height:0;display:none;flex-direction:column}
+.view.on{display:flex}
+.col{max-width:620px;margin:0 auto;width:100%}
+
+/* ---------- top / tabs ---------- */
+.top{flex:none;padding:calc(8px + env(safe-area-inset-top)) 12px 8px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;background:#ffe3ee;padding:3px;border-radius:12px}
+.tab{border:none;background:transparent;border-radius:10px;padding:5px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.tab .t1{font-size:14px;font-weight:700}
+.tab .t2{font-size:10.5px;color:var(--muted)}
+.tab.on{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.tab.on .t1{color:var(--accent)}
