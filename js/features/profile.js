@@ -38,7 +38,7 @@ function renderProfile(){
       <div class="pc-note">
         <div><span>📚 จำศัพท์ได้แล้ว</span><span><b>${k}</b> / ${ALL.length} คำ</span></div>
         <div><span>⭐ ติดดาวไว้</span><span><b>${stars.size}</b> คำ</span></div>
-        <div><span>✍️ เขียนประโยคถูก</span><span><b>${okS}</b> / ${SEN.length} ข้อ</span></div>
+        ${can("write")?`<div><span>✍️ เขียนประโยคถูก</span><span><b>${okS}</b> / ${SEN.length} ข้อ</span></div>`:""}
         <div><span>🌱 เริ่มเรียนเมื่อ</span><span>${fmt(since)}</span></div>
       </div>
       <div class="pc-from"><span>From: <b style="color:var(--ink)">${esc(nm)}</b><br>To: ญี่ปุ่น 🇯🇵</span><span class="air">PAR AVION</span></div>

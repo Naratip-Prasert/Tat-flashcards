@@ -7,6 +7,7 @@ function setHash(h){ try{ history.replaceState(null,"","#"+h) }catch(e){} }
 const VIEWS={home:"homeView",list:"listView",cards:"cardView",write:"writeView",profile:"profileView"};
 function placeClock(v){ const slot=document.querySelector(`[data-clock="${v}"]`), c=$("clock"); if(slot&&c.parentElement!==slot){ slot.appendChild(c); } c.classList.toggle("mini",v!=="home"); }
 function showView(v){
+  if(v==="write"&&!can("write")) v="home", setHash("home");
   S.view=v; Object.entries(VIEWS).forEach(([k,id])=>$(id).classList.toggle("on",k===v)); placeClock(v);
   if(v!=="write") W.stopMic();
   if(v==="cards"){ $("cTitle").innerHTML=studyLabel; renderTools(); show(); return; }

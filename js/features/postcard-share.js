@@ -41,7 +41,8 @@ async function renderPostcard(){
   meas.font=`700 26px Mali, "Noto Sans Thai", sans-serif`; const nameL=wrapText(meas,nm,textW,2);
   meas.font=`16px Yomogi, Mali, "Noto Sans JP", sans-serif`; const bioL=p.bio?wrapText(meas,p.bio,textW,3):[];
   const nameH=Math.max(34,nameL.length*31), bioH=Math.max(22,bioL.length*22);
-  const bodyTop=190, nameY=bodyTop+44-38, bioY=nameY+nameH+4, noteY=bioY+bioH+10+4, fromY=noteY+4*26+10;
+  const nRows=can("write")?4:3;
+  const bodyTop=190, nameY=bodyTop+44-38, bioY=nameY+nameH+4, noteY=bioY+bioH+10+4, fromY=noteY+nRows*26+10;
   const IH=fromY+40+16, H=IH+18;
 
   const c=document.createElement("canvas"); c.width=(PC_W+PC_PAD*2)*PC_SCALE; c.height=(H+PC_PAD*2)*PC_SCALE;
@@ -108,7 +109,7 @@ async function renderPostcard(){
   g.fillStyle="#7a5a6a"; g.font=`16px Yomogi, Mali, "Noto Sans JP", sans-serif`; bioL.forEach((l,i)=>g.fillText(l,nameX,bioY+i*22+2));
 
   // stats
-  const rows=[["📚 จำศัพท์ได้แล้ว",[[k,1],[` / ${ALL.length} คำ`]]],["⭐ ติดดาวไว้",[[stars.size,1],[" คำ"]]],["✍️ เขียนประโยคถูก",[[okS,1],[` / ${SEN.length} ข้อ`]]],["🌱 เริ่มเรียนเมื่อ",[[fmt(since)]]]];
+  const rows=[["📚 จำศัพท์ได้แล้ว",[[k,1],[` / ${ALL.length} คำ`]]],["⭐ ติดดาวไว้",[[stars.size,1],[" คำ"]]],...(can("write")?[["✍️ เขียนประโยคถูก",[[okS,1],[` / ${SEN.length} ข้อ`]]]]:[]),["🌱 เริ่มเรียนเมื่อ",[[fmt(since)]]]];
   g.textBaseline="middle";
   rows.forEach(([lab,val],i)=>{ const y=noteY+i*26+13;
     g.font="15px Mali, sans-serif"; g.fillStyle="#5a4250"; g.textAlign="left"; g.fillText(lab,18,y);

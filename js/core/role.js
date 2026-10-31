@@ -23,6 +23,9 @@ const TXT={
     pickOne:"เลือกอย่างน้อย 1 หมวดนะ", welcomeNew:"สมัครเรียบร้อย ยินดีต้อนรับ 🎉", welcomeBack:"ยินดีต้อนรับกลับมา {u}"
   }
 };
+/* ฟังก์ชันที่แต่ละโรลใช้ได้ — โรลทั่วไปเห็นแค่คำศัพท์ (ซ่อนเขียนประโยค / ทำแบบฝึก) */
+const FEATURES={fan:{write:true}, general:{write:false}};
+function can(f){ return !!(FEATURES[ROLE.id]||FEATURES.general)[f]; }
 const LOGO={fan:"icons/apple-touch-icon.png", general:"icons/logo-general.svg"};
 const THEME_COLOR={fan:"#fff4f8", general:"#f3f7fc"};
 const ROLE={ id:(()=>{ try{ return localStorage.getItem("fc3-role")==="fan"?"fan":"general"; }catch(e){ return "general"; } })() };
@@ -36,7 +39,7 @@ function applyRole(){
   document.querySelectorAll("img[data-logo]").forEach(el=>{ el.src=LOGO[ROLE.id]; });
 }
 window.TatRole={
-  get:()=>ROLE.id, tr,
+  get:()=>ROLE.id, tr, can,
   fromUser(username){ setRole(roleOf(username)); }
 };
 function setRole(id){
@@ -44,6 +47,6 @@ function setRole(id){
   try{ localStorage.setItem("fc3-role",id); }catch(e){}
   applyRole();
   if(typeof cheer==="function") cheer();
-  if(window.TatApp) TatApp.reload();
+  if(window.TatApp){ if(S.view==="write"&&!can("write")) goHome(); else TatApp.reload(); }
 }
 applyRole();

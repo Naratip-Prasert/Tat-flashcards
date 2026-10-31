@@ -1,7 +1,7 @@
 // Service worker: เก็บไฟล์ไว้ใช้ออฟไลน์
 // - ไฟล์ของแอป (หน้าเว็บ, คำศัพท์): โหลดจากเน็ตก่อน → อัปเดตขึ้นทันทีที่ push, ถ้าออฟไลน์ใช้ตัวที่เก็บไว้
 // - ฟอนต์จาก Google: ใช้ตัวที่เก็บไว้ก่อน
-const C = "tango-v20";
+const C = "tango-v21";
 const CORE = ["./", "./index.html", "./manifest.webmanifest",
   "./css/base.css", "./css/vocab.css", "./css/home.css", "./css/write.css", "./css/profile.css", "./css/account.css", "./css/popup.css", "./css/theme-general.css",
   "./data/vocab.js", "./data/sentences.js", "./data/exercise-bank.js",
