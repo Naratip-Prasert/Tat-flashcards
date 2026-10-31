@@ -32,6 +32,8 @@ data/vocab.js         คำศัพท์ทั้งหมด ← แก้/�
 data/sentences.js     ประโยคสำหรับโหมดเขียนประโยค (🎯 เลือกหมวด)
 js/sentence-gen.js    ตัวแต่งประโยคอัตโนมัติ N5–N1 (🎲) และรูปประโยคของโหมดทำแบบฝึก
 js/exercise-bank.js   คลังคำศัพท์ N5–N1 แยกหมวด สำหรับ 📝 ทำแบบฝึก
+js/sync.js            ☁️ ล็อกอิน + ซิงก์ข้ามเครื่อง (Firebase)
+js/firebase-config.js ค่าเชื่อม Firebase (ใส่ตามหัวข้อด้านล่าง)
 sw.js                 service worker (ออฟไลน์ + อัปเดตอัตโนมัติ)
 manifest.webmanifest  ข้อมูลแอปสำหรับติดตั้ง
 icon-*.png            ไอคอน
@@ -51,3 +53,27 @@ icon-*.png            ไอคอน
 ## เวอร์ชัน
 - `main` (v5) — แก้บัคพลิกการ์ดบน iOS, แยกไฟล์คำศัพท์, service worker โหลดเวอร์ชันใหม่อัตโนมัติ
 - branch `v4` — หน้ารวม + ติดดาว + ฟังเสียง (ฉบับก่อนแก้บัค)
+
+## ☁️ ตั้งค่าล็อกอิน / ซิงก์ข้ามเครื่อง (Firebase ฟรี)
+แอปมีระบบล็อกอินแบบชื่อผู้ใช้ + รหัสผ่าน (ไม่ต้องใช้อีเมล) แล้วซิงก์ จำได้/ติดดาว/สถิติเขียนประโยค ทุกเครื่องแบบเรียลไทม์
+ถ้ายังไม่ตั้งค่า แอปจะเซฟในเครื่องเหมือนเดิม
+
+1. เข้า https://console.firebase.google.com → **Add project** (ชื่ออะไรก็ได้ เช่น `tat-card`, ปิด Google Analytics ได้)
+2. **Build → Authentication → Get started → Sign-in method → Email/Password → Enable → Save**
+3. **Build → Firestore Database → Create database** → เลือก location `asia-southeast1 (Singapore)` → Production mode
+4. Firestore → แท็บ **Rules** → วางกฎนี้แล้วกด **Publish** (แต่ละคนอ่าน/เขียนได้เฉพาะข้อมูลตัวเอง)
+   ```
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{db}/documents {
+       match /users/{uid} {
+         allow read, write: if request.auth != null && request.auth.uid == uid;
+       }
+     }
+   }
+   ```
+5. **Authentication → Settings → Authorized domains → Add domain** → `naratip-prasert.github.io`
+6. ⚙️ **Project settings → General → Your apps → ไอคอน `</>` (Web)** → ตั้งชื่อแอป → Register → คัดลอก `firebaseConfig`
+   แล้ววางใน `js/firebase-config.js` แทน `window.TAT_FIREBASE = null;`
+
+ใช้แผนฟรี (Spark) ได้เลย ไม่ต้องผูกบัตร · ข้อมูลเก็บที่ `users/{uid}`
