@@ -41,7 +41,7 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 /* ---------------- UI (account card on home + login sheet) ---------------- */
 function render() {
   const box = $("acct"); if (!box) return;
-  const nm = user ? user.email.split("@")[0] : "";
+  const P = LS.get("fc3-profile") || {}, un = user ? user.email.split("@")[0] : "", nm = P.name || un;
   const S = {
     nocfg: ["☁️", "ซิงก์ข้ามเครื่อง", "ยังไม่ได้เชื่อมเซิร์ฟเวอร์ (ตั้งค่า Firebase ตาม README)", ""],
     init: ["☁️", "กำลังเชื่อมต่อ…", "", ""],
@@ -52,7 +52,9 @@ function render() {
     offline: ["📴", nm, "ออฟไลน์อยู่ — เดี๋ยวซิงก์ให้เองเมื่อมีเน็ต", `<button class="acbtn" id="acOut">ออกจากระบบ</button>`],
     error: ["⚠️", nm, "ซิงก์ไม่สำเร็จ: " + lastErr, `<button class="acbtn" id="acOut">ออกจากระบบ</button>`]
   }[state] || ["☁️", "", "", ""];
-  box.innerHTML = `<span class="acic">${S[0]}</span><div class="actx"><b>${esc(S[1])}</b><small>${esc(S[2])}</small></div>${S[3]}`;
+  const icon = P.avatar ? `<img class="acav" src="${P.avatar}" alt="">` : `<span class="acic">${S[0]}</span>`;
+  box.innerHTML = `<div class="actap" id="acGo" style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">${icon}<div class="actx"><b>${esc(S[1])}${state !== "nocfg" && state !== "init" ? ` <span style="font-weight:500;color:var(--muted);font-size:12px">· โปรไฟล์ ›</span>` : ""}</b><small>${esc(S[2])}</small></div></div>${S[3]}`;
+  $("acGo").onclick = () => window.TatApp && window.TatApp.go("profile");
   const i = $("acIn"); if (i) i.onclick = openSheet;
   const o = $("acOut"); if (o) o.onclick = () => { if (o.dataset.arm) { logout(); } else { o.dataset.arm = 1; o.textContent = "แตะอีกครั้ง"; setTimeout(() => { if (o.isConnected) { delete o.dataset.arm; o.textContent = "ออกจากระบบ"; } }, 2500); } };
 }
@@ -121,6 +123,10 @@ async function start(u) {
   else if (localT() > (remote.t || 0)) { push = true; }                                                     // changed here while offline
   else { data = remote.data; }
   if (!same(data, local)) writeLocal(data);
+  // profile (name / pictures / stamp): newest wins
+  const lp = LS.get("fc3-profile"), rp = remote && remote.profile;
+  if (rp && (!lp || (rp.t || 0) > (lp.t || 0))) applyProfile(rp);
+  else if (lp && lp.t && (!rp || lp.t > (rp.t || 0))) pushProfileNow(lp);
   localStorage.setItem("fc3-sync-uid", u.uid);
   if (push) { setLocalT(Math.max(Date.now(), localT())); await pushNow(); } else { setLocalT(remote ? remote.t || 0 : 0); if (state !== "offline") setState("synced"); }
   if (unsub) unsub();
@@ -128,14 +134,23 @@ async function start(u) {
     if (s.metadata.hasPendingWrites || !s.exists()) return;
     const r = s.data();
     if (r.dev !== DEV && (r.t || 0) > localT() && r.data) { setLocalT(r.t); writeLocal(r.data); toast("☁️ อัปเดตจากอีกเครื่องแล้ว"); }
+    const lp = LS.get("fc3-profile");
+    if (r.profile && (!lp || (r.profile.t || 0) > (lp.t || 0))) applyProfile(r.profile);
     if (state !== "syncing") setState("synced");
   }, () => setState("offline"));
+}
+function applyProfile(p) { LS.set("fc3-profile", p); window.TatApp && window.TatApp.profileChanged(); render(); }
+let ptimer = null;
+function pushProfileNow(p) {
+  if (!user || !ref) return Promise.resolve();
+  return fb.setDoc(ref, { profile: p }, { merge: true }).then(() => { if (state !== "syncing") setState("synced"); })
+    .catch(e => { lastErr = (e && e.code) || "unknown"; setState(navigator.onLine ? "error" : "offline"); });
 }
 async function pushNow() {
   if (!user || !ref) return;
   clearTimeout(timer); setState("syncing");
   try {
-    await fb.setDoc(ref, { data: readLocal(), t: localT(), dev: DEV, name: user.email.split("@")[0], updatedAt: fb.serverTimestamp() });
+    await fb.setDoc(ref, { data: readLocal(), t: localT(), dev: DEV, name: user.email.split("@")[0], updatedAt: fb.serverTimestamp() }, { merge: true });
     setState("synced");
   } catch (e) { lastErr = (e && e.code) || "unknown"; setState(navigator.onLine ? "error" : "offline"); }
 }
@@ -176,5 +191,6 @@ const lg = document.createElement("div"); lg.className = "lgwrap"; lg.id = "lg";
 lg.innerHTML = `<div class="lgbox" id="lgBox"></div>`; document.body.appendChild(lg);
 lg.addEventListener("click", e => { if (e.target === lg) closeSheet(); });
 
-window.TatSync = { refresh: render };
+window.TatSync = { refresh: render, username: () => user ? user.email.split("@")[0] : "",
+  pushProfile: p => { clearTimeout(ptimer); ptimer = setTimeout(() => pushProfileNow(p), 600); } };
 if (cfg && cfg.apiKey) boot(); else setState("nocfg");
