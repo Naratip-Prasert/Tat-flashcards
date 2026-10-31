@@ -1,6 +1,6 @@
 /* ป้ายล็อกอิน + แผ่นล็อกอิน */
 /* ---------- ☁️ account / sync ---------- */
-.acct{display:flex;align-items:center;gap:10px;background:var(--card);border:1px dashed #f3b9cf;border-radius:18px;padding:10px 10px 10px 14px;margin:0 0 16px;box-shadow:var(--shadow)}
+.acct{display:flex;align-items:center;gap:10px;background:var(--card);border:1px dashed var(--line2);border-radius:18px;padding:10px 10px 10px 14px;margin:0 0 16px;box-shadow:var(--shadow)}
 .acct:empty{display:none}
 .acic{font-size:22px;flex:none}
 .actx{flex:1;min-width:0;line-height:1.35}
@@ -8,7 +8,7 @@
 .actx small{display:block;font-size:12px;color:var(--muted)}
 .acbtn{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
 .acbtn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
-.lgwrap{position:fixed;inset:0;z-index:30;display:none;align-items:flex-end;justify-content:center;background:rgba(90,25,55,.35);
+.lgwrap{position:fixed;inset:0;z-index:30;display:none;align-items:flex-end;justify-content:center;background:rgba(var(--dim-rgb),.35);
   -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 .lgwrap.on{display:flex;animation:fadeIn .2s ease-out}
 .lgbox{position:relative;width:100%;max-width:440px;background:var(--card);border-radius:24px 24px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom));
@@ -22,7 +22,7 @@
 .lgbox input{display:block;width:100%;margin-top:4px;border:1.5px solid var(--line);border-radius:14px;padding:11px 12px;font-size:16px;font-family:inherit;color:var(--ink);background:#fff;outline:none}
 .lgbox input:focus{border-color:var(--accent)}
 .lgerr{min-height:18px;font-size:12.5px;color:#d23a5f;margin-top:8px}
-.lgsub{width:100%;height:52px;margin-top:6px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(240,80,140,.3)}
+.lgsub{width:100%;height:52px;margin-top:6px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(var(--accent-rgb),.3)}
 .lgsub:disabled{opacity:.6}
 .lgsw{text-align:center;font-size:13px;color:var(--muted);margin-top:12px}
 .lgsw button{border:none;background:none;color:var(--accent);font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline}

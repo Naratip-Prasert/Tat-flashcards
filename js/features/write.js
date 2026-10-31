@@ -65,7 +65,7 @@ const W=(function(){
     $("wSelDone").disabled=!p.length;
   }
   function openPanel(){ panelDirty=false; $("wPick").classList.add("open"); }
-  function closePanel(){ if(!pool().length){ toast("เลือกอย่างน้อย 1 หมวดนะงับ"); return; } $("wPick").classList.remove("open"); if(panelDirty){ cur=null; queue=[]; next(); } }
+  function closePanel(){ if(!pool().length){ toast(tr("pickOne")); return; } $("wPick").classList.remove("open"); if(panelDirty){ cur=null; queue=[]; next(); } }
   $("wPickBtn").onclick=()=>{ $("wPick").classList.contains("open")?closePanel():openPanel(); };
   function stat(){ $("wStat").innerHTML=`<span>ข้อที่ <b>${sess.n+(answered?0:1)}</b></span><span>ถูกรอบนี้ <b>${sess.ok}</b></span>`+(mode==="gen"?`<span>🎲 ระดับ <b>${level}</b> · แต่งใหม่ทุกข้อ</span>`:`<span>เหลือในชุด <b>${queue.length}</b></span>`); }
   function setMode(m){ mode=m; store.set("fc3-wmode",m);
@@ -131,7 +131,7 @@ const W=(function(){
     }
     if(ex.stage==="done"){
       const ok=ex.res.filter(r=>r==="ok").length, near=ex.res.filter(r=>r==="near").length, n=ex.qs.length;
-      const msg=ok===n?"เพอร์เฟกต์!! เก่งที่สุดเลยงับ 🥇":ok>=n*0.8?"เก่งมากงับ ใกล้เต็มแล้ว 🎉":ok>=n*0.5?"ดีมากเลย ทบทวนข้อที่ผิดอีกนิดนะ 💪":"ไม่เป็นไรงับ ลองอีกรอบ เดี๋ยวก็ได้ 🌱";
+      const msg=tr(ok===n?"ex100":ok>=n*0.8?"ex80":ok>=n*0.5?"ex50":"ex0");
       const ic={ok:"✅",near:"🟡",no:"❌",give:"👀"};
       box.innerHTML=`<div class="exbox"><div class="exscore"><div class="big">${ok}<small> / ${n}</small></div><p style="margin-top:6px;font-size:15px;color:var(--ink);font-weight:600">${msg}</p>
           <p>${ex.lv} · หมวด ${esc(ex.topic.th)}${near?` · เกือบถูก ${near} ข้อ`:""}</p></div>
@@ -176,7 +176,7 @@ const W=(function(){
   }
   function showResult(kind,input){
     const v=cur._v[0];
-    const V={ok:["ok","✓ ถูกต้อง! เก่งมากงับที่รัก♥"],near:["near","〜 เกือบถูกแล้ว อีกนิสสเดียวงับ"],no:["no","✗ ไม่ต้องรีบๆงับ ค่อยๆทำ จุ๊ฟๆ"],give:["near","👀 เฉลยอยู่นี่งับ"]}[kind];
+    const V={ok:["ok",tr("vOk")],near:["near",tr("vNear")],no:["no",tr("vNo")],give:["near",tr("vGive")]}[kind];
     $("wVerdict").className="verdict "+V[0]; $("wVerdict").textContent=V[1];
     $("wMineBox").style.display=input?"":"none"; $("wMine").textContent=input;
     $("wModel").innerHTML=`<span>${ruby(v.segs)}</span><button class="ic spk" id="wSay" aria-label="ฟังเสียง">${IC.spk}</button>`;

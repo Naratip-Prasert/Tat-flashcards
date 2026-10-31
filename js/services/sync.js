@@ -97,7 +97,8 @@ async function submit() {
     const email = `${u}@${DOMAIN}`;
     if (signup) await fb.createUserWithEmailAndPassword(fb.auth, email, p);
     else await fb.signInWithEmailAndPassword(fb.auth, email, p);
-    closeSheet(); toast(signup ? "สมัครเรียบร้อย ยินดีต้อนรับงับ 🎉" : `ยินดีต้อนรับกลับมา ${u} ♡`);
+    closeSheet(); if (window.TatRole) TatRole.fromUser(u);
+    toast(signup ? T("welcomeNew") : T("welcomeBack", { u }));
   } catch (e) {
     const c = e && e.code || "";
     E.textContent = c.includes("email-already-in-use") ? "ชื่อนี้มีคนใช้แล้ว ลองชื่ออื่นนะ"
@@ -110,8 +111,11 @@ async function submit() {
   }
 }
 
+const T = (k, v) => (window.TatRole ? TatRole.tr(k, v) : k);
+
 /* ---------------- sync ---------------- */
 async function start(u) {
+  if (window.TatRole) TatRole.fromUser(u.email.split("@")[0]);
   user = u; ref = fb.doc(fb.db, "users", u.uid); setState("syncing");
   let remote = null;
   try { const s = await fb.getDoc(ref); remote = s.exists() ? s.data() : null; }
@@ -182,7 +186,7 @@ async function boot() {
     fb = { auth: U.getAuth(app), db: F.getFirestore(app), signInWithEmailAndPassword: U.signInWithEmailAndPassword,
       createUserWithEmailAndPassword: U.createUserWithEmailAndPassword, signOut: U.signOut,
       doc: F.doc, getDoc: F.getDoc, setDoc: F.setDoc, onSnapshot: F.onSnapshot, serverTimestamp: F.serverTimestamp };
-    U.onAuthStateChanged(fb.auth, u => { if (u) start(u); else { user = null; ref = null; setState("out"); } });
+    U.onAuthStateChanged(fb.auth, u => { if (u) start(u); else { user = null; ref = null; if (window.TatRole) TatRole.fromUser(null); setState("out"); } });
   } catch (e) { setState("loaderr"); }
 }
 

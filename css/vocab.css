@@ -50,7 +50,7 @@
 .link{background:none;border:none;color:var(--muted);font-size:12.5px;text-decoration:underline;cursor:pointer}
 .cta{flex:none;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(0,0,0,0),var(--bg) 30%)}
 .ctabtn{width:100%;height:56px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;
-  box-shadow:0 6px 18px rgba(240,80,140,.35);display:flex;align-items:center;justify-content:center;gap:8px}
+  box-shadow:0 6px 18px rgba(var(--accent-rgb),.35);display:flex;align-items:center;justify-content:center;gap:8px}
 .ctabtn small{font-weight:500;opacity:.85;font-size:13px}
 .ctabtn:disabled{opacity:.45;box-shadow:none}
 

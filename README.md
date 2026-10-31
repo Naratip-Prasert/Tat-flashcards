@@ -30,7 +30,7 @@
 index.html                  โครงหน้าเว็บ (HTML ล้วน) + ลำดับการโหลดไฟล์
 manifest.webmanifest        ข้อมูลแอปสำหรับติดตั้ง
 sw.js                       service worker (ออฟไลน์ + อัปเดตอัตโนมัติ) ← เพิ่มไฟล์ใหม่ต้องใส่ใน CORE และเปลี่ยนเลขเวอร์ชัน
-icons/                      ไอคอนแอป
+icons/                      ไอคอนแอป + โลโก้โรลทั่วไป (logo-general.svg)
 
 css/
   base.css                  สีธีม (ตัวแปร :root), ตัวอักษร, แท็บบท
@@ -40,6 +40,7 @@ css/
   profile.css               หน้าโปรไฟล์โปสการ์ด
   account.css               ป้ายล็อกอิน + หน้าต่างเข้าสู่ระบบ
   popup.css                 ป๊อปอัพจำครบบท
+  theme-general.css         ธีมฟ้าของโรลทั่วไป (ทับตัวแปรสีใน base.css)
 
 data/                       ข้อมูลล้วน แก้ได้โดยไม่ต้องแตะโค้ด
   vocab.js                  คำศัพท์ทั้งหมด ← แก้/เพิ่มคำที่ไฟล์นี้
@@ -48,18 +49,29 @@ data/                       ข้อมูลล้วน แก้ได้โ
 
 js/
   config/firebase.js        ค่าเชื่อม Firebase
+  config/roles.js           💗 รายชื่อผู้ใช้ที่เป็นโรลแฟน
   engine/sentence-gen.js    ตัวแต่งประโยคอัตโนมัติ N5–N1 (🎲) + โจทย์ทำแบบฝึก
   core/state.js             สถานะที่ใช้ร่วมกัน (จำได้/ดาว/บทปัจจุบัน) + localStorage
+  core/role.js              โรลแฟน/ทั่วไป: ข้อความคำชม + สลับธีม
   core/ui.js                เสียงอ่าน, ไอคอน, พลุ, คำให้กำลังใจ
   core/router.js            สลับหน้าตาม # ในลิงก์
+  core/crop.js              หน้าต่างครอบรูป (ลาก/ถ่างนิ้วซูม)
   features/vocab-list.js    หน้ารวมคำศัพท์ (ค้นหา/เรียง/ดาว)
   features/flashcards.js    แฟลชการ์ด + ป๊อปอัพจำครบบท
   features/home.js          หน้าโฮม
   features/write.js         เขียนประโยค / ทำแบบฝึก / ไมค์
   features/profile.js       หน้าโปรไฟล์
+  features/postcard-share.js  ดูโปสการ์ดแบบเต็ม + แชร์/บันทึกเป็นรูป
   app.js                    เริ่มแอป (โหลดเป็นไฟล์สุดท้าย)
   services/sync.js          ☁️ ล็อกอิน + ซิงก์ข้ามเครื่อง (Firebase)
 ```
+
+## โรลแฟน / ทั่วไป
+- **แฟน** 💗 ธีมชมพู + คำชมหวาน ๆ (แบบเดิม) — สำหรับชื่อผู้ใช้ที่อยู่ใน `js/config/roles.js`
+- **ทั่วไป** 💙 ธีมฟ้า + คำชมแบบกลาง ๆ — ทุกคนที่เหลือ รวมถึงคนที่ยังไม่ล็อกอิน
+
+เพิ่ม/เปลี่ยนคนที่เป็นโรลแฟน: แก้ `js/config/roles.js` เช่น `fan: ["tat", "boss"]` แล้ว push
+ข้อความทั้งหมดของแต่ละโรลอยู่ใน `js/core/role.js` (`TXT`) และคำให้กำลังใจอยู่ใน `js/core/ui.js` (`CHEERS_FAN` / `CHEERS_GEN`)
 
 ## เพิ่ม/แก้คำศัพท์
 แก้ `data/vocab.js` แล้ว commit + push — GitHub Pages จะ deploy ให้เองภายใน ~1 นาที

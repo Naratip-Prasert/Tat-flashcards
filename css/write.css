@@ -1,9 +1,9 @@
 /* เขียนประโยค + ทำแบบฝึก */
 /* ---------- write (sentence) ---------- */
 .wscroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 12px 24px}
-.wmode{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:#ffe3ee;border-radius:14px;padding:4px;margin:2px 0 10px}
+.wmode{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:var(--accent-soft);border-radius:14px;padding:4px;margin:2px 0 10px}
 .wmode button{border:none;background:none;border-radius:11px;padding:9px 2px;font-size:13.5px;white-space:nowrap;font-weight:600;color:var(--muted);cursor:pointer}
-.wmode button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 4px rgba(240,80,140,.18)}
+.wmode button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 4px rgba(var(--accent-rgb),.18)}
 .wlv{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:0 0 10px}
 .wlv button{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:6px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1.2}
 .wlv b{font-size:15px}.wlv small{font-size:10px;color:var(--muted)}
@@ -65,14 +65,14 @@
 .speakbox h3{font-size:15px;font-weight:700}
 .speakbox p{font-size:12.5px;color:var(--muted);margin-top:2px}
 .mic{width:76px;height:76px;border-radius:50%;border:none;background:var(--accent);color:#fff;margin:14px auto 6px;display:flex;align-items:center;justify-content:center;cursor:pointer;
-  box-shadow:0 6px 18px rgba(240,80,140,.35)}
+  box-shadow:0 6px 18px rgba(var(--accent-rgb),.35)}
 .mic svg{width:32px;height:32px}
 .mic.rec{background:#e8336f;animation:pulse 1.2s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(232,51,111,.5)}100%{box-shadow:0 0 0 22px rgba(232,51,111,0)}}
 .micst{font-size:12.5px;color:var(--muted);min-height:18px}
 .heard{margin-top:10px;text-align:left;display:none}
 .heard.on{display:block}
-.nextbtn{width:100%;margin-top:14px;height:54px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(240,80,140,.3)}
+.nextbtn{width:100%;margin-top:14px;height:54px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(var(--accent-rgb),.3)}
 .wdone{text-align:center;padding:30px 10px}
 .wdone h3{font-size:20px;margin-bottom:6px}
 
@@ -82,7 +82,7 @@
 .exbox h3 .jp{color:var(--accent)}
 .exbox p{font-size:13.5px;color:var(--muted);margin-top:4px;line-height:1.5}
 .exbadge{display:inline-block;background:var(--accent);color:#fff;border-radius:99px;font-size:12px;font-weight:700;padding:2px 9px;margin-right:6px;vertical-align:2px}
-.exbig{width:100%;margin-top:14px;height:54px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(240,80,140,.3)}
+.exbig{width:100%;margin-top:14px;height:54px;border:none;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(var(--accent-rgb),.3)}
 .exrow{display:grid;grid-template-columns:1fr 1.6fr;gap:8px;margin-top:12px}
 .exrow .wbtn{height:50px;font-size:14px}
 .exwords{display:flex;flex-direction:column;gap:8px;margin-top:12px}

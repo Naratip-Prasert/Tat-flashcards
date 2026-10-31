@@ -11,10 +11,10 @@ const PRESETS=[
 ];
 const STAMPS=["🗻","🌸","⛩️","🍣","🍡","🐱","🎌","💮","🍵","🐰"];
 const TatProfile={
-  get(){ return Object.assign({name:"",bio:"",stamp:"🗻",bg:{type:"preset",id:"sakura"},avatar:null,t:0},store.get("fc3-profile",{})||{}); },
+  get(){ return Object.assign({name:"",bio:"",stamp:"🗻",bg:{type:"preset",id:tr("defBg")},avatar:null,t:0},store.get("fc3-profile",{})||{}); },
   set(patch){ const p=Object.assign(TatProfile.get(),patch,{t:Date.now()}); try{localStorage.setItem("fc3-profile",JSON.stringify(p))}catch(e){ toast("รูปใหญ่เกินไป ลองรูปอื่นนะ"); return; }
     if(window.TatSync&&TatSync.pushProfile) TatSync.pushProfile(p); if(S.view==="profile") renderProfile(); if(window.TatSync) TatSync.refresh(); },
-  display(){ const p=TatProfile.get(); return p.name||(window.TatSync&&TatSync.username&&TatSync.username())||"แทต"; }
+  display(){ const p=TatProfile.get(); return p.name||(window.TatSync&&TatSync.username&&TatSync.username())||tr("defName"); }
 };
 window.TatProfile=TatProfile;
 function bgCss(p){ if(p.bg&&p.bg.type==="img"&&p.bg.data) return `background-image:url('${p.bg.data}')`; const pr=PRESETS.find(x=>x.id===(p.bg&&p.bg.id))||PRESETS[0]; return `background:${pr.bg}`; }
@@ -28,7 +28,7 @@ function renderProfile(){
   const pm=`${today.getDate()} ${today.toLocaleDateString("en-GB",{month:"short"}).toUpperCase()} ${String(today.getFullYear()).slice(2)}`;
   $("pc").innerHTML=`<div class="pc-in">
     <div class="pc-photo" style="${bgCss(p)}">${pr?`<span class="deco">${pr.deco}</span>`:""}
-      <div class="pc-greet">Greetings from<br>Tat Card ♡<small>日本語、がんばってね！</small></div></div>
+      <div class="pc-greet">Greetings from<br>${tr("pcGreet")}<small>日本語、がんばってね！</small></div></div>
     <div class="pc-stamp"><div>${esc(p.stamp||"🗻")}<small>JAPAN</small></div></div>
     <div class="pc-post"><b>TAT CARD</b>${pm}<br>BANGKOK</div>
     <div class="pc-body">
@@ -56,18 +56,11 @@ function renderProfile(){
   const u=window.TatSync&&TatSync.username&&TatSync.username();
   $("pSyncNote").textContent=u?`☁️ โปรไฟล์ซิงก์กับบัญชี "${u}" — เปิดเครื่องไหนก็เหมือนกัน`:"☁️ เข้าสู่ระบบ (หน้าแรก) เพื่อให้โปรไฟล์ตรงกันทุกเครื่อง — ตอนนี้เซฟไว้ในเครื่องนี้";
 }
-// shrink photos on the phone before saving (keeps sync light)
-function loadImg(file){ return new Promise((res,rej)=>{ const u=URL.createObjectURL(file), im=new Image(); im.onload=()=>{res(im);URL.revokeObjectURL(u)}; im.onerror=rej; im.src=u; }); }
-async function shrink(file,w,h,q){
-  const im=await loadImg(file), c=document.createElement("canvas"); c.width=w; c.height=h;
-  const s=Math.max(w/im.naturalWidth,h/im.naturalHeight), dw=im.naturalWidth*s, dh=im.naturalHeight*s;
-  const x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,w,h); x.drawImage(im,(w-dw)/2,(h-dh)/2,dw,dh);
-  return c.toDataURL("image/jpeg",q);
-}
+// pick → crop (drag / pinch) → save small JPEG
 $("pAvIn").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f) return;
-  try{ TatProfile.set({avatar:await shrink(f,240,240,.82)}); toast("เปลี่ยนรูปโปรไฟล์แล้ว 📸"); }catch(err){ toast("เปิดรูปนี้ไม่ได้ ลองรูปอื่นนะ"); } };
+  try{ const d=await cropImage(f,{w:240,h:240,round:true,q:.82,title:"ครอบรูปโปรไฟล์"}); if(d){ TatProfile.set({avatar:d}); toast("เปลี่ยนรูปโปรไฟล์แล้ว 📸"); } }catch(err){ toast("เปิดรูปนี้ไม่ได้ ลองรูปอื่นนะ"); } };
 $("pBgIn").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f) return;
-  try{ TatProfile.set({bg:{type:"img",data:await shrink(f,900,560,.72)}}); toast("เปลี่ยนพื้นหลังแล้ว 🖼️"); }catch(err){ toast("เปิดรูปนี้ไม่ได้ ลองรูปอื่นนะ"); } };
+  try{ const d=await cropImage(f,{w:900,h:560,q:.72,title:"ครอบรูปพื้นหลัง"}); if(d){ TatProfile.set({bg:{type:"img",data:d}}); toast("เปลี่ยนพื้นหลังแล้ว 🖼️"); } }catch(err){ toast("เปิดรูปนี้ไม่ได้ ลองรูปอื่นนะ"); } };
 $("pAvDel").onclick=()=>TatProfile.set({avatar:null});
 const commitText=()=>{ const p=TatProfile.get(), n=$("pName").value.trim(), b=$("pBio").value.trim(); if(n!==p.name||b!==p.bio) TatProfile.set({name:n,bio:b}); };
 ["pName","pBio"].forEach(id=>{ $(id).addEventListener("change",commitText); $(id).addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.isComposing){ e.preventDefault(); $(id).blur(); } }); });

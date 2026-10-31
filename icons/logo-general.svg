@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b8ef0"/><stop offset="1" stop-color="#2f5fcf"/></linearGradient></defs>
+  <rect width="120" height="120" rx="28" fill="url(#g)"/>
+  <rect x="34" y="22" width="56" height="72" rx="10" fill="#c9dbfb" transform="rotate(10 62 58)"/>
+  <rect x="28" y="26" width="56" height="72" rx="10" fill="#fff"/>
+  <text x="56" y="76" text-anchor="middle" font-family="'Noto Sans JP','Hiragino Sans',sans-serif" font-size="38" font-weight="700" fill="#2f5fcf">あ</text>
+</svg>

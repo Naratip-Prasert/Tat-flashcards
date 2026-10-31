@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>แฟลชการ์ดคำศัพท์ญี่ปุ่น</title>
 <meta name="theme-color" content="#fff4f8">
+<script>try{document.documentElement.dataset.role=localStorage.getItem("fc3-role")==="fan"?"fan":"general"}catch(e){}</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,6 +23,7 @@
 <link rel="stylesheet" href="css/profile.css">
 <link rel="stylesheet" href="css/account.css">
 <link rel="stylesheet" href="css/popup.css">
+<link rel="stylesheet" href="css/theme-general.css">
 </head>
 <body>
 
@@ -32,13 +34,13 @@
     <div class="acct" id="acct"></div>
     <div style="position:relative">
     <div class="cslot home-slot" data-clock="home"><div class="clock" id="clock" role="button" aria-label="ข้อความให้กำลังใจ"><span class="ct" id="clockT"></span></div></div>
-    <div class="hhead"><img src="icons/apple-touch-icon.png" alt=""><div><h1>Tat Card</h1><p>ท่องศัพท์ญี่ปุ่นกันงับแทต♥ がんばって！</p></div></div>
+    <div class="hhead"><img src="icons/apple-touch-icon.png" data-logo alt=""><div><h1>Tat Card</h1><p data-t="homeSub">ท่องศัพท์ญี่ปุ่นกันงับแทต♥ がんばって！</p></div></div>
     </div>
     <button class="mode" id="goVocab">
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
       <div class="mico" style="background:var(--accent-soft)">📚</div>
-      <h2>คำศัพท์อิอิ</h2>
-      <p>แฟลชการ์ดคำศัพท์ จะช่วยให้แทตเรียนคำศัพท์ได้สนุกขึ้นงับบบ</p>
+      <h2 data-t="hVocab">คำศัพท์อิอิ</h2>
+      <p data-t="homeVocab">แฟลชการ์ดคำศัพท์ จะช่วยให้แทตเรียนคำศัพท์ได้สนุกขึ้นงับบบ</p>
       <div class="mbar"><i id="hVocBar" style="background:var(--good)"></i></div>
       <div class="mfoot"><span id="hVocTx"></span><span id="hVocTx2"></span></div>
       <span class="deco jp">語</span>
@@ -46,8 +48,8 @@
     <button class="mode" id="goWrite">
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
       <div class="mico" style="background:#f3e8ff">✍️</div>
-      <h2>เขียนประโยคอิอิ</h2>
-      <p>สุ่มประโยคไทยสั้น ๆ → เขียนเป็นภาษาญี่ปุ่น → ให้แทตลองพูดตามงับอิอิ</p>
+      <h2 data-t="hWrite">เขียนประโยคอิอิ</h2>
+      <p data-t="homeWrite">สุ่มประโยคไทยสั้น ๆ → เขียนเป็นภาษาญี่ปุ่น → ให้แทตลองพูดตามงับอิอิ</p>
       <div class="mbar"><i id="hWrBar" style="background:#b16ee8"></i></div>
       <div class="mfoot"><span id="hWrTx"></span><span></span></div>
       <span class="deco jp">文</span>
@@ -59,11 +61,12 @@
 <section class="view" id="profileView">
   <div class="cbar col">
     <button class="back" id="pBack" aria-label="กลับหน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>
-    <div class="ctitle"><b>โปรไฟล์ของฉัน 💌</b>โปสการ์ดจากแทต</div>
+    <div class="ctitle"><b>โปรไฟล์ของฉัน 💌</b><span data-t="profSub">โปสการ์ดจากแทต</span></div>
     <div class="cslot" data-clock="profile"></div>
   </div>
   <div class="wscroll"><div class="col" id="pBody">
     <div class="pc" id="pc"></div>
+    <div class="pc-acts"><button id="pFull">🔍 ดูแบบเต็ม</button><button class="pri" id="pShare">📤 แชร์โปสการ์ด</button></div>
     <div class="pedit">
       <div class="pe-row">
         <label class="pe-btn">📷 รูปโปรไฟล์<input type="file" accept="image/*" id="pAvIn" hidden></label>
@@ -72,7 +75,7 @@
       <div class="pe-lab">พื้นหลังสำเร็จรูป</div>
       <div class="pe-sw" id="pPresets"></div>
       <div class="pe-lab">ชื่อที่แสดง</div>
-      <input class="pe-in" id="pName" maxlength="24" placeholder="เช่น แทต">
+      <input class="pe-in" id="pName" maxlength="24" placeholder="เช่น แทต" data-tph="namePh">
       <div class="pe-lab">ข้อความบนโปสการ์ด</div>
       <input class="pe-in" id="pBio" maxlength="60" placeholder="เช่น 日本語、がんばります！">
       <div class="pe-lab">แสตมป์</div>
@@ -87,7 +90,7 @@
 <section class="view" id="writeView">
   <div class="cbar col">
     <button class="back" id="wBack" aria-label="กลับหน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>
-    <div class="ctitle"><b>เขียนประโยคอิอิ ✍️</b>แปลไทย → ญี่ปุ่น แล้วพูดตาม</div>
+    <div class="ctitle"><b data-t="wTitle">เขียนประโยคอิอิ ✍️</b>แปลไทย → ญี่ปุ่น แล้วพูดตาม</div>
     <div class="cslot" data-clock="write"></div>
   </div>
   <div class="wscroll"><div class="col" id="wBody">
@@ -189,9 +192,9 @@
 <div class="toast" id="toast"></div>
 <div class="cele" id="cele" role="dialog" aria-modal="true">
   <div class="cbox">
-    <img src="icons/apple-touch-icon.png" alt="">
+    <img src="icons/apple-touch-icon.png" data-logo alt="">
     <div class="big" id="celeTitle"></div>
-    <div class="msg">เก่งมากงับที่รัก ♥♥♥</div>
+    <div class="msg" data-t="celeMsg">เก่งมากงับที่รัก ♥♥♥</div>
     <div class="sm" id="celeSub"></div>
     <div class="cbtns" id="celeBtns"></div>
   </div>
@@ -201,16 +204,20 @@
 <script src="data/vocab.js"></script>
 <script src="data/sentences.js"></script>
 <script src="js/config/firebase.js"></script>
+<script src="js/config/roles.js"></script>
 <script src="data/exercise-bank.js"></script>
 <script src="js/engine/sentence-gen.js"></script>
 <script src="js/core/state.js"></script>
+<script src="js/core/role.js"></script>
 <script src="js/core/ui.js"></script>
 <script src="js/core/router.js"></script>
+<script src="js/core/crop.js"></script>
 <script src="js/features/vocab-list.js"></script>
 <script src="js/features/flashcards.js"></script>
 <script src="js/features/home.js"></script>
 <script src="js/features/write.js"></script>
 <script src="js/features/profile.js"></script>
+<script src="js/features/postcard-share.js"></script>
 <script src="js/app.js"></script>
 <script type="module" src="js/services/sync.js"></script>
 </body>
