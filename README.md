@@ -60,7 +60,7 @@ icon-*.png            ไอคอน
 
 1. เข้า https://console.firebase.google.com → **Add project** (ชื่ออะไรก็ได้ เช่น `tat-card`, ปิด Google Analytics ได้)
 2. **Build → Authentication → Get started → Sign-in method → Email/Password → Enable → Save**
-3. **Build → Firestore Database → Create database** → เลือก location `asia-southeast1 (Singapore)` → Production mode
+3. **Build → Firestore Database → Create database** → เลือก location `asia-southeast3 (Bangkok)` (หรือ Singapore ก็ได้), edition **Standard** → Production mode
 4. Firestore → แท็บ **Rules** → วางกฎนี้แล้วกด **Publish** (แต่ละคนอ่าน/เขียนได้เฉพาะข้อมูลตัวเอง)
    ```
    rules_version = '2';

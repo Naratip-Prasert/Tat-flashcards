@@ -3,7 +3,14 @@
 // คัดลอก firebaseConfig จาก Firebase console (Project settings → Your apps → Web app) มาวางแทนค่าด้านล่าง
 // ค่าพวกนี้เปิดเผยได้ (ไม่ใช่รหัสลับ) ความปลอดภัยมาจาก Firestore rules
 // ถ้ายังเป็น null แอปจะทำงานแบบเดิม (เซฟในเครื่องอย่างเดียว)
-window.TAT_FIREBASE = null;
+window.TAT_FIREBASE = {
+  apiKey: "AIzaSyBrgYBogj8F4LOMqRs4pomOvBIQTODc-5E",
+  authDomain: "tat-card-a7b26.firebaseapp.com",
+  projectId: "tat-card-a7b26",
+  storageBucket: "tat-card-a7b26.firebasestorage.app",
+  messagingSenderId: "81667561532",
+  appId: "1:81667561532:web:a1ea25ff7ce1eaea310b39"
+};
 /* ตัวอย่าง:
 window.TAT_FIREBASE = {
   apiKey: "AIza....",
