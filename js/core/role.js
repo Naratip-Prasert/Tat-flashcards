@@ -10,7 +10,7 @@ const TXT={
     celeMsg:"เก่งมากงับที่รัก ♥♥♥", pcGreet:"Tat Card ♡",
     vOk:"✓ ถูกต้อง! เก่งมากงับที่รัก♥", vNear:"〜 เกือบถูกแล้ว อีกนิสสเดียวงับ", vNo:"✗ ไม่ต้องรีบๆงับ ค่อยๆทำ จุ๊ฟๆ", vGive:"👀 เฉลยอยู่นี่งับ",
     ex100:"เพอร์เฟกต์!! เก่งที่สุดเลยงับ 🥇", ex80:"เก่งมากงับ ใกล้เต็มแล้ว 🎉", ex50:"ดีมากเลย ทบทวนข้อที่ผิดอีกนิดนะ 💪", ex0:"ไม่เป็นไรงับ ลองอีกรอบ เดี๋ยวก็ได้ 🌱",
-    pickOne:"เลือกอย่างน้อย 1 หมวดนะงับ", welcomeNew:"สมัครเรียบร้อย ยินดีต้อนรับงับ 🎉", welcomeBack:"ยินดีต้อนรับกลับมา {u} ♡"
+    litDone:"จำการ์ดเรื่องนี้ได้ครบแล้ว เก่งมากงับ ♥", pickOne:"เลือกอย่างน้อย 1 หมวดนะงับ", welcomeNew:"สมัครเรียบร้อย ยินดีต้อนรับงับ 🎉", welcomeBack:"ยินดีต้อนรับกลับมา {u} ♡"
   },
   general:{
     homeSub:"ท่องศัพท์ญี่ปุ่นทีละนิด がんばって！", hVocab:"คำศัพท์", hWrite:"เขียนประโยค", wTitle:"เขียนประโยค ✍️", defBg:"fuji",
@@ -20,11 +20,11 @@ const TXT={
     celeMsg:"ยอดเยี่ยมมาก ทำได้ครบแล้ว 👏", pcGreet:"Tat Card",
     vOk:"✓ ถูกต้อง! เยี่ยมมาก", vNear:"〜 เกือบถูกแล้ว อีกนิดเดียว", vNo:"✗ ยังไม่ถูก ลองดูเฉลยแล้วลองใหม่นะ", vGive:"👀 เฉลยอยู่ตรงนี้",
     ex100:"เต็ม! เยี่ยมมาก 🥇", ex80:"เก่งมาก ใกล้เต็มแล้ว 🎉", ex50:"ดีเลย ทบทวนข้อที่ผิดอีกนิดนะ 💪", ex0:"ไม่เป็นไร ลองอีกรอบ เดี๋ยวก็ได้ 🌱",
-    pickOne:"เลือกอย่างน้อย 1 หมวดนะ", welcomeNew:"สมัครเรียบร้อย ยินดีต้อนรับ 🎉", welcomeBack:"ยินดีต้อนรับกลับมา {u}"
+    litDone:"จำการ์ดชุดนี้ได้ครบแล้ว 🎉", pickOne:"เลือกอย่างน้อย 1 หมวดนะ", welcomeNew:"สมัครเรียบร้อย ยินดีต้อนรับ 🎉", welcomeBack:"ยินดีต้อนรับกลับมา {u}"
   }
 };
 /* ฟังก์ชันที่แต่ละโรลใช้ได้ — โรลทั่วไปเห็นแค่คำศัพท์ (ซ่อนเขียนประโยค / ทำแบบฝึก) */
-const FEATURES={fan:{write:true}, general:{write:false}};
+const FEATURES={fan:{write:true,lit:true}, general:{write:false,lit:false}};
 function can(f){ return !!(FEATURES[ROLE.id]||FEATURES.general)[f]; }
 const LOGO={fan:"icons/apple-touch-icon.png", general:"icons/logo-general.svg"};
 const THEME_COLOR={fan:"#fff4f8", general:"#f3f7fc"};
@@ -47,6 +47,6 @@ function setRole(id){
   try{ localStorage.setItem("fc3-role",id); }catch(e){}
   applyRole();
   if(typeof cheer==="function") cheer();
-  if(window.TatApp){ if(S.view==="write"&&!can("write")) goHome(); else TatApp.reload(); }
+  if(window.TatApp){ if((S.view==="write"||S.view==="lit")&&!can(S.view)) goHome(); else TatApp.reload(); }
 }
 applyRole();

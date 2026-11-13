@@ -1,0 +1,61 @@
+/* 📜 Hist Jap Lit — แฟลชการ์ด + สรุปรวมเรื่องเล่าจากเมืองอุจิ */
+.ltabs{grid-template-columns:1fr 1fr}
+.llab{font-size:12px;color:var(--muted);font-weight:600;margin:6px 2px 5px}
+.lchips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.lchips::-webkit-scrollbar{display:none}
+.lchip{flex:none;display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);font-size:13px;padding:6px 12px;border-radius:999px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.lchip i{width:9px;height:9px;border-radius:50%}
+.lchip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.ltool{display:flex;align-items:center;gap:6px;margin:10px 0 8px;flex-wrap:wrap}
+.ltool button{border:1px solid var(--line);background:var(--card);font-size:13px;padding:7px 11px;border-radius:11px;color:var(--ink);cursor:pointer}
+.ltool button.on{background:#fff2d9;border-color:#f0cf8f;color:#8a5a10}
+.ltool .sp{flex:1}
+.lcount{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lprog{height:6px;background:var(--line);border-radius:99px;overflow:hidden;display:flex;margin-bottom:12px}
+.lprog i{display:block;height:100%;transition:width .3s}
+.lprog .k{background:var(--good)}.lprog .u{background:#f0b860}
+
+.lcard{position:relative;height:clamp(300px,52vh,470px);transition:transform .14s ease-in;cursor:pointer;touch-action:pan-y;outline:none}
+.lcard.turn{transform:scaleX(0)}
+.lface{position:absolute;inset:0;background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow2);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.lface::before{content:"";position:sticky;top:0;float:left;flex:none;width:6px;height:0}
+.lcard::after{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;border-radius:20px 0 0 20px;background:var(--sc,var(--accent));pointer-events:none}
+.lface.isback{background:linear-gradient(180deg,var(--card),var(--accent-soft) 300%)}
+.lmeta{display:flex;flex-wrap:wrap;gap:6px;padding:14px 16px 0 22px;flex:none}
+.ltag{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--muted)}
+.ltag.st{background:color-mix(in srgb,var(--sc) 14%,white);color:color-mix(in srgb,var(--sc) 80%,black)}
+.ltag.ok{background:#dcf3e5;color:#2f7a4f}.ltag.un{background:#fff2d9;color:#8a5a10}
+.lq{flex:1;display:flex;flex-direction:column;justify-content:center;padding:10px 22px 10px 26px;font-size:20px;line-height:1.6;font-weight:600;text-wrap:pretty}
+.lq small{display:block;font-size:13.5px;font-weight:500;color:var(--muted);margin-bottom:6px}
+.lhint{flex:none;font-size:12px;color:var(--muted);text-align:center;padding:0 0 14px}
+.lans{padding:10px 20px 18px 26px;font-size:15.5px;line-height:1.75}
+.lqq{font-size:12.5px;color:var(--muted);margin-bottom:8px;line-height:1.5}
+.lans h3{font-size:20px;margin:2px 0 6px;color:var(--ink)}
+.lans ul,.lans ol,.lsbody ul{margin:4px 0;padding-left:20px}
+.lans li{margin:3px 0}
+.lans h4,.lsbody h4{font-size:12.5px;letter-spacing:.04em;color:var(--accent);margin:12px 0 2px}
+.lans h4:first-of-type{margin-top:2px}
+.lans b,.lsbody b,.lintro b{color:color-mix(in srgb,var(--accent) 70%,black)}
+.lans .note{font-size:13px;color:var(--muted);background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:10px}
+.lctl{display:grid;grid-template-columns:50px 1fr 1fr 50px;gap:8px;margin-top:12px}
+.lctl button{border-radius:14px;padding:12px 6px;cursor:pointer;border:1px solid var(--line);background:var(--card);font-size:15px;font-weight:700}
+.lctl .nav{font-size:22px;line-height:1;color:var(--muted)}
+.lctl .un{background:#fff2d9;border-color:#f0cf8f;color:#8a5a10}
+.lctl .ok{background:#dcf3e5;border-color:#a9d3b8;color:#2f7a4f}
+.lctl button:active{transform:translateY(1px)}
+.lempty{padding:40px 20px;text-align:center;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:20px;line-height:1.6}
+.lkbd{font-size:11.5px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5}
+
+.lintro{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;font-size:14.5px;line-height:1.7;margin-bottom:12px;box-shadow:var(--shadow)}
+.lstory{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;overflow:hidden;position:relative;box-shadow:var(--shadow)}
+.lstory::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--sc)}
+.lstory summary{list-style:none;cursor:pointer;padding:13px 14px 13px 18px;display:flex;align-items:center;gap:12px}
+.lstory summary::-webkit-details-marker{display:none}
+.lnum{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:700;color:#fff;background:var(--sc);font-size:14px}
+.lst{flex:1;min-width:0}
+.lst b{font-size:16px;display:block;line-height:1.35}
+.lst span{font-size:12.5px;color:var(--muted)}
+.lchev{color:var(--muted);font-size:20px;transition:transform .2s}
+.lstory[open] .lchev{transform:rotate(90deg)}
+.lsbody{padding:0 16px 16px 20px;font-size:14.5px;line-height:1.75}
+.lgo{margin-top:12px;font-weight:700;font-size:14px;border:0;background:var(--accent);color:#fff;border-radius:12px;padding:10px 14px;cursor:pointer}

@@ -1,13 +1,13 @@
 /* =====================================================================
    ☁️ ล็อกอินง่าย ๆ (ชื่อผู้ใช้ + รหัสผ่าน) + ซิงก์ความคืบหน้าข้ามเครื่อง
    ใช้ Firebase Auth + Firestore (โหลดจาก CDN เมื่อมี config เท่านั้น)
-   ข้อมูลที่ซิงก์: fc3-status (จำได้/กำลังเรียน), fc3-star (ติดดาว), fc3-sent (สถิติเขียนประโยค)
+   ข้อมูลที่ซิงก์: fc3-status (จำได้/กำลังเรียน), fc3-star (ติดดาว), fc3-sent (สถิติเขียนประโยค), fc3-lit (การ์ด Hist Jap Lit)
    เก็บที่ Firestore: users/{uid} = { data:{status,star,sent}, t, dev, name }
    ===================================================================== */
 const FB = "10.12.2";
 const cfg = window.TAT_FIREBASE;
 const $ = id => document.getElementById(id);
-const KEYS = { status: "fc3-status", star: "fc3-star", sent: "fc3-sent" };
+const KEYS = { status: "fc3-status", star: "fc3-star", sent: "fc3-sent", lit: "fc3-lit" };
 const DOMAIN = "tatcard.app";                       // ชื่อผู้ใช้ → อีเมลภายใน (ไม่ต้องมีอีเมลจริง)
 const LS = { get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
              set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -17,9 +17,9 @@ const toast = m => window.TatApp && window.TatApp.toast(m);
 let fb = null, user = null, ref = null, unsub = null, timer = null, state = "init", lastErr = "";
 
 /* ---------------- local data ---------------- */
-const readLocal = () => ({ status: LS.get(KEYS.status) || {}, star: LS.get(KEYS.star) || [], sent: LS.get(KEYS.sent) || {} });
+const readLocal = () => ({ status: LS.get(KEYS.status) || {}, star: LS.get(KEYS.star) || [], sent: LS.get(KEYS.sent) || {}, lit: LS.get(KEYS.lit) || {} });
 function writeLocal(d) {
-  LS.set(KEYS.status, d.status || {}); LS.set(KEYS.star, d.star || []); LS.set(KEYS.sent, d.sent || {});
+  LS.set(KEYS.status, d.status || {}); LS.set(KEYS.star, d.star || []); LS.set(KEYS.sent, d.sent || {}); LS.set(KEYS.lit, d.lit || {});
   window.TatApp && window.TatApp.reload();
 }
 const localT = () => +localStorage.getItem("fc3-sync-t") || 0;
@@ -34,7 +34,9 @@ function merge(a, b) {
   Object.entries(b.sent || {}).forEach(([k, v]) => { const x = sent[k] || {};
     sent[k] = { best: (S[v.best] || 0) > (S[x.best] || 0) ? v.best : x.best, ...(v.spoke || x.spoke ? { spoke: true } : {}) };
     if (!sent[k].best) delete sent[k].best; });
-  return { status, star, sent };
+  const lit = { ...(a.lit || {}) };
+  Object.entries(b.lit || {}).forEach(([k, v]) => { if (!lit[k] || (R[v === "k" ? "k" : "l"] || 0) > (R[lit[k] === "k" ? "k" : "l"] || 0)) lit[k] = v; });
+  return { status, star, sent, lit };
 }
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
