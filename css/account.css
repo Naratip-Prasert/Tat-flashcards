@@ -27,3 +27,12 @@
 .lgsw{text-align:center;font-size:13px;color:var(--muted);margin-top:12px}
 .lgsw button{border:none;background:none;color:var(--accent);font-weight:700;font-size:13px;cursor:pointer;text-decoration:underline}
 .lgnote{text-align:center;font-size:11.5px;color:var(--muted);margin-top:8px}
+
+/* 👑 แถบแอดมิน */
+.adminbar{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px 8px 8px 12px;margin:-6px 0 16px;box-shadow:var(--shadow);font-size:13px}
+.adminbar[hidden]{display:none}
+.adm-b{font-weight:700;color:#b8860b;white-space:nowrap}
+.adm-l{color:var(--muted);flex:1;white-space:nowrap}
+.adm-sw{display:flex;gap:4px;background:var(--accent-soft);border-radius:12px;padding:3px}
+.adm-sw button{border:none;background:none;border-radius:9px;padding:6px 10px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+.adm-sw button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 4px rgba(var(--accent-rgb),.18)}
