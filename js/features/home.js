@@ -8,7 +8,7 @@ function renderHome(){
   const SEN=window.SENTENCES||[], sr=store.get("fc3-sent",{}), ok=SEN.filter(s=>sr[s.id]&&sr[s.id].best==="ok").length;
   $("hWrBar").style.width=(SEN.length?ok/SEN.length*100:0)+"%";
   $("hWrTx").textContent=`เขียนถูกแล้ว ${ok} / ${SEN.length} ประโยค`;
-  const lp=L.progress(); $("hLitBar").style.width=(lp.known/lp.total*100)+"%"; $("hLitTx").textContent=`จำได้แล้ว ${lp.known} / ${lp.total} การ์ด`;
+  const lp=L.progress(); $("hLitBar").style.width=(lp.known/lp.total*100)+"%"; $("hLitTx").textContent=`${lp.sets} หมวด · จำได้แล้ว ${lp.known} / ${lp.total} การ์ด`;
 }
 $("goVocab").onclick=()=>{ setHash(S.ch); showView("list"); $("scroll").scrollTop=0; };
 $("goLit").onclick=()=>{ setHash("lit"); showView("lit"); };

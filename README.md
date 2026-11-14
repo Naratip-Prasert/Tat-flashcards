@@ -47,7 +47,9 @@ data/                       ข้อมูลล้วน แก้ได้โ
   vocab.js                  คำศัพท์ทั้งหมด ← แก้/เพิ่มคำที่ไฟล์นี้
   sentences.js              ประโยคโหมด 🎯 เลือกหมวด
   exercise-bank.js          คลังคำ N5–N1 สำหรับ 📝 ทำแบบฝึก
-  lit-uji.js                📜 Hist Jap Lit — 9 เรื่องเล่าจากเมืองอุจิ + การ์ด 96 ใบ
+  lit-uji.js                📜 Hist Jap Lit · หมวดรวมเรื่องเล่าจากเมืองอุจิ (9 เรื่อง การ์ด 96 ใบ)
+  lit-kamakura.js           📜 Hist Jap Lit · หมวดวรรณคดีสมัยคะมะกุระ - มุโระมะชิ (คำ → คำอธิบาย)
+  lit-edo.js                📜 Hist Jap Lit · หมวดวรรณคดีสมัยเอโดะ (คำ → คำอธิบาย)
 
 js/
   config/firebase.js        ค่าเชื่อม Firebase
@@ -62,7 +64,7 @@ js/
   features/flashcards.js    แฟลชการ์ด + ป๊อปอัพจำครบบท
   features/home.js          หน้าโฮม
   features/write.js         เขียนประโยค / ทำแบบฝึก / ไมค์
-  features/lit.js           📜 Hist Jap Lit (แฟลชการ์ด + สรุป 9 เรื่อง)
+  features/lit.js           📜 Hist Jap Lit (หน้าเลือกหมวด → แฟลชการ์ด + สรุป/รายการคำ)
   features/profile.js       หน้าโปรไฟล์
   features/postcard-share.js  ดูโปสการ์ดแบบเต็ม + แชร์/บันทึกเป็นรูป
   app.js                    เริ่มแอป (โหลดเป็นไฟล์สุดท้าย)

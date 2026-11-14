@@ -1,7 +1,9 @@
 /* ตัวสลับหน้า: #home #ch1 #ch1-cards #write #profile — โหลดก่อนไฟล์ฟีเจอร์ */
 /* ---------- routing (#ch1 = list, #ch1-cards = flashcards) ---------- */
 function parseHash(){ const h=location.hash.slice(1); if(h==="home"||h==="write"||h==="profile") return {page:h};
-  if(h==="lit"||h==="lit-sum") return {page:"lit",tab:h==="lit-sum"?"sum":"cards"};
+  if(h==="lit") return {page:"lit"};
+  if(h==="lit-sum") return {page:"lit",set:"uji",tab:"sum"};                 // old link
+  const lm=h.match(/^lit-([a-z0-9]+?)(-sum)?$/); if(lm) return {page:"lit",set:lm[1],tab:lm[2]?"sum":"cards"};
   const m=h.match(/^(ch\d)(-cards)?$/); return m&&ids.has(m[1])?{page:m[2]?"cards":"list",ch:m[1],cards:!!m[2]}:null; }
 function setHash(h){ try{ history.replaceState(null,"","#"+h) }catch(e){} }
 

@@ -60,7 +60,7 @@
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
       <div class="mico" style="background:#fdeedd">📜</div>
       <h2>Hist Jap Lit</h2>
-      <p>รวมเรื่องเล่าจากเมืองอุจิ 9 เรื่อง · แฟลชการ์ดทบทวน + สรุปเรื่องย่อ ข้อคิด ความเชื่อ</p>
+      <p>วรรณคดีญี่ปุ่น · เรื่องเล่าจากเมืองอุจิ · สมัยคะมะกุระ-มุโระมะชิ · สมัยเอโดะ</p>
       <div class="mbar"><i id="hLitBar" style="background:#c8402e"></i></div>
       <div class="mfoot"><span id="hLitTx"></span><span></span></div>
       <span class="deco jp">宇治</span>
@@ -101,20 +101,23 @@
 <section class="view" id="litView">
   <div class="cbar col">
     <button class="back" id="lBack" aria-label="กลับหน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>
-    <div class="ctitle"><b>Hist Jap Lit 📜</b>รวมเรื่องเล่าจากเมืองอุจิ · 宇治拾遺物語</div>
+    <div class="ctitle"><b id="lTitle">Hist Jap Lit 📜</b><span id="lSub">วรรณคดีญี่ปุ่น · เลือกหมวด</span></div>
     <div class="cslot" data-clock="lit"></div>
   </div>
   <div class="wscroll" id="lScroll"><div class="col">
-    <div class="wmode ltabs" id="lTabs"><button data-tab="cards">🃏 แฟลชการ์ด</button><button data-tab="sum">📖 สรุป 9 เรื่อง</button></div>
+    <div id="lPick"></div>
+    <div id="lSet" hidden>
+    <div class="wmode ltabs" id="lTabs"><button data-tab="cards">🃏 แฟลชการ์ด</button><button data-tab="sum" id="lSumTab">📖 สรุป</button></div>
     <div id="lCards">
-      <div class="llab">เรื่อง</div><div class="lchips" id="lStory"></div>
-      <div class="llab">หมวด</div><div class="lchips" id="lCat"></div>
-      <div class="ltool"><button id="lShuffle">🔀 สลับ</button><button id="lStarF">⭐ ติดดาว</button><button id="lUnsure">ยังไม่แม่น</button><button id="lReset">↺ เริ่มใหม่</button><span class="sp"></span><span class="lcount" id="lCount"></span></div>
+      <div id="lFilt"><div class="llab">เรื่อง</div><div class="lchips" id="lStory"></div>
+      <div class="llab">หมวด</div><div class="lchips" id="lCat"></div></div>
+      <div class="ltool"><button id="lShuffle">🔀 สลับ</button><button id="lRev" hidden title="สลับด้านการ์ด">⇄ ด้าน</button><button id="lStarF">⭐ ติดดาว</button><button id="lUnsure">ยังไม่แม่น</button><button id="lReset" title="ล้างสถานะจำได้ของหมวดนี้">↺ เริ่มใหม่</button><span class="sp"></span><span class="lcount" id="lCount"></span></div>
       <div class="lprog" aria-hidden="true"><i class="k" id="lPk"></i><i class="u" id="lPu"></i></div>
       <div id="lDeck"></div>
       <div class="lkbd">แตะการ์ดเพื่อพลิก · ปัดซ้าย/ขวาเพื่อเปลี่ยนการ์ด</div>
     </div>
     <div id="lSum" hidden><div class="lintro" id="lIntro"></div><div id="lSumList"></div></div>
+    </div>
   </div></div>
 </section>
 
@@ -236,6 +239,8 @@
 <script src="data/vocab.js"></script>
 <script src="data/sentences.js"></script>
 <script src="data/lit-uji.js"></script>
+<script src="data/lit-kamakura.js"></script>
+<script src="data/lit-edo.js"></script>
 <script src="js/config/firebase.js"></script>
 <script src="js/config/roles.js"></script>
 <script src="data/exercise-bank.js"></script>

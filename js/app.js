@@ -1,6 +1,6 @@
 /* ฟังการเปลี่ยน # + จุดเชื่อมกับ sync + เริ่มแอป — โหลดเป็นไฟล์สุดท้าย */
 window.addEventListener("hashchange",()=>{ const h=parseHash(); if(!h) return;
-  if(h.page==="lit"){ if(S.view!=="lit") showView("lit",h.tab); else L.enter(h.tab); return; }
+  if(h.page==="lit"){ if(S.view!=="lit") showView("lit",h); else L.enter(h); return; }
   if(h.page==="home"||h.page==="write"||h.page==="profile"){ if(S.view!==h.page) showView(h.page); return; }
   if(h.ch!==S.ch){S.ch=h.ch;store.set("fc3-ch",S.ch)}
   if(h.cards && S.view!=="cards") startStudy(); else if(!h.cards && S.view!=="list") showView("list"); else renderList(true); });
@@ -19,6 +19,6 @@ window.TatApp={
 /* ---------- boot ---------- */
 (function(){ const h=parseHash();
   if(!h||h.page==="home"){ goHome(); return; }
-  if(h.page==="write"||h.page==="profile"||h.page==="lit"){ showView(h.page,h.tab); return; }
+  if(h.page==="write"||h.page==="profile"||h.page==="lit"){ showView(h.page,h); return; }
   S.ch=h.ch; store.set("fc3-ch",S.ch); showView("list"); if(h.cards) startStudy(); })();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
