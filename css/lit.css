@@ -59,3 +59,26 @@
 .lstory[open] .lchev{transform:rotate(90deg)}
 .lsbody{padding:0 16px 16px 20px;font-size:14.5px;line-height:1.75}
 .lgo{margin-top:12px;font-weight:700;font-size:14px;border:0;background:var(--accent);color:#fff;border-radius:12px;padding:10px 14px;cursor:pointer}
+
+/* ---------- แท็บแฟลชการ์ด: พอดีจอ ไม่เลื่อนทั้งหน้า (เลื่อนได้เฉพาะในการ์ดถ้าคำตอบยาว) ---------- */
+#litView .wscroll{overscroll-behavior:contain}
+#litView.lc .wscroll{overflow:hidden;display:flex;flex-direction:column;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+#litView.lc .wscroll>.col{flex:1;min-height:0;display:flex;flex-direction:column}
+#litView.lc .ltabs{flex:none}
+#lCards{flex:1;min-height:0;display:flex;flex-direction:column}
+#lCards[hidden],#lSum[hidden]{display:none}
+#lCards>*{flex:none}
+#lCards #lDeck{flex:1;min-height:0;display:flex;flex-direction:column}
+#lDeck .lcard{flex:1;min-height:180px;height:auto}
+#lDeck .lempty{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.lface{overscroll-behavior:contain}
+#litView.lc .lkbd{display:none}
+@media (max-height:700px){
+  #litView.lc .llab{display:none}
+  #litView.lc .lchips{margin-bottom:6px}
+  #litView.lc .ltool{margin:4px 0 6px}
+  #litView.lc .ltool button{padding:6px 9px;font-size:12.5px}
+  #litView.lc .lprog{margin-bottom:8px}
+  #litView.lc .lq{font-size:18px}
+  #litView.lc .lctl button{padding:10px 6px}
+}

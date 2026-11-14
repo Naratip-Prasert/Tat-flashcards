@@ -89,6 +89,7 @@ const L=(()=>{
   function setTab(t){ tab=t; setHash(t==="sum"?"lit-sum":"lit");
     $("lTabs").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
     $("lCards").hidden=t!=="cards"; $("lSum").hidden=t!=="sum";
+    $("litView").classList.toggle("lc",t==="cards"); $("lScroll").scrollTop=0;
     if(t==="cards"){ renderChips(); render(); } }
   $("lTabs").onclick=e=>{ const b=e.target.closest("button"); if(b) setTab(b.dataset.tab); };
   $("lBack").onclick=goHome;
