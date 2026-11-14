@@ -4,6 +4,7 @@
      kind:"terms" = แบบคำ → คำอธิบาย (ชุดจาก Quizlet)
    ลิงก์: #lit (เลือกหมวด) · #lit-<id> (การ์ด) · #lit-<id>-sum (สรุป/รายการคำ)
    สถานะ: fc3-lit = { cardId: "k"|"u" }, fc3-lit-star = [cardId]  ← ซิงก์ข้ามเครื่อง (id ไม่ซ้ำข้ามหมวด) */
+const LIT_ST=ST;                                   // สถานะ ยังไม่เริ่ม/กำลังเรียน/จำได้ (ก่อนถูกบัง)
 const L=(()=>{
   const SETS=(window.LIT_SETS||[]).slice().sort((a,b)=>(a.order||9)-(b.order||9));
   const BY=Object.fromEntries(SETS.map(s=>[s.id,s]));
@@ -18,7 +19,8 @@ const L=(()=>{
   const known=cs=>cs.filter(c=>mark[c.id]==="k").length;
   const starredIn=cs=>cs.filter(c=>lstars.has(c.id)).length;
   const grpOf=c=>D.kind==="story"?c.s:c.g;
-  const list=()=>order.map(id=>BYID[id]).filter(c=>c&&(fStory==="all"||String(grpOf(c))===String(fStory))&&(fCat==="all"||c.cat===fCat)&&(!onlyUnsure||mark[c.id]!=="k")&&(!onlyStar||lstars.has(c.id)));
+  let deck=null;                                   // Set ของ id จากปุ่ม "ทบทวนชุดนี้" ในลิสต์รวม (null = ใช้ตัวกรองปกติ)
+  const list=()=>order.map(id=>BYID[id]).filter(c=>c&&(deck?deck.has(c.id):(fStory==="all"||String(grpOf(c))===String(fStory))&&(fCat==="all"||c.cat===fCat))&&(!onlyUnsure||mark[c.id]!=="k")&&(!onlyStar||lstars.has(c.id)));
 
   /* ---------- หน้าเลือกหมวด ---------- */
   function renderPick(){
@@ -33,12 +35,12 @@ const L=(()=>{
   }
   $("lPick").onclick=e=>{ const b=e.target.closest(".lset"); if(!b) return;
     if(b.classList.contains("soon")){ toast("หมวดนี้ยังไม่มีการ์ด เร็ว ๆ นี้นะ 🙏"); return; }
-    openSet(b.dataset.set,"cards"); };
+    openSet(b.dataset.set,"list"); };
 
   function showPick(){
     page="pick"; setHash("lit");
     $("litView").classList.remove("lc"); $("lPick").hidden=false; $("lSet").hidden=true;
-    $("lTitle").textContent="Hist Jap Lit 📜"; $("lSub").textContent="วรรณคดีญี่ปุ่น · เลือกหมวด";
+    $("litTitle").textContent="Hist Jap Lit 📜"; $("litSub").textContent="วรรณคดีญี่ปุ่น · เลือกหมวด"; $("liCta").hidden=true;
     renderPick(); $("lScroll").scrollTop=0;
   }
 
@@ -49,17 +51,18 @@ const L=(()=>{
     CATN=D.cats?Object.fromEntries(D.cats.map(c=>[c.k,c.n])):{}; GN=D.groups?Object.fromEntries(D.groups.map(g=>[g.k,g.n])):{};
     const p=prefAll[id]||{};
     fStory=(D.stories||D.groups)?(p.s??"all"):"all"; fCat=D.cats?(p.c||D.cats[0].k):"all"; rev=!!p.r;
-    order=CARDS.map(c=>c.id); idx=0; flipped=false; onlyUnsure=false; onlyStar=false;
+    order=CARDS.map(c=>c.id); idx=0; flipped=false; onlyUnsure=false; onlyStar=false; deck=null; LF={g:"all",star:false,stat:null,q:""}; $("liQ").value="";
     $("lUnsure").classList.remove("on"); $("lDeck").innerHTML="";
-    $("lSumTab").textContent=D.sumLabel||"📖 รายการคำทั้งหมด";
+    $("lSumTab").textContent=D.sumLabel||"📖 สรุป"; $("lSumTab").hidden=D.kind!=="story";
+    $("lTabs").style.gridTemplateColumns=D.kind==="story"?"1fr 1fr 1fr":"1fr 1fr";
     $("lFilt").hidden=!(D.kind==="story"||D.groups); $("lStoryLab").textContent=D.kind==="story"?"เรื่อง":"หัวข้อ";
     $("lCatLab").hidden=$("lCat").hidden=D.kind!=="story"; $("lRev").hidden=D.kind!=="terms"; $("lRev").classList.toggle("on",rev);
   }
-  function openSet(id,t){ if(!BY[id]||!BY[id].cards.length){ showPick(); return; }
+  function openSet(id,t){ if(t==="sum"&&BY[id]&&BY[id].kind!=="story") t="list"; if(!BY[id]||!BY[id].cards.length){ showPick(); return; }
     if(!D||D.id!==id) useSet(id);
     page="set"; $("lPick").hidden=true; $("lSet").hidden=false;
-    $("lTitle").textContent=D.title; $("lSub").textContent=`${D.jp} · ${D.sub||""}`;
-    setTab(t||"cards"); }
+    $("litTitle").textContent=D.title; $("litSub").textContent=`${D.jp} · ${D.sub||""}`;
+    setTab(t||"list"); }
 
   /* ---------- chips (เฉพาะแบบเรื่องเล่า) ---------- */
   function chip(label,val,cur,color,fn){ const b=document.createElement("button"); b.className="lchip"+(String(val)===String(cur)?" on":"");
@@ -167,12 +170,58 @@ const L=(()=>{
   }
   $("lSumList").onclick=e=>{ const b=e.target.closest(".lgo"); if(!b) return; fStory=+b.dataset.s; fCat="all"; savePref(); idx=0; flipped=false; setTab("cards"); };
 
-  function setTab(t){ tab=t; setHash(`lit-${D.id}${t==="sum"?"-sum":""}`);
+  function setTab(t){ tab=t; setHash(`lit-${D.id}${t==="list"?"":"-"+t}`);
     $("lTabs").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
-    $("lCards").hidden=t!=="cards"; $("lSum").hidden=t!=="sum";
+    $("lList").hidden=t!=="list"; $("lCards").hidden=t!=="cards"; $("lSum").hidden=t!=="sum"; $("liCta").hidden=t!=="list";
     $("litView").classList.toggle("lc",t==="cards"); $("lScroll").scrollTop=0;
-    if(t==="cards"){ renderChips(); render(); } else renderSum(); }
-  $("lTabs").onclick=e=>{ const b=e.target.closest("button"); if(b) setTab(b.dataset.tab); };
+    if(t==="cards"){ deckBar(); renderChips(); render(); } else if(t==="list") renderLL(); else renderSum(); }
+  $("lTabs").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; if(b.dataset.tab==="cards"&&deck){ deck=null; idx=0; flipped=false; } setTab(b.dataset.tab); };
+
+  /* ---------- 📋 ลิสต์รวม (แบบหน้ารวมคำศัพท์) ---------- */
+  let LF={g:"all",star:false,stat:null,q:""};
+  const stOfL=c=>mark[c.id]==="k"?"k":mark[c.id]==="u"?"l":"n";
+  const plainT=h=>String(h).replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+  const normL=s=>plainT(s).toLowerCase().replace(/[\s()（）・〜~]/g,"");
+  const grpList=()=>D.groups?D.groups.map(g=>[g.k,esc(g.n)]):D.kind==="story"?[...D.stories.map(s=>[s.id,`${s.id}. ${esc(s.t)}`,s.c]),[0,"ภาพรวม/เปรียบเทียบ",ST[0].c]]:[];
+  function llItems(){
+    let a=CARDS;
+    if(LF.g!=="all") a=a.filter(c=>String(grpOf(c))===String(LF.g));
+    if(LF.star) a=a.filter(c=>lstars.has(c.id));
+    if(LF.stat) a=a.filter(c=>stOfL(c)===LF.stat);
+    if(LF.q){ const q=normL(LF.q); a=a.filter(c=>normL(c.q+" "+c.a).includes(q)); }
+    return a;
+  }
+  function renderLL(){
+    const scope=LF.g==="all"?CARDS:CARDS.filter(c=>String(grpOf(c))===String(LF.g)), cnt={n:0,l:0,k:0}; scope.forEach(c=>cnt[stOfL(c)]++);
+    $("liStats").innerHTML=["n","l","k"].map(k=>`<button class="stat ${LF.stat===k?"on":""}" data-s="${k}">${ring(cnt[k],scope.length,LIT_ST[k].c)}
+      <span class="lb"><strong>${LIT_ST[k].th}</strong>${cnt[k]} / ${scope.length}</span></button>`).join("");
+    const nStar=starredIn(CARDS);
+    $("liChips").innerHTML=`<button class="chip ${LF.star?"on":""}" data-star="1">★ ติดดาว<span class="n">${nStar}</span></button>`+
+      `<button class="chip ${LF.g==="all"?"on":""}" data-g="all">ทั้งหมด<span class="n">${CARDS.length}</span></button>`+
+      grpList().map(([k,l,col])=>`<button class="chip ${String(LF.g)===String(k)?"on":""}" data-g="${k}">${col?`<i class="ldot" style="background:${col}"></i>`:""}${l}<span class="n">${CARDS.filter(c=>String(grpOf(c))===String(k)).length}</span></button>`).join("");
+    const a=llItems();
+    $("liItems").innerHTML=a.length?a.map(c=>{ const st=stOfL(c), s=D.kind==="story"?ST[c.s]:null;
+      return `<div class="item litem" data-id="${c.id}">${st!=="n"?`<span class="st ${st}"></span>`:""}
+        <div class="irow"><div class="itxt">${s?`<div class="limeta"><i class="ldot" style="background:${s.c}"></i>${c.s?esc(s.t):"ภาพรวม"} · ${CATN[c.cat]}</div>`:""}<div class="liq">${c.q}</div></div>
+          <div class="iact"><button class="ic star ${lstars.has(c.id)?"on":""}" aria-label="ติดดาว">${IC.star}</button></div></div>
+        <div class="lia">${c.a}</div></div>`; }).join(""):`<div class="nores">ไม่มีการ์ดที่ตรงกับตัวกรองนี้</div>`;
+    const sb=$("liStudy"); sb.disabled=!a.length; sb.innerHTML=`ทบทวนชุดนี้ <small>· ${a.length} ใบ</small>`;
+    $("liQclr").style.display=LF.q?"block":"none";
+  }
+  $("liStats").onclick=e=>{ const b=e.target.closest(".stat"); if(!b) return; LF.stat=LF.stat===b.dataset.s?null:b.dataset.s; renderLL(); };
+  $("liChips").onclick=e=>{ const b=e.target.closest(".chip"); if(!b) return; if(b.dataset.star) LF.star=!LF.star; else { LF.g=b.dataset.g==="all"?"all":(D.kind==="story"?+b.dataset.g:b.dataset.g); LF.stat=null; } renderLL(); };
+  $("liQ").oninput=e=>{ LF.q=e.target.value.trim(); renderLL(); };
+  $("liQclr").onclick=()=>{ LF.q=""; $("liQ").value=""; renderLL(); };
+  $("liItems").onclick=e=>{ const it=e.target.closest(".litem"); if(!it) return; const id=it.dataset.id, c=BYID[id]||BYID[+id];
+    if(e.target.closest(".star")){ const b=e.target.closest(".star");
+      if(lstars.has(c.id)){ lstars.delete(c.id); b.classList.remove("on"); } else { lstars.add(c.id); b.classList.add("on"); }
+      store.set("fc3-lit-star",[...lstars]); if(LF.star) renderLL(); else $("liChips").querySelector("[data-star] .n").textContent=starredIn(CARDS); return; }
+    it.classList.toggle("open"); };
+  $("liStudy").onclick=()=>{ const a=llItems(); if(!a.length) return; deck=new Set(a.map(c=>c.id)); deck.label=deckLabel(); idx=0; flipped=false; onlyUnsure=false; onlyStar=false; $("lUnsure").classList.remove("on"); setTab("cards"); };
+  function deckLabel(){ const p=[]; if(LF.g!=="all") p.push((grpList().find(([k])=>String(k)===String(LF.g))||[,""])[1]); if(LF.star) p.push("★ ติดดาว"); if(LF.stat) p.push(LIT_ST[LF.stat].th); if(LF.q) p.push(`“${esc(LF.q)}”`); return p.join(" · ")||"ทั้งหมด"; }
+  function deckBar(){ const b=$("lDeckBar"); b.hidden=!deck; $("lFilt").style.display=deck?"none":"";
+    if(deck) b.innerHTML=`<span>📋 จากลิสต์รวม: <b>${deck.label}</b> · ${deck.size} ใบ</span><button id="lDeckX">✕ ใช้ตัวกรองปกติ</button>`; }
+  $("lDeckBar").onclick=e=>{ if(!e.target.closest("#lDeckX")) return; deck=null; idx=0; flipped=false; deckBar(); renderChips(); render(); };
   $("lBack").onclick=()=>{ if(page==="set") showPick(); else goHome(); };
 
   document.addEventListener("keydown",e=>{
@@ -187,7 +236,7 @@ const L=(()=>{
     // arg: {set, tab} จาก router · ไม่มี set = หน้าเลือกหมวด
     enter(arg){ arg=arg||{}; if(arg.set) openSet(arg.set,arg.tab); else showPick(); },
     reload(){ mark=store.get("fc3-lit",{})||{}; lstars=new Set(store.get("fc3-lit-star",[])||[]);
-      if(S.view!=="lit") return; if(page==="pick") renderPick(); else if(tab==="cards") render(); else renderSum(); },
+      if(S.view!=="lit") return; if(page==="pick") renderPick(); else if(tab==="cards") render(); else if(tab==="list") renderLL(); else renderSum(); },
     progress:()=>{ const all=SETS.flatMap(s=>s.cards); return {known:known(all), total:all.length, sets:SETS.filter(s=>s.cards.length).length}; }
   };
 })();
