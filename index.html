@@ -178,8 +178,14 @@
   </div></div>
 </section>
 
+<!-- ================= VOCAB PICKER ================= -->
+<section class="view" id="vpickView">
+  <div class="top"><div class="col toprow"><button class="hbtn" id="vpBack" aria-label="หน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button><div class="vphead"><b data-t="hVocab">คำศัพท์อิอิ</b><span>เลือกบทที่จะทบทวน</span></div><div class="cslot" data-clock="vpick"></div></div></div>
+  <div class="scroll"><div class="col"><div id="vpList"></div></div></div>
+</section>
+
 <section class="view" id="listView">
-  <div class="top"><div class="col toprow"><button class="hbtn" id="homeBtn" aria-label="หน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></button><div class="tabs" id="tabs"></div><div class="cslot" data-clock="list"></div></div></div>
+  <div class="top"><div class="col toprow"><button class="hbtn" id="homeBtn" aria-label="เลือกบท"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button><div class="tabs" id="tabs"></div><div class="cslot" data-clock="list"></div></div></div>
   <div class="scroll" id="scroll"><div class="col">
     <div class="stats" id="stats"></div>
     <div class="lhead">
@@ -259,6 +265,7 @@
 <script src="js/core/router.js"></script>
 <script src="js/core/crop.js"></script>
 <script src="js/features/vocab-list.js"></script>
+<script src="js/features/vocab-pick.js"></script>
 <script src="js/features/flashcards.js"></script>
 <script src="js/features/home.js"></script>
 <script src="js/features/write.js"></script>

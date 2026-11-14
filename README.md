@@ -61,6 +61,7 @@ js/
   core/router.js            สลับหน้าตาม # ในลิงก์
   core/crop.js              หน้าต่างครอบรูป (ลาก/ถ่างนิ้วซูม)
   features/vocab-list.js    หน้ารวมคำศัพท์ (ค้นหา/เรียง/ดาว)
+  features/vocab-pick.js    หน้าเลือกบทคำศัพท์ (#vocab)
   features/flashcards.js    แฟลชการ์ด + ป๊อปอัพจำครบบท
   features/home.js          หน้าโฮม
   features/write.js         เขียนประโยค / ทำแบบฝึก / ไมค์

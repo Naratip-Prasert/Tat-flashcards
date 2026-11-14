@@ -37,3 +37,22 @@ ruby{ruby-align:center}
 .clock.mini .ct{font-size:11.5px}
 .toprow .tab{min-width:0}.toprow .tab .t1,.toprow .tab .t2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 @media (max-width:400px){.toprow .tab .t2{font-size:9.5px}}
+
+/* ---------- 📚 หน้าเลือกบทคำศัพท์ ---------- */
+.vphead{min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.vphead b{font-size:17px}.vphead span{font-size:12px;color:var(--muted)}
+#vpList{display:flex;flex-direction:column;gap:10px;padding:4px 0 24px}
+.vpch{width:100%;display:flex;align-items:center;gap:12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 12px 14px 16px;box-shadow:var(--shadow);cursor:pointer;position:relative;overflow:hidden;color:var(--ink)}
+.vpch::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--sc)}
+.vpch:active{transform:scale(.99)}
+.vpic{flex:none;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:25px;background:color-mix(in srgb,var(--sc) 14%,white)}
+.vpt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.vpno{font-size:11.5px;font-weight:700;color:var(--sc)}
+.vpt b{font-size:16.5px;line-height:1.3}.vpt b .jp{font-size:17px}
+.vpm{font-size:12.5px;color:var(--muted)}
+.vpbar{display:flex;height:5px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:5px}
+.vpbar i{display:block;height:100%}.vpbar .k{background:var(--good)}.vpbar .l{background:var(--bad)}
+.vpsec{font-size:11.5px;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vpchev{color:var(--muted);font-size:22px;flex:none}
+.tabs:has(.chhead){grid-template-columns:1fr}
+.chhead{flex-direction:column}.chhead .chsw{font-size:11px;color:var(--muted)}

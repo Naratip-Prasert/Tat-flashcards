@@ -15,10 +15,11 @@ function listItems(){
 
 /* ================= LIST VIEW ================= */
 function renderTabs(){
-  $("tabs").innerHTML = CH.map(c=>`<button class="tab ${c.id===S.ch?"on":""}" data-c="${c.id}">
-    <span class="t1"><span style="font-weight:500;font-size:11px">บท ${c.no}</span> <span class="jp">${c.jp}</span></span>
-    <span class="t2">${c.th}</span></button>`).join("");
-  $("tabs").querySelectorAll(".tab").forEach(b=>b.onclick=()=>{ if(b.dataset.c!==S.ch){ S.ch=b.dataset.c; store.set("fc3-ch",S.ch); S.stat=null; S.starOnly=false; S.q=""; $("q").value=""; setHash(S.ch); renderList(true);} });
+  const c=curCh();
+  $("tabs").innerHTML=`<button class="tab on chhead" aria-label="เปลี่ยนบท">
+    <span class="t1"><span style="font-weight:500;font-size:11px">บท ${c.no}</span> <span class="jp">${c.jp}</span> <span class="chsw">▾</span></span>
+    <span class="t2">${esc(c.th)}</span></button>`;
+  $("tabs").firstChild.onclick=()=>{ setHash("vocab"); showView("vpick"); };
 }
 function ring(n,total,color){
   const r=17, C=2*Math.PI*r, f=total?n/total:0;
