@@ -29,14 +29,16 @@ const L=(()=>{
   function sides(c){
     const s=ST[c.s], m=mark[c.id];
     const st=m==="k"?'<span class="ltag ok">✓ จำได้</span>':m==="u"?'<span class="ltag un">ยังไม่แม่น</span>':"";
+    // ด้านหน้าไม่บอกชื่อเรื่อง (ไม่งั้นเหมือนเฉลย) — ชื่อเรื่องโชว์ตอนพลิกดูคำตอบ
+    const metaF=`<div class="lmeta"><span class="ltag">${CATN[c.cat]}</span>${st}</div>`;
     const meta=`<div class="lmeta"><span class="ltag st">${c.s?c.s+". "+esc(s.t):"ภาพรวม"}</span><span class="ltag">${CATN[c.cat]}</span>${st}</div>`;
     const plain=c.q.replace(/<small>.*?<\/small>/,"").replace(/<[^>]+>/g,"");
-    return { front:`${meta}<div class="lq">${c.q}</div><div class="lhint">แตะเพื่อดูคำตอบ</div>`,
+    return { front:`${metaF}<div class="lq">${c.q}</div><div class="lhint">แตะเพื่อดูคำตอบ</div>`,
              back:`${meta}<div class="lans"><div class="lqq">${esc(plain)}</div>${c.a}</div>` };
   }
   function paint(){ const L2=list(); if(!L2.length) return; const c=L2[idx], f=$("lFace"), sd=sides(c);
     f.innerHTML=flipped?sd.back:sd.front; f.classList.toggle("isback",flipped); f.scrollTop=0;
-    $("lCard").style.setProperty("--sc",ST[c.s].c);
+    $("lCard").style.setProperty("--sc",flipped?ST[c.s].c:"var(--accent)");
     const sb=$("lStarC"), on=lstars.has(c.id); sb.classList.toggle("on",on); sb.setAttribute("aria-pressed",on); }
   function starBtn(){ $("lStarF").innerHTML=`⭐ ติดดาว${lstars.size?` <b>${lstars.size}</b>`:""}`; $("lStarF").classList.toggle("on",onlyStar); }
   function toggleStar(){ const L2=list(); if(!L2.length) return; const c=L2[idx];
