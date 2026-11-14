@@ -82,3 +82,12 @@
   #litView.lc .lq{font-size:18px}
   #litView.lc .lctl button{padding:10px 6px}
 }
+
+/* ⭐ ติดดาว */
+.lstar{position:absolute;top:8px;right:8px;z-index:2;width:42px;height:42px;border-radius:50%;border:none;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;opacity:.75}
+.lstar svg{width:24px;height:24px}
+.lstar.on{color:var(--star);opacity:1}.lstar.on svg{fill:currentColor}
+.lstar:active{transform:scale(.9)}
+.lmeta{padding-right:48px}
+#lStarF b{color:inherit}
+#lStarF.on{background:#fff4c9;border-color:#f2d77a;color:#7a5a00}

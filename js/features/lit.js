@@ -4,12 +4,12 @@ const L=(()=>{
   const D=window.LIT_UJI, CARDS=D.cards, ST=Object.fromEntries(D.stories.map(s=>[s.id,s]));
   ST[0]={id:0,t:"ภาพรวม",c:"#5a4a5f"};
   const CATN=Object.fromEntries(D.cats.map(c=>[c.k,c.n]));
-  let mark=store.get("fc3-lit",{})||{};
+  let mark=store.get("fc3-lit",{})||{}, lstars=new Set(store.get("fc3-lit-star",[])||[]);
   const pref=store.get("fc3-lit-f",{})||{};
-  let fStory=pref.s??"all", fCat=pref.c||"full", onlyUnsure=false, order=CARDS.map(c=>c.id), idx=0, flipped=false, turning=false, tab="cards";
+  let fStory=pref.s??"all", fCat=pref.c||"full", onlyUnsure=false, onlyStar=false, order=CARDS.map(c=>c.id), idx=0, flipped=false, turning=false, tab="cards";
 
   const savePref=()=>store.set("fc3-lit-f",{s:fStory,c:fCat});
-  const list=()=>order.map(id=>CARDS[id-1]).filter(c=>(fStory==="all"||String(c.s)===String(fStory))&&(fCat==="all"||c.cat===fCat)&&(!onlyUnsure||mark[c.id]!=="k"));
+  const list=()=>order.map(id=>CARDS[id-1]).filter(c=>(fStory==="all"||String(c.s)===String(fStory))&&(fCat==="all"||c.cat===fCat)&&(!onlyUnsure||mark[c.id]!=="k")&&(!onlyStar||lstars.has(c.id)));
   const knownAll=()=>CARDS.filter(c=>mark[c.id]==="k").length;
 
   /* ---------- chips ---------- */
@@ -36,19 +36,26 @@ const L=(()=>{
   }
   function paint(){ const L2=list(); if(!L2.length) return; const c=L2[idx], f=$("lFace"), sd=sides(c);
     f.innerHTML=flipped?sd.back:sd.front; f.classList.toggle("isback",flipped); f.scrollTop=0;
-    $("lCard").style.setProperty("--sc",ST[c.s].c); }
+    $("lCard").style.setProperty("--sc",ST[c.s].c);
+    const sb=$("lStarC"), on=lstars.has(c.id); sb.classList.toggle("on",on); sb.setAttribute("aria-pressed",on); }
+  function starBtn(){ $("lStarF").innerHTML=`⭐ ติดดาว${lstars.size?` <b>${lstars.size}</b>`:""}`; $("lStarF").classList.toggle("on",onlyStar); }
+  function toggleStar(){ const L2=list(); if(!L2.length) return; const c=L2[idx];
+    if(lstars.has(c.id)) lstars.delete(c.id); else lstars.add(c.id);
+    store.set("fc3-lit-star",[...lstars]); toast(lstars.has(c.id)?"ติดดาวแล้ว ⭐":"เอาดาวออกแล้ว");
+    if(onlyStar&&!lstars.has(c.id)) render(); else { paint(); starBtn(); } }
   function render(){
     const L2=list(), tot=L2.length, known=L2.filter(c=>mark[c.id]==="k").length, uns=L2.filter(c=>mark[c.id]==="u").length;
     $("lCount").textContent=tot?`${Math.min(idx+1,tot)} / ${tot} · จำได้ ${known}`:"";
     $("lPk").style.width=tot?(known/tot*100)+"%":"0"; $("lPu").style.width=tot?(uns/tot*100)+"%":"0";
     const deck=$("lDeck");
-    if(!tot){ deck.innerHTML=`<div class="lempty">${onlyUnsure?"🎉 จำได้ครบทุกใบในชุดนี้แล้ว<br><br>ปิด “เฉพาะที่ยังไม่แม่น” เพื่อทบทวนทั้งหมด":"ไม่มีการ์ดในตัวกรองนี้"}</div>`; return; }
+    starBtn();
+    if(!tot){ deck.innerHTML=`<div class="lempty">${onlyStar&&!lstars.size?"ยังไม่มีการ์ดที่ติดดาว<br><br>แตะ ☆ มุมขวาบนของการ์ดเพื่อเก็บใบที่อยากทวนบ่อย ๆ":onlyStar?"ไม่มีการ์ดติดดาวในตัวกรองนี้":onlyUnsure?"🎉 จำได้ครบทุกใบในชุดนี้แล้ว<br><br>ปิด “ยังไม่แม่น” เพื่อทบทวนทั้งหมด":"ไม่มีการ์ดในตัวกรองนี้"}</div>`; return; }
     if(idx>=tot) idx=tot-1;
     if(!$("lCard")){
-      deck.innerHTML=`<div class="lcard" id="lCard" tabindex="0" aria-label="การ์ด แตะเพื่อพลิก"><div class="lface" id="lFace"></div></div>
+      deck.innerHTML=`<div class="lcard" id="lCard" tabindex="0" aria-label="การ์ด แตะเพื่อพลิก"><div class="lface" id="lFace"></div><button class="lstar" id="lStarC" aria-label="ติดดาว">${IC.star}</button></div>
         <div class="lctl"><button class="nav" data-l="prev" aria-label="ก่อนหน้า">‹</button><button class="un" data-l="u">ยังไม่แม่น</button><button class="ok" data-l="k">จำได้แล้ว ✓</button><button class="nav" data-l="next" aria-label="ถัดไป">›</button></div>`;
       const card=$("lCard");
-      card.onclick=()=>{ if(flipped&&String(getSelection())) return; flip(); };
+      card.onclick=e=>{ if(e.target.closest("#lStarC")){ toggleStar(); return; } if(flipped&&String(getSelection())) return; flip(); };
       deck.querySelector(".lctl").onclick=e=>{ const a=e.target.closest("[data-l]"); if(!a) return; const v=a.dataset.l;
         if(v==="prev") go(-1); else if(v==="next") go(1); else markIt(v); };
       let sx=null,sy=null;
@@ -69,6 +76,7 @@ const L=(()=>{
 
   /* ---------- toolbar ---------- */
   $("lShuffle").onclick=()=>{ for(let i=order.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [order[i],order[j]]=[order[j],order[i]]; } idx=0; flipped=false; render(); toast("สลับการ์ดแล้ว 🔀"); };
+  $("lStarF").onclick=()=>{ onlyStar=!onlyStar; idx=0; flipped=false; render(); };
   $("lUnsure").onclick=()=>{ onlyUnsure=!onlyUnsure; $("lUnsure").classList.toggle("on",onlyUnsure); idx=0; flipped=false; if(!list().length) $("lDeck").innerHTML=""; render(); };
   let rbT=null; const rb=$("lReset");
   rb.onclick=()=>{
@@ -97,13 +105,14 @@ const L=(()=>{
   document.addEventListener("keydown",e=>{
     if(S.view!=="lit"||tab!=="cards"||/INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
     if(e.key===" "||e.key==="Enter"){ e.preventDefault(); flip(); }
+    else if(e.key==="s"||e.key==="S") toggleStar();
     else if(e.key==="ArrowRight") go(1); else if(e.key==="ArrowLeft") go(-1);
     else if(e.key==="1") markIt("u"); else if(e.key==="2") markIt("k");
   });
 
   return {
     enter(t){ setTab(t||tab); },
-    reload(){ mark=store.get("fc3-lit",{})||{}; if(S.view==="lit"&&tab==="cards") render(); },
+    reload(){ mark=store.get("fc3-lit",{})||{}; lstars=new Set(store.get("fc3-lit-star",[])||[]); if(S.view==="lit"&&tab==="cards") render(); },
     progress:()=>({known:knownAll(), total:CARDS.length})
   };
 })();
