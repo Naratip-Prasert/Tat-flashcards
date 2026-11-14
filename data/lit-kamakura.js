@@ -142,7 +142,7 @@ const C=[
 // วงเล็บที่มีตัวอักษรญี่ปุ่น → ใส่ class ให้ใช้ฟอนต์ญี่ปุ่น
 const jp=s=>s.replace(/\(([^()]*[぀-ヿ一-鿿][^()]*)\)/g,'<span class="lj">($1)</span>');
 (window.LIT_SETS=window.LIT_SETS||[]).push({
-  id:"kamakura", kind:"terms", order:2, icon:"⚔️", color:"#3a6ea5",
+  id:"kamakura", kind:"terms", order:1, icon:"⚔️", color:"#3a6ea5",
   title:"วรรณคดีสมัยคะมะกุระ - มุโระมะชิ", jp:"鎌倉・室町時代の文学", sub:"ค.ศ. 1185–1573",
   labels:["คำถาม → คำตอบ","คำตอบ → คำถาม"],
   groups:G,

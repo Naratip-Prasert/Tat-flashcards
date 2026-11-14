@@ -126,7 +126,7 @@ const C=[
 // วงเล็บที่มีตัวอักษรญี่ปุ่น → ใส่ class ให้ใช้ฟอนต์ญี่ปุ่น
 const jp=s=>s.replace(/\(([^()]*[぀-ヿ一-鿿][^()]*)\)/g,'<span class="lj">($1)</span>');
 (window.LIT_SETS=window.LIT_SETS||[]).push({
-  id:"edo", kind:"terms", order:3, icon:"🏮", color:"#b5543a",
+  id:"edo", kind:"terms", order:2, icon:"🏮", color:"#b5543a",
   title:"วรรณคดีสมัยเอโดะ", jp:"江戸時代の文学", sub:"ค.ศ. 1603–1868",
   labels:["คำถาม → คำตอบ","คำตอบ → คำถาม"], sumLabel:"📖 คำถาม-คำตอบทั้งหมด",
   groups:G,
