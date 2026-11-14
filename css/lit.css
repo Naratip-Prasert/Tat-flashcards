@@ -121,3 +121,10 @@
 /* toolbar: ปุ่มอยู่แถวเดียว เลื่อนข้างได้ถ้าไม่พอ · ตัวนับขึ้นบรรทัดใหม่ชิดขวา */
 .ltool{flex-wrap:wrap}
 .ltool button{white-space:nowrap}
+
+.lj{font-family:"Noto Sans JP",sans-serif;font-size:.92em;color:color-mix(in srgb,currentColor 75%,transparent)}
+.lchip small{opacity:.6;font-size:11px;margin-left:2px}
+#lCatLab[hidden],#lCat[hidden]{display:none}
+.ltg{font-size:13px;color:var(--sc);margin:14px 2px 2px;letter-spacing:.02em}
+.ltg:first-child{margin-top:2px}
+.lterm-q{font-size:20px}

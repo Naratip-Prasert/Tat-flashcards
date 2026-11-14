@@ -12,12 +12,13 @@ const L=(()=>{
   if("s" in prefAll||"c" in prefAll) prefAll={uji:{s:prefAll.s,c:prefAll.c}};          // old single-set format
   const savePref=()=>{ prefAll[D.id]={s:fStory,c:fCat,r:rev}; store.set("fc3-lit-f",prefAll); };
 
-  let D=null, CARDS=[], BYID={}, ST={}, CATN={};
+  let D=null, CARDS=[], BYID={}, ST={}, CATN={}, GN={};
   let fStory="all", fCat="all", rev=false, onlyUnsure=false, onlyStar=false, order=[], idx=0, flipped=false, turning=false, tab="cards", page="pick";
 
   const known=cs=>cs.filter(c=>mark[c.id]==="k").length;
   const starredIn=cs=>cs.filter(c=>lstars.has(c.id)).length;
-  const list=()=>order.map(id=>BYID[id]).filter(c=>c&&(fStory==="all"||String(c.s)===String(fStory))&&(fCat==="all"||c.cat===fCat)&&(!onlyUnsure||mark[c.id]!=="k")&&(!onlyStar||lstars.has(c.id)));
+  const grpOf=c=>D.kind==="story"?c.s:c.g;
+  const list=()=>order.map(id=>BYID[id]).filter(c=>c&&(fStory==="all"||String(grpOf(c))===String(fStory))&&(fCat==="all"||c.cat===fCat)&&(!onlyUnsure||mark[c.id]!=="k")&&(!onlyStar||lstars.has(c.id)));
 
   /* ---------- หน้าเลือกหมวด ---------- */
   function renderPick(){
@@ -45,13 +46,14 @@ const L=(()=>{
   function useSet(id){
     D=BY[id]; CARDS=D.cards; BYID=Object.fromEntries(CARDS.map(c=>[c.id,c]));
     ST=D.stories?Object.fromEntries(D.stories.map(s=>[s.id,s])):{}; ST[0]={id:0,t:"ภาพรวม",c:"#5a4a5f"};
-    CATN=D.cats?Object.fromEntries(D.cats.map(c=>[c.k,c.n])):{};
+    CATN=D.cats?Object.fromEntries(D.cats.map(c=>[c.k,c.n])):{}; GN=D.groups?Object.fromEntries(D.groups.map(g=>[g.k,g.n])):{};
     const p=prefAll[id]||{};
-    fStory=D.stories?(p.s??"all"):"all"; fCat=D.cats?(p.c||D.cats[0].k):"all"; rev=!!p.r;
+    fStory=(D.stories||D.groups)?(p.s??"all"):"all"; fCat=D.cats?(p.c||D.cats[0].k):"all"; rev=!!p.r;
     order=CARDS.map(c=>c.id); idx=0; flipped=false; onlyUnsure=false; onlyStar=false;
     $("lUnsure").classList.remove("on"); $("lDeck").innerHTML="";
     $("lSumTab").textContent=D.sumLabel||"📖 รายการคำทั้งหมด";
-    $("lFilt").hidden=D.kind!=="story"; $("lRev").hidden=D.kind!=="terms"; $("lRev").classList.toggle("on",rev);
+    $("lFilt").hidden=!(D.kind==="story"||D.groups); $("lStoryLab").textContent=D.kind==="story"?"เรื่อง":"หัวข้อ";
+    $("lCatLab").hidden=$("lCat").hidden=D.kind!=="story"; $("lRev").hidden=D.kind!=="terms"; $("lRev").classList.toggle("on",rev);
   }
   function openSet(id,t){ if(!BY[id]||!BY[id].cards.length){ showPick(); return; }
     if(!D||D.id!==id) useSet(id);
@@ -64,6 +66,8 @@ const L=(()=>{
     b.innerHTML=(color?`<i style="background:${color}"></i>`:"")+label; b.onclick=fn; return b; }
   function renderChips(){
     const a=$("lStory"), b=$("lCat"); a.innerHTML=""; b.innerHTML="";
+    if(D.groups){ a.append(chip("ทั้งหมด","all",fStory,null,()=>pick("all","all")));
+      D.groups.forEach(g=>a.append(chip(`${esc(g.n)} <small>${CARDS.filter(c=>c.g===g.k).length}</small>`,g.k,fStory,null,()=>pick(g.k,"all")))); return; }
     if(D.kind!=="story") return;
     a.append(chip("ทั้งหมด","all",fStory,null,()=>pick("all",fCat)));
     D.stories.forEach(s=>a.append(chip(`${s.id}. ${esc(s.t)}`,s.id,fStory,s.c,()=>pick(s.id,fCat))));
@@ -78,7 +82,8 @@ const L=(()=>{
     const m=mark[c.id];
     const st=m==="k"?'<span class="ltag ok">✓ จำได้</span>':m==="u"?'<span class="ltag un">ยังไม่แม่น</span>':"";
     if(D.kind==="terms"){
-      const F=rev?c.a:c.q, B=rev?c.q:c.a, meta=`<div class="lmeta"><span class="ltag">${rev?"คำอธิบาย → คำ":"คำ → คำอธิบาย"}</span>${st}</div>`;
+      const lb=D.labels||["คำ → คำอธิบาย","คำอธิบาย → คำ"], F=rev?c.a:c.q, B=rev?c.q:c.a;
+      const meta=`<div class="lmeta">${c.g&&GN[c.g]?`<span class="ltag st">${esc(GN[c.g])}</span>`:""}<span class="ltag">${rev?lb[1]:lb[0]}</span>${st}</div>`;
       return { front:`${meta}<div class="lq lterm-q">${F}</div><div class="lhint">แตะเพื่อดูคำตอบ</div>`,
                back:`${meta}<div class="lans"><div class="lqq">${F.replace(/<[^>]+>/g,"")}</div><div class="lterm-a">${B}</div></div>` };
     }
@@ -154,8 +159,10 @@ const L=(()=>{
         </details>`).join("");
     } else {
       $("lIntro").hidden=!D.intro; $("lIntro").innerHTML=D.intro||"";
-      $("lSumList").innerHTML=`<div class="lterms" style="--sc:${D.color}">`+CARDS.map((c,i)=>`
-        <div class="ltrow"><span class="ltn">${i+1}</span><div class="ltx"><b>${c.q}</b><div>${c.a}</div></div>${lstars.has(c.id)?'<span class="lts">⭐</span>':""}</div>`).join("")+`</div>`;
+      const row=c=>`<div class="ltrow"><span class="ltn">${CARDS.indexOf(c)+1}</span><div class="ltx"><b>${c.q}</b><div>${c.a}</div></div>${lstars.has(c.id)?'<span class="lts">⭐</span>':""}</div>`;
+      $("lSumList").innerHTML=`<div class="lterms" style="--sc:${D.color}">`+(D.groups
+        ? D.groups.map(g=>`<h4 class="ltg">${esc(g.n)}</h4>`+CARDS.filter(c=>c.g===g.k).map(row).join("")).join("")
+        : CARDS.map(row).join(""))+`</div>`;
     }
   }
   $("lSumList").onclick=e=>{ const b=e.target.closest(".lgo"); if(!b) return; fStory=+b.dataset.s; fCat="all"; savePref(); idx=0; flipped=false; setTab("cards"); };
