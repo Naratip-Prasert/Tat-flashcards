@@ -104,3 +104,19 @@
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);
   font-size:13px;padding:8px 14px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;z-index:9}
 .toast.show{opacity:1}
+
+/* ---------- 📝 แถบตัวอย่างประโยค ---------- */
+#listView .toprow{grid-template-columns:40px 1fr auto auto}
+.exbtn{height:52px;min-width:52px;padding:0 10px;border-radius:14px;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;cursor:pointer;color:var(--ink);line-height:1.1;position:relative}
+.exbtn[hidden]{display:none}
+.exbtn .exi{font-size:16px}.exbtn .ext{font-size:11px;font-weight:700;color:var(--muted)}
+.exbtn .exn{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:#fff;font-size:10.5px;font-weight:700;display:grid;place-items:center}
+.exbtn.on{background:var(--accent);border-color:var(--accent)}.exbtn.on .ext{color:#fff}
+.exbtn.on .exn{background:#fff;color:var(--accent)}
+.exitem .exs{font-size:17px;line-height:1.6;font-weight:500;color:var(--ink)}
+.exitem .exw{margin-top:6px;font-size:13.5px;color:var(--muted);line-height:1.5}
+.exitem .exw .jp:first-child{color:var(--accent);font-weight:700}
+.exitem .exr{font-size:12px}
+@media (max-width:380px){ .exbtn{padding:0 7px;min-width:46px} .exbtn .ext{font-size:10px} }
+#listView .toprow:has(.exbtn[hidden]){grid-template-columns:40px 1fr auto}
