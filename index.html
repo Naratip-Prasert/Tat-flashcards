@@ -47,15 +47,6 @@
       <div class="mfoot"><span id="hVocTx"></span><span id="hVocTx2"></span></div>
       <span class="deco jp">語</span>
     </button>
-    <button class="mode only-fan" id="goWrite">
-      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-      <div class="mico" style="background:#f3e8ff">✍️</div>
-      <h2 data-t="hWrite">เขียนประโยคอิอิ</h2>
-      <p data-t="homeWrite">สุ่มประโยคไทยสั้น ๆ → เขียนเป็นภาษาญี่ปุ่น → ให้แทตลองพูดตามงับอิอิ</p>
-      <div class="mbar"><i id="hWrBar" style="background:#b16ee8"></i></div>
-      <div class="mfoot"><span id="hWrTx"></span><span></span></div>
-      <span class="deco jp">文</span>
-    </button>
     <button class="mode only-fan" id="goLit">
       <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
       <div class="mico" style="background:#fdeedd">📜</div>
@@ -64,6 +55,15 @@
       <div class="mbar"><i id="hLitBar" style="background:#c8402e"></i></div>
       <div class="mfoot"><span id="hLitTx"></span><span></span></div>
       <span class="deco jp">宇治</span>
+    </button>
+    <button class="mode only-fan" id="goWrite">
+      <span class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      <div class="mico" style="background:#f3e8ff">✍️</div>
+      <h2 data-t="hWrite">เขียนประโยคอิอิ</h2>
+      <p data-t="homeWrite">สุ่มประโยคไทยสั้น ๆ → เขียนเป็นภาษาญี่ปุ่น → ให้แทตลองพูดตามงับอิอิ</p>
+      <div class="mbar"><i id="hWrBar" style="background:#b16ee8"></i></div>
+      <div class="mfoot"><span id="hWrTx"></span><span></span></div>
+      <span class="deco jp">文</span>
     </button>
   </div></div>
 </section>
@@ -180,12 +180,12 @@
 
 <!-- ================= VOCAB PICKER ================= -->
 <section class="view" id="vpickView">
-  <div class="top"><div class="col toprow"><button class="hbtn" id="vpBack" aria-label="หน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button><div class="vphead"><b data-t="hVocab">คำศัพท์อิอิ</b><span>เลือกบทที่จะทบทวน</span></div><div class="cslot" data-clock="vpick"></div></div></div>
+  <div class="top"><div class="col toprow"><button class="hbtn" id="vpBack" aria-label="หน้าแรก"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button><div class="vphead"><b data-t="hVocab">คำศัพท์อิอิ</b><span>เลือกหมวดที่จะทบทวน</span></div><div class="cslot" data-clock="vpick"></div></div></div>
   <div class="scroll"><div class="col"><div id="vpList"></div></div></div>
 </section>
 
 <section class="view" id="listView">
-  <div class="top"><div class="col toprow"><button class="hbtn" id="homeBtn" aria-label="เลือกบท"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button><div class="tabs" id="tabs"></div><div class="cslot" data-clock="list"></div></div></div>
+  <div class="top"><div class="col toprow"><button class="hbtn" id="homeBtn" aria-label="เลือกหมวด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button><div class="tabs" id="tabs"></div><div class="cslot" data-clock="list"></div></div></div>
   <div class="scroll" id="scroll"><div class="col">
     <div class="stats" id="stats"></div>
     <div class="lhead">
@@ -203,7 +203,7 @@
     <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q" type="search" placeholder="ค้นหาคำศัพท์ / คำอ่าน / คำแปล" autocomplete="off"><button class="clr" id="qclr" aria-label="ล้าง">×</button></div>
     <div class="items" id="items"></div>
-    <div class="lfoot"><button class="link" id="resetCh">ล้างสถานะการเรียนของบทนี้</button></div>
+    <div class="lfoot"><button class="link" id="resetCh">ล้างสถานะการเรียนของหมวดนี้</button></div>
   </div></div>
   <div class="cta"><div class="col"><button class="ctabtn" id="studyBtn"></button></div></div>
 </section>

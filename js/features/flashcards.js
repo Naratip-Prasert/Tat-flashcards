@@ -3,8 +3,8 @@
 function startStudy(){
   deck=listItems(); if(!deck.length) return;
   const ch=curCh(), sec=ch.secs.find(s=>s.id===curSec());
-  const parts=[sec?sec.th:"ทั้งบท"]; if(S.starOnly) parts.push("★ ติดดาว"); if(S.stat) parts.push(ST[S.stat].th); if(S.q) parts.push(`"${S.q}"`);
-  studyLabel=`<b>บท ${ch.no} <span class="jp">${ch.jp}</span></b>${esc(parts.join(" · "))}`;
+  const parts=[sec?sec.th:"ทั้งหมวด"]; if(S.starOnly) parts.push("★ ติดดาว"); if(S.stat) parts.push(ST[S.stat].th); if(S.q) parts.push(`"${S.q}"`);
+  studyLabel=`<b><span class="jp">${ch.jp}</span> ${esc(ch.th)}</b>${esc(parts.join(" · "))}`;
   if(S.hide){ const d=deck.filter(c=>stOf(c)!=="k"); if(d.length) deck=d; }
   if(S.shuffled) shuffle(deck);
   idx=0; showView("cards"); setHash(S.ch+"-cards");
@@ -78,11 +78,11 @@ function checkDone(c){
   if(secAll.every(x=>stOf(x)==="k")) { toast(`🎉 จำหมวด ${c.secJp} ครบแล้ว!`); confetti(900); }
 }
 function celebrate(ch){
-  $("celeTitle").innerHTML=`จำบท ${ch.no} <span class="jp">${ch.jp}</span><br>ได้หมดแล้ว!`;
+  $("celeTitle").innerHTML=`จำหมวด <span class="jp">${ch.jp}</span><br>ได้หมดแล้ว!`;
   const n=ALL.filter(x=>x.ch===ch.id).length;
   $("celeSub").textContent=`${ch.th} · ครบทั้ง ${n} คำ`;
   const next=CH.find(x=>x.no>ch.no && !ALL.filter(y=>y.ch===x.id).every(y=>stOf(y)==="k"));
-  $("celeBtns").innerHTML=(next?`<button class="pri" data-go="${next.id}">ไปบท ${next.no} <span class="jp">${next.jp}</span> ต่อ</button>`:"")+
+  $("celeBtns").innerHTML=(next?`<button class="pri" data-go="${next.id}">ไปหมวด <span class="jp">${next.jp}</span> ต่อ</button>`:"")+
     `<button class="${next?"":"pri"}" data-go="list">กลับไปหน้ารวม</button><button data-go="stay">อยู่หน้านี้ต่อ</button>`;
   $("cele").classList.add("on"); confetti(2600);
 }

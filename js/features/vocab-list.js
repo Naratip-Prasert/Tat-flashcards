@@ -16,8 +16,8 @@ function listItems(){
 /* ================= LIST VIEW ================= */
 function renderTabs(){
   const c=curCh();
-  $("tabs").innerHTML=`<button class="tab on chhead" aria-label="เปลี่ยนบท">
-    <span class="t1"><span style="font-weight:500;font-size:11px">บท ${c.no}</span> <span class="jp">${c.jp}</span> <span class="chsw">▾</span></span>
+  $("tabs").innerHTML=`<button class="tab on chhead" aria-label="เปลี่ยนหมวด">
+    <span class="t1"><span class="jp">${c.jp}</span> <span class="chsw">▾</span></span>
     <span class="t2">${esc(c.th)}</span></button>`;
   $("tabs").firstChild.onclick=()=>{ setHash("vocab"); showView("vpick"); };
 }
@@ -77,7 +77,7 @@ $("qclr").onclick=()=>{S.q="";$("q").value="";renderList()};
 let armed=false;
 $("resetCh").onclick=()=>{
   if(!armed){armed=true;$("resetCh").textContent="แตะอีกครั้งเพื่อยืนยันการล้าง";setTimeout(()=>{armed=false;$("resetCh").textContent="ล้างสถานะการเรียนของบทนี้"},3000);return}
-  armed=false;$("resetCh").textContent="ล้างสถานะการเรียนของบทนี้";
+  armed=false;$("resetCh").textContent="ล้างสถานะการเรียนของหมวดนี้";
   ALL.filter(c=>c.ch===S.ch).forEach(c=>delete status[c.id]); saveStatus(); renderList(); toast("ล้างแล้ว");
 };
 $("studyBtn").onclick=()=>startStudy();
