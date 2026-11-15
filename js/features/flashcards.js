@@ -6,8 +6,29 @@ function startStudy(){
   const parts=[sec?sec.th:"ทั้งหมวด"]; if(S.starOnly) parts.push("★ ติดดาว"); if(S.stat) parts.push(ST[S.stat].th); if(S.q) parts.push(`"${S.q}"`);
   studyLabel=`<b><span class="jp">${ch.jp}</span> ${esc(ch.th)}</b>${esc(parts.join(" · "))}`;
   if(S.hide){ const d=deck.filter(c=>stOf(c)!=="k"); if(d.length) deck=d; }
-  if(S.shuffled) shuffle(deck);
-  idx=0; showView("cards"); setHash(S.ch+"-cards");
+  deckKey=[S.ch,curSec(),S.starOnly?1:0,S.stat||"",S.q||"",S.hide?1:0].join("|");
+  const R=(store.get("fc3-resume",{})||{})[deckKey];
+  if(S.shuffled){
+    if(R&&R.order){ const pos=new Map(R.order.map((id,i)=>[id,i])); deck.sort((a,b)=>(pos.has(a.id)?pos.get(a.id):1e9)-(pos.has(b.id)?pos.get(b.id):1e9)); }
+    else shuffle(deck);
+  }
+  idx=resumeAt(R); saveResume(true); showView("cards"); setHash(S.ch+"-cards");
+}
+/* ▶ ทวนต่อจากเดิม: จำลำดับการ์ด (ถ้าสุ่ม) และใบล่าสุดของแต่ละชุด ใน fc3-resume = { deckKey: {id, order?} } */
+let deckKey="";
+function resumeAt(R){
+  if(!R||!R.id||!deck.length) return 0;
+  let i=deck.findIndex(c=>c.id===R.id); if(i>=0) return i;
+  const ord=R.order||ALL.map(c=>c.id), at=ord.indexOf(R.id);            // ใบเดิมหายไปแล้ว (เช่นซ่อนที่จำได้) → ใบถัดไปในลำดับ
+  if(at>=0) for(let k=at+1;k<ord.length;k++){ i=deck.findIndex(c=>c.id===ord[k]); if(i>=0) return i; }
+  return 0;
+}
+function saveResume(withOrder){
+  if(!deckKey||!deck.length) return;
+  const all=store.get("fc3-resume",{})||{}, prev=all[deckKey]||{};
+  all[deckKey]={id:deck[idx]&&deck[idx].id, order:S.shuffled?(withOrder||!prev.order?deck.map(c=>c.id):prev.order):undefined, t:Date.now()};
+  const ks=Object.keys(all); if(ks.length>40) ks.sort((a,b)=>(all[a].t||0)-(all[b].t||0)).slice(0,ks.length-40).forEach(k=>delete all[k]);
+  try{ localStorage.setItem("fc3-resume",JSON.stringify(all)); }catch(e){}
 }
 function shuffle(d){for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}}
 $("backBtn").onclick=backToList; $("emptyBack").onclick=backToList;
@@ -61,11 +82,11 @@ $("card").addEventListener("click",e=>{
     return; }
   flip();
 });
-function go(n){ if(!deck.length)return; idx=(idx+n+deck.length)%deck.length; show(); }
+function go(n){ if(!deck.length)return; idx=(idx+n+deck.length)%deck.length; show(); saveResume(); }
 function mark(ok){
   if(!deck.length)return;
   const c=deck[idx], was=stOf(c); status[c.id]=ok?"k":"l"; saveStatus();
-  if(S.hide&&ok){ deck.splice(idx,1); if(idx>=deck.length) idx=0; show(); } else go(1);
+  if(S.hide&&ok){ deck.splice(idx,1); if(idx>=deck.length) idx=0; show(); saveResume(); } else go(1);
   if(ok && was!=="k") checkDone(c);
 }
 
@@ -97,7 +118,7 @@ $("cele").onclick=e=>{ if(e.target.id==="cele") $("cele").classList.remove("on")
 $("prevBtn").onclick=()=>go(-1); $("nextBtn").onclick=()=>go(1);
 $("goodBtn").onclick=()=>mark(true); $("badBtn").onclick=()=>mark(false);
 $("dirBtn").onclick=()=>{S.dir=S.dir==="jp"?"th":"jp";store.set("fc3-dir",S.dir);renderTools();show();toast(S.dir==="jp"?"ด้านหน้า: ภาษาญี่ปุ่น":"ด้านหน้า: ภาษาไทย")};
-$("shufBtn").onclick=()=>{S.shuffled=!S.shuffled; if(S.shuffled) shuffle(deck); else deck.sort((a,b)=>a.ord-b.ord); idx=0; renderTools(); show(); toast(S.shuffled?"สุ่มลำดับแล้ว":"เรียงตามชีท")};
+$("shufBtn").onclick=()=>{S.shuffled=!S.shuffled; store.set("fc3-shuf",S.shuffled); if(S.shuffled) shuffle(deck); else deck.sort((a,b)=>a.ord-b.ord); idx=0; renderTools(); show(); saveResume(true); toast(S.shuffled?"สุ่มลำดับแล้ว":"เรียงตามชีท")};
 $("hideBtn").onclick=()=>{S.hide=!S.hide;store.set("fc3-hide",S.hide);
   if(S.hide){ const cur=deck[idx]; deck=deck.filter(c=>stOf(c)!=="k"); idx=Math.max(0,deck.indexOf(cur)); }
   else { const cur=deck[idx]; deck=listItems(); if(S.shuffled) shuffle(deck); idx=Math.max(0,deck.indexOf(cur)); }

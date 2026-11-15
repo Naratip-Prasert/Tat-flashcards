@@ -52,7 +52,8 @@ const L=(()=>{
     CATN=D.cats?Object.fromEntries(D.cats.map(c=>[c.k,c.n])):{}; GN=D.groups?Object.fromEntries(D.groups.map(g=>[g.k,g.n])):{};
     const p=prefAll[id]||{};
     fStory=(D.stories||D.groups)?(p.s??"all"):"all"; fCat=D.cats?(p.c||D.cats[0].k):"all"; rev=!!p.r;
-    order=CARDS.map(c=>c.id); idx=0; flipped=false; onlyUnsure=false; onlyStar=false; deck=null; LF={g:"all",star:false,stat:null,q:""}; $("liQ").value="";
+    order=CARDS.map(c=>c.id); const RS=litRes()[id]; if(RS&&RS.order){ const known=new Set(order); const kept=RS.order.filter(x=>known.has(x)), ks=new Set(kept); order=[...kept,...order.filter(x=>!ks.has(x))]; }
+    idx=0; flipped=false; onlyUnsure=false; onlyStar=false; deck=null; LF={g:"all",star:false,stat:null,q:""}; $("liQ").value="";
     $("lUnsure").classList.remove("on"); $("lDeck").innerHTML="";
     $("lSumTab").textContent="📖 สรุป"; $("lSumTab").hidden=!hasSum(D);
     $("lTabs").style.gridTemplateColumns=hasSum(D)?"repeat(4,1fr)":"repeat(3,1fr)";
@@ -61,8 +62,9 @@ const L=(()=>{
     $("lCatLab").hidden=$("lCat").hidden=D.kind!=="story"; $("lRev").hidden=D.kind!=="terms"; $("lRev").classList.toggle("on",rev);
   }
   function openSet(id,t){ if(t==="sum"&&BY[id]&&!hasSum(BY[id])) t="list"; if(t==="quiz"&&D&&D.id===id&&QZ.stage!=="setup"&&tab==="quiz") return; if(!BY[id]||!BY[id].cards.length){ showPick(); return; }
-    if(!D||D.id!==id) useSet(id);
+    const fresh=!D||D.id!==id; if(fresh) useSet(id);
     page="set"; $("lPick").hidden=true; $("lSet").hidden=false;
+    if((t||"list")==="cards"&&(fresh||tab!=="cards")) idx=resumeIdx();
     $("litTitle").textContent=D.title; $("litSub").textContent=`${D.jp} · ${D.sub||""}`;
     setTab(t||"list"); }
 
@@ -80,7 +82,18 @@ const L=(()=>{
     b.append(chip("ทุกหมวด","all",fCat,null,()=>pick(fStory,"all")));
     D.cats.forEach(c=>b.append(chip(c.n,c.k,fCat,null,()=>pick(fStory,c.k))));
   }
-  function pick(s,c){ fStory=s; fCat=c; savePref(); idx=0; flipped=false; renderChips(); render(); }
+  function pick(s,c){ fStory=s; fCat=c; savePref(); idx=resumeIdx(); flipped=false; renderChips(); render(); }
+  /* ▶ ทวนต่อจากเดิม: fc3-lit-resume = { setId: {order:[id], pos:{ตัวกรอง: id ใบล่าสุด}} } */
+  const litRes=()=>store.get("fc3-lit-resume",{})||{};
+  const fkey=()=>deck?"deck:"+[...deck].join(","):[fStory,fCat,onlyUnsure?1:0,onlyStar?1:0].join("|");
+  function saveLitRes(withOrder){ if(!D) return; const L2=list(); const all=litRes(), r=all[D.id]||{pos:{}};
+    r.pos=r.pos||{}; if(L2[idx]) r.pos[fkey()]=L2[idx].id; if(withOrder) r.order=order.slice();
+    const pk=Object.keys(r.pos); if(pk.length>30) delete r.pos[pk[0]];
+    all[D.id]=r; try{ localStorage.setItem("fc3-lit-resume",JSON.stringify(all)); }catch(e){} }
+  function resumeIdx(){ if(!D) return 0; const r=litRes()[D.id], id=r&&r.pos&&r.pos[fkey()]; if(id==null) return 0;
+    const L2=list(), i=L2.findIndex(c=>c.id===id); if(i>=0) return i;
+    const at=order.indexOf(id); if(at>=0) for(let k=at+1;k<order.length;k++){ const j=L2.findIndex(c=>c.id===order[k]); if(j>=0) return j; }
+    return 0; }
 
   /* ---------- การ์ด ---------- */
   function sides(c){
@@ -118,6 +131,7 @@ const L=(()=>{
     starBtn();
     if(!tot){ deck.innerHTML=`<div class="lempty">${onlyStar&&!starredIn(CARDS)?"ยังไม่มีการ์ดที่ติดดาวในหมวดนี้<br><br>แตะ ☆ มุมขวาบนของการ์ดเพื่อเก็บใบที่อยากทวนบ่อย ๆ":onlyStar?"ไม่มีการ์ดติดดาวในตัวกรองนี้":onlyUnsure?"🎉 จำได้ครบทุกใบในชุดนี้แล้ว<br><br>ปิด “ยังไม่แม่น” เพื่อทบทวนทั้งหมด":"ไม่มีการ์ดในตัวกรองนี้"}</div>`; return; }
     if(idx>=tot) idx=tot-1;
+    saveLitRes();
     if(!$("lCard")){
       deck.innerHTML=`<div class="lcard" id="lCard" tabindex="0" aria-label="การ์ด แตะเพื่อพลิก"><div class="lface" id="lFace"></div><button class="lstar" id="lStarC" aria-label="ติดดาว">${IC.star}</button></div>
         <div class="lctl"><button class="nav" data-l="prev" aria-label="ก่อนหน้า">‹</button><button class="un" data-l="u">ยังไม่แม่น</button><button class="ok" data-l="k">จำได้แล้ว ✓</button><button class="nav" data-l="next" aria-label="ถัดไป">›</button></div>`;
@@ -142,13 +156,13 @@ const L=(()=>{
     if(v==="k"&&!onlyUnsure&&(fStory!=="all"||D.kind==="terms")&&list().every(x=>mark[x.id]==="k")) toast(tr("litDone")); }
 
   /* ---------- toolbar ---------- */
-  $("lShuffle").onclick=()=>{ for(let i=order.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [order[i],order[j]]=[order[j],order[i]]; } idx=0; flipped=false; render(); toast("สลับการ์ดแล้ว 🔀"); };
-  $("lStarF").onclick=()=>{ onlyStar=!onlyStar; idx=0; flipped=false; render(); };
+  $("lShuffle").onclick=()=>{ for(let i=order.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [order[i],order[j]]=[order[j],order[i]]; } idx=0; flipped=false; render(); saveLitRes(true); toast("สลับการ์ดแล้ว 🔀"); };
+  $("lStarF").onclick=()=>{ onlyStar=!onlyStar; idx=resumeIdx(); flipped=false; render(); };
   $("lRev").onclick=()=>{ rev=!rev; savePref(); $("lRev").classList.toggle("on",rev); flipped=false; render(); toast(rev?"โชว์คำอธิบาย → ทายคำ":"โชว์คำ → ทายคำอธิบาย"); };
-  $("lUnsure").onclick=()=>{ onlyUnsure=!onlyUnsure; $("lUnsure").classList.toggle("on",onlyUnsure); idx=0; flipped=false; render(); };
+  $("lUnsure").onclick=()=>{ onlyUnsure=!onlyUnsure; $("lUnsure").classList.toggle("on",onlyUnsure); idx=resumeIdx(); flipped=false; render(); };
   let rbT=null; const rb=$("lReset");
   rb.onclick=()=>{
-    if(rb.dataset.confirm){ CARDS.forEach(c=>delete mark[c.id]); store.set("fc3-lit",mark); order=CARDS.map(c=>c.id); idx=0; flipped=false; rb.textContent="↺ เริ่มใหม่"; delete rb.dataset.confirm; render(); toast("ล้างสถานะหมวดนี้แล้ว"); return; }
+    if(rb.dataset.confirm){ CARDS.forEach(c=>delete mark[c.id]); store.set("fc3-lit",mark); order=CARDS.map(c=>c.id); idx=0; flipped=false; saveLitRes(true); rb.textContent="↺ เริ่มใหม่"; delete rb.dataset.confirm; render(); toast("ล้างสถานะหมวดนี้แล้ว"); return; }
     rb.dataset.confirm="1"; rb.textContent="กดอีกครั้งเพื่อล้าง"; clearTimeout(rbT);
     rbT=setTimeout(()=>{ rb.textContent="↺ เริ่มใหม่"; delete rb.dataset.confirm; },2500); };
 
@@ -181,14 +195,14 @@ const L=(()=>{
         : CARDS.map(row).join(""))+`</div>`;
     }
   }
-  $("lSumList").onclick=e=>{ const b=e.target.closest(".lgo"); if(!b) return; fStory=D.kind==="story"?+b.dataset.s:b.dataset.s; fCat="all"; deck=null; savePref(); idx=0; flipped=false; setTab("cards"); };
+  $("lSumList").onclick=e=>{ const b=e.target.closest(".lgo"); if(!b) return; fStory=D.kind==="story"?+b.dataset.s:b.dataset.s; fCat="all"; deck=null; savePref(); idx=resumeIdx(); flipped=false; setTab("cards"); };
 
   function setTab(t){ tab=t; setHash(`lit-${D.id}${t==="list"?"":"-"+t}`);
     $("lTabs").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
     $("lList").hidden=t!=="list"; $("lCards").hidden=t!=="cards"; $("lSum").hidden=t!=="sum"; $("lQuiz").hidden=t!=="quiz"; $("liCta").hidden=t!=="list";
     $("litView").classList.toggle("lc",t==="cards"); $("lScroll").scrollTop=0;
     if(t==="cards"){ deckBar(); renderChips(); render(); } else if(t==="list") renderLL(); else if(t==="quiz") renderQuiz(); else renderSum(); }
-  $("lTabs").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; if(b.dataset.tab==="cards"&&deck){ deck=null; idx=0; flipped=false; } setTab(b.dataset.tab); };
+  $("lTabs").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; if(b.dataset.tab==="cards"&&deck){ deck=null; flipped=false; } if(b.dataset.tab==="cards"&&tab!=="cards") idx=resumeIdx(); setTab(b.dataset.tab); };
 
   /* ---------- 📋 ลิสต์รวม (แบบหน้ารวมคำศัพท์) ---------- */
   let LF={g:"all",star:false,stat:null,q:""};
@@ -230,11 +244,11 @@ const L=(()=>{
       if(lstars.has(c.id)){ lstars.delete(c.id); b.classList.remove("on"); } else { lstars.add(c.id); b.classList.add("on"); }
       store.set("fc3-lit-star",[...lstars]); if(LF.star) renderLL(); else $("liChips").querySelector("[data-star] .n").textContent=starredIn(CARDS); return; }
     it.classList.toggle("open"); };
-  $("liStudy").onclick=()=>{ const a=llItems(); if(!a.length) return; deck=new Set(a.map(c=>c.id)); deck.label=deckLabel(); idx=0; flipped=false; onlyUnsure=false; onlyStar=false; $("lUnsure").classList.remove("on"); setTab("cards"); };
+  $("liStudy").onclick=()=>{ const a=llItems(); if(!a.length) return; deck=new Set(a.map(c=>c.id)); deck.label=deckLabel(); idx=resumeIdx(); flipped=false; onlyUnsure=false; onlyStar=false; $("lUnsure").classList.remove("on"); setTab("cards"); };
   function deckLabel(){ const p=[]; if(LF.g!=="all") p.push((grpList().find(([k])=>String(k)===String(LF.g))||[,""])[1]); if(LF.star) p.push("★ ติดดาว"); if(LF.stat) p.push(LIT_ST[LF.stat].th); if(LF.q) p.push(`“${esc(LF.q)}”`); return p.join(" · ")||"ทั้งหมด"; }
   function deckBar(){ const b=$("lDeckBar"); b.hidden=!deck; $("lFilt").style.display=deck?"none":"";
     if(deck) b.innerHTML=`<span>📋 จากลิสต์รวม: <b>${deck.label}</b> · ${deck.size} ใบ</span><button id="lDeckX">✕ ใช้ตัวกรองปกติ</button>`; }
-  $("lDeckBar").onclick=e=>{ if(!e.target.closest("#lDeckX")) return; deck=null; idx=0; flipped=false; deckBar(); renderChips(); render(); };
+  $("lDeckBar").onclick=e=>{ if(!e.target.closest("#lDeckX")) return; deck=null; idx=resumeIdx(); flipped=false; deckBar(); renderChips(); render(); };
   /* ---------- 📝 ข้อสอบ 4 ตัวเลือก ----------
      สร้างจากการ์ดของหมวดอัตโนมัติ: โจทย์ = คำถามของการ์ด, ตัวเลือกถูก = คำตอบ (ส่วนก่อน " — "),
      ตัวลวง = คำตอบของการ์ดอื่นในหัวข้อเดียวกันที่ยาวใกล้เคียงกัน · ตอบผิด → การ์ดใบนั้นถูกตั้งเป็น "ยังไม่แม่น"
@@ -329,7 +343,7 @@ const L=(()=>{
     if(t.closest("#qzNext")){ nextQ(); return; }
     if(t.closest("#qzQuit")||t.closest("#qzNew")){ QZ.stage="setup"; renderQuiz(); return; }
     if(t.closest("#qzRetry")){ startQuiz(shuf(QZ.res.filter(r=>!r.ok).map(r=>r.c))); return; }
-    if(t.closest("#qzStudy")){ const w=QZ.res.filter(r=>!r.ok).map(r=>r.c.id); deck=new Set(w); deck.label="ข้อที่ตอบผิดในข้อสอบ"; idx=0; flipped=false; onlyUnsure=false; onlyStar=false; $("lUnsure").classList.remove("on"); setTab("cards"); }
+    if(t.closest("#qzStudy")){ const w=QZ.res.filter(r=>!r.ok).map(r=>r.c.id); deck=new Set(w); deck.label="ข้อที่ตอบผิดในข้อสอบ"; idx=resumeIdx(); flipped=false; onlyUnsure=false; onlyStar=false; $("lUnsure").classList.remove("on"); setTab("cards"); }
   };
   document.addEventListener("keydown",e=>{
     if(S.view!=="lit"||page!=="set"||tab!=="quiz"||QZ.stage!=="q"||/INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;

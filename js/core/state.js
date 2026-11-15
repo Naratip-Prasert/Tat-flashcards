@@ -20,7 +20,7 @@ const ids = new Set(CH.map(c=>c.id));
 let S = {
   ch: store.get("fc3-ch","ch1"), secBy: store.get("fc3-sec",{}), stat:null, starOnly:false,
   sort: store.get("fc3-sort","sheet"), q:"",
-  dir: store.get("fc3-dir","jp"), hide: store.get("fc3-hide",false), shuffled:false, view:"list"
+  dir: store.get("fc3-dir","jp"), hide: store.get("fc3-hide",false), shuffled:store.get("fc3-shuf",false), view:"list"
 };
 let deck=[], idx=0, flipped=false, studyLabel="";
 
