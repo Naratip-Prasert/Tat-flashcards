@@ -143,3 +143,36 @@
 .ldeck{display:flex;align-items:center;gap:8px;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:7px 8px 7px 12px;font-size:12.5px;color:var(--muted);margin-bottom:6px;flex:none}
 .ldeck b{color:var(--ink)}
 .ldeck button{flex:none;border:none;background:var(--accent-soft);color:var(--accent);border-radius:9px;padding:6px 9px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+
+/* ---------- 📝 ข้อสอบ ---------- */
+#lQuiz[hidden]{display:none}
+.ltabs button{white-space:nowrap;font-size:13.5px;padding-left:4px;padding-right:4px}
+.qzbox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+.qzh{display:flex;flex-direction:column;gap:3px;margin-bottom:6px}.qzh b{font-size:17px}.qzh span{font-size:12.5px;color:var(--muted);line-height:1.5}
+.qzh .qzbest{color:#8a5a10;font-weight:700}
+.qzbox .lchips{flex-wrap:wrap;overflow:visible}
+.qzgo{width:100%;margin-top:14px;height:50px;border:none;border-radius:16px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(var(--accent-rgb),.28)}
+.qzgo:disabled{opacity:.45;box-shadow:none}
+.qzsec{width:100%;margin-top:8px;height:46px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--accent);font-size:14.5px;font-weight:700;cursor:pointer}
+.qztop{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);font-weight:600;margin:2px 2px 6px}
+.qztop span:nth-child(2){flex:1;color:#2f7a4f}
+.qzx{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:5px 9px;font-size:12px;color:var(--muted);cursor:pointer}
+.qzq{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);margin-bottom:10px}
+.qztag{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--muted);margin-bottom:6px}
+.qzqt{font-size:17.5px;font-weight:600;line-height:1.6}.qzqt small{display:block;font-size:12.5px;font-weight:500;color:var(--muted)}
+.qzopts{display:flex;flex-direction:column;gap:8px}
+.qzo{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:11px 12px;font-size:14.5px;line-height:1.55;color:var(--ink);cursor:pointer;transition:transform .08s}
+.qzo:active{transform:scale(.99)}
+.qzl{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-weight:700;font-size:13px;background:var(--accent-soft);color:var(--accent)}
+.qzo.ok{border-color:#3aa76d;background:#e7f6ec}.qzo.ok .qzl{background:#3aa76d;color:#fff}
+.qzo.no{border-color:#e5484d;background:#fdecec}.qzo.no .qzl{background:#e5484d;color:#fff}
+.qzo.dim{opacity:.55}.qzo:disabled{cursor:default}
+.qzexp{margin-top:10px;border-radius:14px;padding:10px 12px;font-size:14px;background:var(--card);border:1px solid var(--line)}
+.qzexp>b{display:block;margin-bottom:4px}.qzexp.ok>b{color:#2f7a4f}.qzexp.no>b{color:#c03338}
+.qzexp .lans{padding:0;font-size:14.5px}
+.qzdone{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 14px;text-align:center;box-shadow:var(--shadow);margin-bottom:12px}
+.qzscore{font-size:48px;font-weight:800;color:var(--accent);line-height:1}.qzscore small{font-size:22px;color:var(--muted)}
+.qzpct{font-size:14px;color:var(--muted);font-weight:700;margin-top:2px}
+.qzmsg{font-size:15.5px;margin:8px 0 4px}
+.qzw .qzyou{color:#c03338;font-size:13.5px}
+@media (max-width:380px){ .ltabs button{font-size:12px} }

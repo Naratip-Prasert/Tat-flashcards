@@ -53,12 +53,13 @@ const L=(()=>{
     fStory=(D.stories||D.groups)?(p.s??"all"):"all"; fCat=D.cats?(p.c||D.cats[0].k):"all"; rev=!!p.r;
     order=CARDS.map(c=>c.id); idx=0; flipped=false; onlyUnsure=false; onlyStar=false; deck=null; LF={g:"all",star:false,stat:null,q:""}; $("liQ").value="";
     $("lUnsure").classList.remove("on"); $("lDeck").innerHTML="";
-    $("lSumTab").textContent=D.sumLabel||"📖 สรุป"; $("lSumTab").hidden=D.kind!=="story";
-    $("lTabs").style.gridTemplateColumns=D.kind==="story"?"1fr 1fr 1fr":"1fr 1fr";
+    $("lSumTab").textContent="📖 สรุป"; $("lSumTab").hidden=D.kind!=="story";
+    $("lTabs").style.gridTemplateColumns=D.kind==="story"?"repeat(4,1fr)":"repeat(3,1fr)";
+    QZ.stage="setup"; QZ.g="all"; QZ.src="all"; QZ.n=10;
     $("lFilt").hidden=!(D.kind==="story"||D.groups); $("lStoryLab").textContent=D.kind==="story"?"เรื่อง":"หัวข้อ";
     $("lCatLab").hidden=$("lCat").hidden=D.kind!=="story"; $("lRev").hidden=D.kind!=="terms"; $("lRev").classList.toggle("on",rev);
   }
-  function openSet(id,t){ if(t==="sum"&&BY[id]&&BY[id].kind!=="story") t="list"; if(!BY[id]||!BY[id].cards.length){ showPick(); return; }
+  function openSet(id,t){ if(t==="sum"&&BY[id]&&BY[id].kind!=="story") t="list"; if(t==="quiz"&&D&&D.id===id&&QZ.stage!=="setup"&&tab==="quiz") return; if(!BY[id]||!BY[id].cards.length){ showPick(); return; }
     if(!D||D.id!==id) useSet(id);
     page="set"; $("lPick").hidden=true; $("lSet").hidden=false;
     $("litTitle").textContent=D.title; $("litSub").textContent=`${D.jp} · ${D.sub||""}`;
@@ -172,9 +173,9 @@ const L=(()=>{
 
   function setTab(t){ tab=t; setHash(`lit-${D.id}${t==="list"?"":"-"+t}`);
     $("lTabs").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
-    $("lList").hidden=t!=="list"; $("lCards").hidden=t!=="cards"; $("lSum").hidden=t!=="sum"; $("liCta").hidden=t!=="list";
+    $("lList").hidden=t!=="list"; $("lCards").hidden=t!=="cards"; $("lSum").hidden=t!=="sum"; $("lQuiz").hidden=t!=="quiz"; $("liCta").hidden=t!=="list";
     $("litView").classList.toggle("lc",t==="cards"); $("lScroll").scrollTop=0;
-    if(t==="cards"){ deckBar(); renderChips(); render(); } else if(t==="list") renderLL(); else renderSum(); }
+    if(t==="cards"){ deckBar(); renderChips(); render(); } else if(t==="list") renderLL(); else if(t==="quiz") renderQuiz(); else renderSum(); }
   $("lTabs").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; if(b.dataset.tab==="cards"&&deck){ deck=null; idx=0; flipped=false; } setTab(b.dataset.tab); };
 
   /* ---------- 📋 ลิสต์รวม (แบบหน้ารวมคำศัพท์) ---------- */
@@ -222,6 +223,109 @@ const L=(()=>{
   function deckBar(){ const b=$("lDeckBar"); b.hidden=!deck; $("lFilt").style.display=deck?"none":"";
     if(deck) b.innerHTML=`<span>📋 จากลิสต์รวม: <b>${deck.label}</b> · ${deck.size} ใบ</span><button id="lDeckX">✕ ใช้ตัวกรองปกติ</button>`; }
   $("lDeckBar").onclick=e=>{ if(!e.target.closest("#lDeckX")) return; deck=null; idx=0; flipped=false; deckBar(); renderChips(); render(); };
+  /* ---------- 📝 ข้อสอบ 4 ตัวเลือก ----------
+     สร้างจากการ์ดของหมวดอัตโนมัติ: โจทย์ = คำถามของการ์ด, ตัวเลือกถูก = คำตอบ (ส่วนก่อน " — "),
+     ตัวลวง = คำตอบของการ์ดอื่นในหัวข้อเดียวกันที่ยาวใกล้เคียงกัน · ตอบผิด → การ์ดใบนั้นถูกตั้งเป็น "ยังไม่แม่น"
+     คะแนนดีที่สุดเก็บใน fc3-lit-quiz = { setId: {best, last, n} } */
+  const QZ={stage:"setup", g:"all", src:"all", n:10, items:[], i:0, picked:null, res:[]};
+  const plainA=h=>String(h).replace(/<small>.*?<\/small>/g,"").replace(/<h3>(.*?)<\/h3>[\s\S]*/,"$1")
+    .replace(/<div class=.note.>[\s\S]*?<\/div>/g,"")
+    .replace(/<\/?(b|i|span|em|strong)(\s[^>]*)?>/g,"")                  // แท็กในบรรทัด → ไม่เว้นวรรค
+    .replace(/<(li|br|div|p|h4|ol|ul)[^>]*>/g," · ").replace(/<[^>]+>/g," ")
+    .replace(/[•]/g," · ").replace(/\s*·\s*(·\s*)+/g," · ")
+    .replace(/^\s*·\s*/,"").replace(/\s*·\s*$/,"").replace(/\s+/g," ").trim();
+  function choiceOf(c){
+    if(/<h3>/.test(c.a)) return plainA(c.a);                       // การ์ดทายชื่อเรื่อง (อุจิ) → ชื่อเรื่อง
+    let t=plainA(c.a); const cut=t.indexOf(" — ");
+    if(cut>2&&!t.slice(0,cut).includes(" · ")&&!/<(br|li)/.test(c.a)) t=t.slice(0,cut).trim();   // ตัดคำอธิบายเสริมหลัง — (เฉพาะคำตอบบรรทัดเดียว)
+    return t;
+  }
+  const quizable=c=>{ const t=choiceOf(c); return t.length>3&&t.length<=170&&!(D.kind==="story"&&c.cat==="full"); };
+  function qPool(){ let a=CARDS.filter(quizable);
+    if(QZ.g!=="all") a=a.filter(c=>String(grpOf(c))===String(QZ.g));
+    if(QZ.src==="star") a=a.filter(c=>lstars.has(c.id));
+    if(QZ.src==="weak") a=a.filter(c=>mark[c.id]!=="k");
+    return a; }
+  const shuf=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; };
+  function makeQ(c){
+    const right=choiceOf(c), rl=right.length, seen=new Set([right]);
+    const near=(pool)=>shuf(pool).filter(x=>x.id!==c.id).map(x=>({t:choiceOf(x),x}))
+      .filter(o=>o.t&&o.t.length<=170&&!seen.has(o.t)&&!o.t.includes(right)&&!right.includes(o.t))
+      .map(o=>({...o,d:Math.abs(Math.log((o.t.length+4)/(rl+4)))+Math.random()*.35})).sort((a,b)=>a.d-b.d);
+    const same=D.kind==="story"?CARDS.filter(x=>x.cat===c.cat):CARDS.filter(x=>x.g===c.g);
+    const out=[];
+    for(const pool of [same,CARDS]) for(const o of near(pool)){ if(out.length>=3) break; if(seen.has(o.t)) continue; seen.add(o.t); out.push(o.t); }
+    return {c, opts:shuf([right,...out]), right};
+  }
+  function startQuiz(cards){ QZ.items=cards.map(makeQ); QZ.i=0; QZ.picked=null; QZ.res=[]; QZ.stage="q"; renderQuiz(); $("lScroll").scrollTop=0; }
+  const qBest=()=>((store.get("fc3-lit-quiz",{})||{})[D.id])||null;
+  function renderQuiz(){
+    const el=$("lQuiz");
+    if(QZ.stage==="setup"){
+      const groups=D.groups?D.groups.map(g=>[g.k,esc(g.n)]):D.kind==="story"?[...D.stories.map(s=>[s.id,`${s.id}. ${esc(s.t)}`]),[0,"ภาพรวม/เปรียบเทียบ"]]:[];
+      const pool=qPool(), b=qBest();
+      const nOpts=[10,20,30].filter(n=>n<pool.length);
+      if(QZ.n!=="all"&&!nOpts.includes(QZ.n)) QZ.n=nOpts[0]||"all";
+      const cnt=g=>CARDS.filter(quizable).filter(c=>g==="all"||String(grpOf(c))===String(g)).length;
+      el.innerHTML=`<div class="qzbox">
+        <div class="qzh"><b>📝 ข้อสอบ 4 ตัวเลือก</b><span>สุ่มโจทย์จากการ์ดในหมวดนี้ · ตอบผิดจะถูกตั้งเป็น “ยังไม่แม่น” ให้อัตโนมัติ</span>
+          ${b?`<span class="qzbest">🏆 ดีที่สุด ${b.best}% · ล่าสุด ${b.last}%</span>`:""}</div>
+        ${groups.length?`<div class="llab">${D.kind==="story"?"เรื่อง":"หัวข้อ"}</div><div class="lchips qzg">
+          <button class="lchip ${QZ.g==="all"?"on":""}" data-g="all">ทั้งหมด <small>${cnt("all")}</small></button>
+          ${groups.map(([k,n])=>`<button class="lchip ${String(QZ.g)===String(k)?"on":""}" data-g="${k}">${n} <small>${cnt(k)}</small></button>`).join("")}</div>`:""}
+        <div class="llab">ข้อจาก</div><div class="lchips qzs">
+          ${[["all","ทุกการ์ด"],["weak","ที่ยังจำไม่ได้"],["star","⭐ ติดดาว"]].map(([k,n])=>`<button class="lchip ${QZ.src===k?"on":""}" data-s="${k}">${n}</button>`).join("")}</div>
+        <div class="llab">จำนวนข้อ</div><div class="lchips qzn">
+          ${nOpts.map(n=>`<button class="lchip ${QZ.n===n?"on":""}" data-n="${n}">${n} ข้อ</button>`).join("")}
+          <button class="lchip ${QZ.n==="all"?"on":""}" data-n="all">ทั้งหมด ${pool.length} ข้อ</button></div>
+        <button class="qzgo" id="qzGo" ${pool.length<1?"disabled":""}>${pool.length?`เริ่มทำข้อสอบ · ${QZ.n==="all"?pool.length:Math.min(QZ.n,pool.length)} ข้อ`:"ไม่มีการ์ดในตัวเลือกนี้"}</button></div>`;
+      return;
+    }
+    if(QZ.stage==="q"){
+      const q=QZ.items[QZ.i], ok=QZ.res.filter(r=>r.ok).length, P=QZ.picked, L="ABCD";
+      const st=D.kind==="story"?ST[q.c.s]:null, tag=st?(q.c.s?`${q.c.s}. ${esc(st.t)}`:"ภาพรวม"):(q.c.g&&GN[q.c.g]?esc(GN[q.c.g]):"");
+      el.innerHTML=`<div class="qztop"><span>ข้อ ${QZ.i+1} / ${QZ.items.length}</span><span>ถูก ${ok}</span><button class="qzx" id="qzQuit">✕ เลิกทำ</button></div>
+        <div class="lprog"><i class="k" style="width:${QZ.i/QZ.items.length*100}%"></i></div>
+        <div class="qzq">${P!==null&&tag?`<div class="qztag">${tag}</div>`:""}<div class="qzqt">${q.c.q}</div></div>
+        <div class="qzopts">${q.opts.map((o,i)=>{ const cls=P===null?"":o===q.right?"ok":i===P?"no":"dim";
+          return `<button class="qzo ${cls}" data-i="${i}" ${P!==null?"disabled":""}><span class="qzl">${L[i]}</span><span>${esc(o)}</span></button>`; }).join("")}</div>
+        ${P!==null?`<div class="qzexp ${q.opts[P]===q.right?"ok":"no"}"><b>${q.opts[P]===q.right?tr("vOk"):"✗ ยังไม่ถูก — เฉลย"}</b><div class="lans">${q.c.a}</div></div>
+          <button class="qzgo" id="qzNext">${QZ.i+1<QZ.items.length?"ข้อต่อไป →":"ดูผลคะแนน 🎉"}</button>`:""}`;
+      return;
+    }
+    const ok=QZ.res.filter(r=>r.ok).length, n=QZ.res.length, pct=Math.round(ok/n*100), wrong=QZ.res.filter(r=>!r.ok);
+    el.innerHTML=`<div class="qzdone"><div class="qzscore">${ok}<small>/${n}</small></div><div class="qzpct">${pct}%</div>
+        <div class="qzmsg">${tr(ok===n?"ex100":ok>=n*.8?"ex80":ok>=n*.5?"ex50":"ex0")}</div>
+        <div class="qzbtns">${wrong.length?`<button class="qzgo" id="qzRetry">ทำข้อที่ผิดอีกครั้ง · ${wrong.length} ข้อ</button><button class="qzsec" id="qzStudy">🃏 ทบทวนข้อที่ผิดด้วยแฟลชการ์ด</button>`:""}
+          <button class="qzsec" id="qzNew">ทำชุดใหม่</button></div></div>
+      ${wrong.length?`<div class="llab">ข้อที่ตอบผิด</div>`+wrong.map(r=>`<div class="ltrow qzw" style="--sc:#e5484d"><div class="ltx"><b>${r.c.q}</b><div class="qzyou">ตอบ: ${esc(r.pick)}</div><div>✓ ${esc(choiceOf(r.c))}</div></div></div>`).join(""):""}`;
+  }
+  function pickOpt(i){ if(QZ.stage!=="q"||QZ.picked!==null) return; const q=QZ.items[QZ.i]; QZ.picked=i;
+    const ok=q.opts[i]===q.right; QZ.res.push({c:q.c,ok,pick:q.opts[i]});
+    if(!ok){ mark[q.c.id]="u"; store.set("fc3-lit",mark); }
+    renderQuiz(); const ex=document.querySelector(".qzexp"); if(ex) ex.scrollIntoView({behavior:"smooth",block:"nearest"}); }
+  function nextQ(){ if(QZ.i+1<QZ.items.length){ QZ.i++; QZ.picked=null; renderQuiz(); $("lScroll").scrollTop=0; return; }
+    const ok=QZ.res.filter(r=>r.ok).length, pct=Math.round(ok/QZ.res.length*100), all=store.get("fc3-lit-quiz",{})||{}, b=all[D.id]||{best:0};
+    all[D.id]={best:Math.max(b.best||0,pct), last:pct, n:QZ.res.length}; store.set("fc3-lit-quiz",all);
+    QZ.stage="done"; renderQuiz(); $("lScroll").scrollTop=0; if(ok===QZ.res.length&&typeof confetti==="function") confetti(1800); }
+  $("lQuiz").onclick=e=>{ const t=e.target;
+    const g=t.closest("[data-g]"); if(g&&QZ.stage==="setup"){ QZ.g=g.dataset.g==="all"?"all":(D.kind==="story"?+g.dataset.g:g.dataset.g); renderQuiz(); return; }
+    const s=t.closest("[data-s]"); if(s&&QZ.stage==="setup"){ QZ.src=s.dataset.s; renderQuiz(); return; }
+    const n=t.closest("[data-n]"); if(n&&QZ.stage==="setup"){ QZ.n=n.dataset.n==="all"?"all":+n.dataset.n; renderQuiz(); return; }
+    if(t.closest("#qzGo")){ const p=shuf(qPool()); startQuiz(QZ.n==="all"?p:p.slice(0,QZ.n)); return; }
+    const o=t.closest(".qzo"); if(o){ pickOpt(+o.dataset.i); return; }
+    if(t.closest("#qzNext")){ nextQ(); return; }
+    if(t.closest("#qzQuit")||t.closest("#qzNew")){ QZ.stage="setup"; renderQuiz(); return; }
+    if(t.closest("#qzRetry")){ startQuiz(shuf(QZ.res.filter(r=>!r.ok).map(r=>r.c))); return; }
+    if(t.closest("#qzStudy")){ const w=QZ.res.filter(r=>!r.ok).map(r=>r.c.id); deck=new Set(w); deck.label="ข้อที่ตอบผิดในข้อสอบ"; idx=0; flipped=false; onlyUnsure=false; onlyStar=false; $("lUnsure").classList.remove("on"); setTab("cards"); }
+  };
+  document.addEventListener("keydown",e=>{
+    if(S.view!=="lit"||page!=="set"||tab!=="quiz"||QZ.stage!=="q"||/INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
+    if(/^[1-4]$/.test(e.key)) pickOpt(+e.key-1);
+    else if(e.key.toLowerCase()>="a"&&e.key.toLowerCase()<="d"&&e.key.length===1) pickOpt(e.key.toLowerCase().charCodeAt(0)-97);
+    else if(e.key==="Enter"&&QZ.picked!==null){ e.preventDefault(); nextQ(); }
+  });
+
   $("lBack").onclick=()=>{ if(page==="set") showPick(); else goHome(); };
 
   document.addEventListener("keydown",e=>{
@@ -236,7 +340,7 @@ const L=(()=>{
     // arg: {set, tab} จาก router · ไม่มี set = หน้าเลือกหมวด
     enter(arg){ arg=arg||{}; if(arg.set) openSet(arg.set,arg.tab); else showPick(); },
     reload(){ mark=store.get("fc3-lit",{})||{}; lstars=new Set(store.get("fc3-lit-star",[])||[]);
-      if(S.view!=="lit") return; if(page==="pick") renderPick(); else if(tab==="cards") render(); else if(tab==="list") renderLL(); else renderSum(); },
+      if(S.view!=="lit") return; if(page==="pick") renderPick(); else if(tab==="cards") render(); else if(tab==="list") renderLL(); else if(tab==="quiz"){ if(QZ.stage==="setup") renderQuiz(); } else renderSum(); },
     progress:()=>{ const all=SETS.flatMap(s=>s.cards); return {known:known(all), total:all.length, sets:SETS.filter(s=>s.cards.length).length}; }
   };
 })();

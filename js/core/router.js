@@ -4,7 +4,7 @@ function parseHash(){ const h=location.hash.slice(1); if(h==="home"||h==="write"
   if(h==="vocab") return {page:"vpick"};
   if(h==="lit") return {page:"lit"};
   if(h==="lit-sum") return {page:"lit",set:"uji",tab:"sum"};                 // old link
-  const lm=h.match(/^lit-([a-z0-9]+?)(?:-(sum|cards))?$/); if(lm) return {page:"lit",set:lm[1],tab:lm[2]||"list"};
+  const lm=h.match(/^lit-([a-z0-9]+?)(?:-(sum|cards|quiz))?$/); if(lm) return {page:"lit",set:lm[1],tab:lm[2]||"list"};
   const m=h.match(/^(ch\d)(-cards)?$/); return m&&ids.has(m[1])?{page:m[2]?"cards":"list",ch:m[1],cards:!!m[2]}:null; }
 function setHash(h){ try{ history.replaceState(null,"","#"+h) }catch(e){} }
 
