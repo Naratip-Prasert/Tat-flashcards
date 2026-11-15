@@ -18,6 +18,7 @@ const L=(()=>{
 
   const known=cs=>cs.filter(c=>mark[c.id]==="k").length;
   const starredIn=cs=>cs.filter(c=>lstars.has(c.id)).length;
+  const hasSum=d=>d.kind==="story"||!!d.summary;
   const grpOf=c=>D.kind==="story"?c.s:c.g;
   let deck=null;                                   // Set ของ id จากปุ่ม "ทบทวนชุดนี้" ในลิสต์รวม (null = ใช้ตัวกรองปกติ)
   const list=()=>order.map(id=>BYID[id]).filter(c=>c&&(deck?deck.has(c.id):(fStory==="all"||String(grpOf(c))===String(fStory))&&(fCat==="all"||c.cat===fCat))&&(!onlyUnsure||mark[c.id]!=="k")&&(!onlyStar||lstars.has(c.id)));
@@ -53,13 +54,13 @@ const L=(()=>{
     fStory=(D.stories||D.groups)?(p.s??"all"):"all"; fCat=D.cats?(p.c||D.cats[0].k):"all"; rev=!!p.r;
     order=CARDS.map(c=>c.id); idx=0; flipped=false; onlyUnsure=false; onlyStar=false; deck=null; LF={g:"all",star:false,stat:null,q:""}; $("liQ").value="";
     $("lUnsure").classList.remove("on"); $("lDeck").innerHTML="";
-    $("lSumTab").textContent="📖 สรุป"; $("lSumTab").hidden=D.kind!=="story";
-    $("lTabs").style.gridTemplateColumns=D.kind==="story"?"repeat(4,1fr)":"repeat(3,1fr)";
+    $("lSumTab").textContent="📖 สรุป"; $("lSumTab").hidden=!hasSum(D);
+    $("lTabs").style.gridTemplateColumns=hasSum(D)?"repeat(4,1fr)":"repeat(3,1fr)";
     QZ.stage="setup"; QZ.g="all"; QZ.src="all"; QZ.n=10;
     $("lFilt").hidden=!(D.kind==="story"||D.groups); $("lStoryLab").textContent=D.kind==="story"?"เรื่อง":"หัวข้อ";
     $("lCatLab").hidden=$("lCat").hidden=D.kind!=="story"; $("lRev").hidden=D.kind!=="terms"; $("lRev").classList.toggle("on",rev);
   }
-  function openSet(id,t){ if(t==="sum"&&BY[id]&&BY[id].kind!=="story") t="list"; if(t==="quiz"&&D&&D.id===id&&QZ.stage!=="setup"&&tab==="quiz") return; if(!BY[id]||!BY[id].cards.length){ showPick(); return; }
+  function openSet(id,t){ if(t==="sum"&&BY[id]&&!hasSum(BY[id])) t="list"; if(t==="quiz"&&D&&D.id===id&&QZ.stage!=="setup"&&tab==="quiz") return; if(!BY[id]||!BY[id].cards.length){ showPick(); return; }
     if(!D||D.id!==id) useSet(id);
     page="set"; $("lPick").hidden=true; $("lSet").hidden=false;
     $("litTitle").textContent=D.title; $("litSub").textContent=`${D.jp} · ${D.sub||""}`;
@@ -153,6 +154,17 @@ const L=(()=>{
 
   /* ---------- สรุป (เรื่องเล่า) / รายการคำ (terms) ---------- */
   function renderSum(){
+    if(D.summary){
+      $("lIntro").hidden=!D.intro; $("lIntro").innerHTML=D.intro||"";
+      const gi=k=>D.groups.findIndex(g=>g.k===k)+1;
+      $("lSumList").innerHTML=D.summary.map(x=>`
+        <details class="lstory" style="--sc:${D.color}">
+          <summary><span class="lnum">${gi(x.g)}</span><span class="lst"><b>${x.t}</b><span>${x.sub}</span></span><span class="lchev">›</span></summary>
+          <div class="lsbody">${x.h.map(([t,l])=>`<h4>${t}</h4>${D.ul?D.ul(l):"<ul>"+l.map(i=>"<li>"+i+"</li>").join("")+"</ul>"}`).join("")}
+            <button class="lgo" data-s="${x.g}">ฝึกการ์ดหัวข้อนี้ (${CARDS.filter(c=>c.g===x.g).length} ใบ) →</button></div>
+        </details>`).join("");
+      return;
+    }
     if(D.kind==="story"){
       $("lIntro").hidden=false; $("lIntro").innerHTML=D.intro||"";
       $("lSumList").innerHTML=D.stories.map(s=>`
@@ -169,7 +181,7 @@ const L=(()=>{
         : CARDS.map(row).join(""))+`</div>`;
     }
   }
-  $("lSumList").onclick=e=>{ const b=e.target.closest(".lgo"); if(!b) return; fStory=+b.dataset.s; fCat="all"; savePref(); idx=0; flipped=false; setTab("cards"); };
+  $("lSumList").onclick=e=>{ const b=e.target.closest(".lgo"); if(!b) return; fStory=D.kind==="story"?+b.dataset.s:b.dataset.s; fCat="all"; deck=null; savePref(); idx=0; flipped=false; setTab("cards"); };
 
   function setTab(t){ tab=t; setHash(`lit-${D.id}${t==="list"?"":"-"+t}`);
     $("lTabs").querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));
