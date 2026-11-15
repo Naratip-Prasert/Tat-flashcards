@@ -136,7 +136,7 @@ STORIES.forEach(s=>{
 });
 
 (window.LIT_SETS=window.LIT_SETS||[]).push({
-  id:"uji", kind:"story", order:3, icon:"🏯", color:"#c8402e",
+  id:"uji", kind:"story", order:4, icon:"🏯", color:"#c8402e",
   title:"รวมเรื่องเล่าจากเมืองอุจิ", jp:"宇治拾遺物語", sub:"อุจิฌูอิโมะโนะงะตะริ · 9 เรื่อง", sumLabel:"📖 สรุป 9 เรื่อง",
   intro:"เรื่องเล่าใน <i>อุจิฌูอิโมะโนะงะตะริ</i> (宇治拾遺物語) มัก<b>แฝงข้อคิด</b>โดยไม่สั่งสอนตรง ๆ ตัวละครที่ประพฤติดีได้ผลดี ประพฤติไม่ดีได้ผลร้าย และสะท้อน<b>ความเชื่อทางพุทธศาสนาผสมกับความเชื่อดั้งเดิมของญี่ปุ่น</b>",
   stories:STORIES, cats:CATS, cards:CARDS, ul
