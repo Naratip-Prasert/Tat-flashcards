@@ -1,10 +1,10 @@
 // Service worker: เก็บไฟล์ไว้ใช้ออฟไลน์
 // - ไฟล์ของแอป (หน้าเว็บ, คำศัพท์): โหลดจากเน็ตก่อน → อัปเดตขึ้นทันทีที่ push, ถ้าออฟไลน์ใช้ตัวที่เก็บไว้
 // - ฟอนต์จาก Google: ใช้ตัวที่เก็บไว้ก่อน
-const C = "tango-v46";
+const C = "tango-v47";
 const CORE = ["./", "./index.html", "./manifest.webmanifest",
   "./css/base.css", "./css/vocab.css", "./css/home.css", "./css/write.css", "./css/profile.css", "./css/account.css", "./css/popup.css", "./css/lit.css", "./css/theme-general.css",
-  "./data/vocab.js", "./data/sentences.js", "./data/exercise-bank.js", "./data/lit-uji.js", "./data/lit-kamakura.js", "./data/lit-edo.js", "./data/lit-kindai.js",
+  "./data/vocab.js", "./data/sentences.js", "./data/exercise-bank.js", "./data/lit-uji.js", "./data/lit-kamakura.js", "./data/lit-edo.js", "./data/lit-kindai.js", "./data/lit-poem.js",
   "./js/config/firebase.js", "./js/config/roles.js", "./js/core/role.js", "./js/engine/sentence-gen.js",
   "./js/core/state.js", "./js/core/ui.js", "./js/core/router.js", "./js/core/crop.js",
   "./js/features/vocab-list.js", "./js/features/vocab-pick.js", "./js/features/flashcards.js", "./js/features/home.js", "./js/features/write.js", "./js/features/lit.js", "./js/features/profile.js", "./js/features/postcard-share.js",

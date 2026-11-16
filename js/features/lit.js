@@ -105,6 +105,12 @@ const L=(()=>{
   function sides(c){
     const m=mark[c.id];
     const st=m==="k"?'<span class="ltag ok">✓ จำได้</span>':m==="u"?'<span class="ltag un">ยังไม่แม่น</span>':"";
+    if(D.poem){                                       // หมวดกลอน: หน้า = บทต้นฉบับ · หลัง = คำแปล/ผู้แต่ง/เรื่อง/คุณค่า
+      const lb=D.labels, meta=`<div class="lmeta"><span class="ltag">${rev?lb[1]:lb[0]}</span>${st}</div>`;
+      const orig=`<div class="lpq">${c.q}</div>`, info=`<div class="lans"><div class="lqq">${c.t}</div>${c.a}</div>`;
+      return rev?{ front:`${meta}<div class="lans">${c.a}</div><div class="lhint">แตะเพื่อดูบทต้นฉบับ</div>`, back:`${meta}${orig}` }
+                :{ front:`${meta}${orig}<div class="lhint">แตะเพื่อดูคำแปล · ผู้แต่ง · คุณค่า</div>`, back:`${meta}${info}` };
+    }
     if(D.kind==="terms"){
       const lb=D.labels||["คำ → คำอธิบาย","คำอธิบาย → คำ"], F=rev?c.a:c.q, B=rev?c.q:c.a;
       const meta=`<div class="lmeta">${c.g&&GN[c.g]?`<span class="ltag st">${esc(GN[c.g])}</span>`:""}<span class="ltag">${rev?lb[1]:lb[0]}</span>${st}</div>`;
@@ -279,19 +285,24 @@ const L=(()=>{
     .replace(/[•]/g," · ").replace(/\s*·\s*(·\s*)+/g," · ")
     .replace(/^\s*·\s*/,"").replace(/\s*·\s*$/,"").replace(/\s+/g," ").trim();
   function choiceOf(c){
+    if(c._qz) return c._qz.a;
     if(/<h3>/.test(c.a)) return plainA(c.a);                       // การ์ดทายชื่อเรื่อง (อุจิ) → ชื่อเรื่อง
     let t=plainA(c.a); const cut=t.indexOf(" — ");
     if(cut>2&&!t.slice(0,cut).includes(" · ")&&!/<(br|li)/.test(c.a)) t=t.slice(0,cut).trim();   // ตัดคำอธิบายเสริมหลัง — (เฉพาะคำตอบบรรทัดเดียว)
     return t;
   }
+  /* หมวดที่เขียนข้อสอบเอง (quizItems) → แปลงเป็น "การ์ดโจทย์" ที่ผูกกับ id การ์ดจริง (ตอบผิด = การ์ดนั้นยังไม่แม่น) */
+  const qAll=()=>{ if(!D.quizItems) return CARDS.filter(quizable);
+    return D._qp||(D._qp=D.quizItems.map(x=>{ const c=BYID[x.id]; return {id:x.id, g:c.g, q:x.q, a:c.ex||c.a, _qz:x}; })); };
   const quizable=c=>{ const t=choiceOf(c); return t.length>3&&t.length<=170&&!(D.kind==="story"&&c.cat==="full"); };
-  function qPool(){ let a=CARDS.filter(quizable);
+  function qPool(){ let a=qAll();
     if(QZ.g!=="all") a=a.filter(c=>String(grpOf(c))===String(QZ.g));
     if(QZ.src==="star") a=a.filter(c=>lstars.has(c.id));
     if(QZ.src==="weak") a=a.filter(c=>mark[c.id]!=="k");
     return a; }
   const shuf=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; };
   function makeQ(c){
+    if(c._qz) return {c, opts:shuf([c._qz.a,...c._qz.w]), right:c._qz.a};
     const right=choiceOf(c), rl=right.length, seen=new Set([right]);
     const near=(pool)=>shuf(pool).filter(x=>x.id!==c.id).map(x=>({t:choiceOf(x),x}))
       .filter(o=>o.t&&o.t.length<=170&&!seen.has(o.t)&&!o.t.includes(right)&&!right.includes(o.t))
@@ -310,7 +321,7 @@ const L=(()=>{
       const pool=qPool(), b=qBest();
       const nOpts=[10,20,30].filter(n=>n<pool.length);
       if(QZ.n!=="all"&&!nOpts.includes(QZ.n)) QZ.n=nOpts[0]||"all";
-      const cnt=g=>CARDS.filter(quizable).filter(c=>g==="all"||String(grpOf(c))===String(g)).length;
+      const cnt=g=>qAll().filter(c=>g==="all"||String(grpOf(c))===String(g)).length;
       el.innerHTML=`<div class="qzbox">
         <div class="qzh"><b>📝 ข้อสอบ 4 ตัวเลือก</b><span>สุ่มโจทย์จากการ์ดในหมวดนี้ · ตอบผิดจะถูกตั้งเป็น “ยังไม่แม่น” ให้อัตโนมัติ</span>
           ${b?`<span class="qzbest">🏆 ดีที่สุด ${b.best}% · ล่าสุด ${b.last}%</span>`:""}</div>

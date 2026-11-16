@@ -176,3 +176,10 @@
 .qzmsg{font-size:15.5px;margin:8px 0 4px}
 .qzw .qzyou{color:#c03338;font-size:13.5px}
 @media (max-width:380px){ .ltabs button{font-size:12px} }
+
+/* หมวดกลอน */
+.lpq{padding:14px 20px 8px 26px}
+.lpt{font-family:"Noto Sans JP",sans-serif;font-weight:700;font-size:15px;color:var(--sc,var(--accent));margin-bottom:8px}
+.lpoem{font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP","Noto Sans JP",serif;font-size:17px;line-height:2;white-space:pre-wrap;color:var(--ink);letter-spacing:.02em}
+.liq .lpt{font-size:13px;margin-bottom:4px}.liq .lpoem{font-size:14.5px;line-height:1.85}
+.lptr{line-height:1.8}
