@@ -249,9 +249,13 @@ const L=(()=>{
   /* ตำแหน่งที่ค้างไว้ของชุดที่กรองในหน้าลิสต์ (ไม่เปลี่ยน state) */
   function liPeek(a){ const k=[deck,onlyUnsure,onlyStar,idx]; deck=new Set(a.map(c=>c.id)); onlyUnsure=false; onlyStar=false;
     const i=resumeIdx(); [deck,onlyUnsure,onlyStar,idx]=k; return i; }
-  $("liRestart").onclick=()=>{ const a=llItems(); if(!a.length||!D) return; const all=litRes(), r=all[D.id];
-    if(r&&r.pos){ delete r.pos["deck:"+a.map(c=>c.id).join(",")]; try{ localStorage.setItem("fc3-lit-resume",JSON.stringify(all)); }catch(e){} }
-    $("liStudy").onclick(); toast("เริ่มใหม่จากใบแรก ↺"); };
+  /* ↺ เริ่มใหม่: ล้างสถานะ จำได้/ไม่แน่ใจ ของการ์ดในชุดนี้ (ไม่แตะติดดาว) แล้วเริ่มจากใบแรก */
+  $("liRestart").onclick=e=>confirmTap(e.currentTarget,"↺ เริ่มใหม่",()=>{ let a=llItems(); if(!a.length||!D) return;
+    const n=a.length; a.forEach(c=>delete mark[c.id]); store.set("fc3-lit",mark);
+    const all=litRes(), r=all[D.id]; if(r&&r.pos){ delete r.pos["deck:"+a.map(c=>c.id).join(",")]; }
+    if(LF.stat){ LF.stat=null; a=llItems(); if(r&&r.pos) delete r.pos["deck:"+a.map(c=>c.id).join(",")]; }
+    try{ localStorage.setItem("fc3-lit-resume",JSON.stringify(all)); }catch(e){}
+    renderLL(); $("liStudy").onclick(); toast(`ล้างสถานะ ${n} ใบ · เริ่มใหม่ ↺`); });
   $("liStudy").onclick=()=>{ const a=llItems(); if(!a.length) return; deck=new Set(a.map(c=>c.id)); deck.label=deckLabel(); idx=resumeIdx(); flipped=false; onlyUnsure=false; onlyStar=false; $("lUnsure").classList.remove("on"); setTab("cards"); };
   function deckLabel(){ const p=[]; if(LF.g!=="all") p.push((grpList().find(([k])=>String(k)===String(LF.g))||[,""])[1]); if(LF.star) p.push("★ ติดดาว"); if(LF.stat) p.push(LIT_ST[LF.stat].th); if(LF.q) p.push(`“${esc(LF.q)}”`); return p.join(" · ")||"ทั้งหมด"; }
   function deckBar(){ const b=$("lDeckBar"); b.hidden=!deck; $("lFilt").style.display=deck?"none":"";

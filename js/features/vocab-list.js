@@ -100,4 +100,4 @@ $("resetCh").onclick=()=>{
   ALL.filter(c=>c.ch===S.ch).forEach(c=>delete status[c.id]); saveStatus(); renderList(); toast("ล้างแล้ว");
 };
 $("studyBtn").onclick=()=>startStudy();
-$("restartBtn").onclick=()=>restartStudy();
+$("restartBtn").onclick=e=>confirmTap(e.currentTarget,"↺ เริ่มใหม่",restartStudy);

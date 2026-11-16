@@ -30,4 +30,8 @@ const curCh = () => CH.find(c=>c.id===S.ch);
 const curSec = () => S.secBy[S.ch]||"all";
 const stOf = c => status[c.id]||"n";
 const ST = {n:{th:"ยังไม่เริ่ม",c:"var(--new)"}, l:{th:"กำลังเรียน",c:"var(--bad)"}, k:{th:"จำได้แล้ว",c:"var(--good)"}};
+/* ปุ่มที่ต้องแตะสองครั้งเพื่อยืนยัน (ใช้กับปุ่ม ↺ เริ่มใหม่) */
+function confirmTap(btn,label,fn){ if(btn.dataset.confirm){ clearTimeout(btn._t); delete btn.dataset.confirm; btn.classList.remove("warn"); btn.textContent=label; fn(); return; }
+  btn.dataset.confirm="1"; btn.classList.add("warn"); btn.textContent="แตะอีกครั้ง"; clearTimeout(btn._t);
+  btn._t=setTimeout(()=>{ delete btn.dataset.confirm; btn.classList.remove("warn"); btn.textContent=label; },2500); }
 let tt; function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>el.classList.remove("show"),1500)}

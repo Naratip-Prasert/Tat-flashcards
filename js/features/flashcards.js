@@ -24,10 +24,14 @@ function resumePeek(){
   if(S.shuffled&&R.order){ const pos=new Map(R.order.map((id,i)=>[id,i])); d=d.slice().sort((a,b)=>(pos.has(a.id)?pos.get(a.id):1e9)-(pos.has(b.id)?pos.get(b.id):1e9)); }
   const keep=deck; deck=d; const i=resumeAt(R); deck=keep; return {i,n:d.length};
 }
+/* ↺ เริ่มใหม่: ล้างสถานะ จำได้/กำลังเรียน ของคำในชุดนี้ (ไม่แตะติดดาว) แล้วเริ่มจากใบแรก */
 function restartStudy(){
+  const a=listItems(); if(!a.length) return;
   const all=store.get("fc3-resume",{})||{}; delete all[vKey()];
+  a.forEach(c=>delete status[c.id]); saveStatus();
+  if(S.stat){ S.stat=null; delete all[vKey()]; }
   try{ localStorage.setItem("fc3-resume",JSON.stringify(all)); }catch(e){}
-  startStudy(); if(deck.length) toast("เริ่มใหม่จากใบแรก ↺");
+  renderList(); startStudy(); toast(`ล้างสถานะ ${a.length} คำ · เริ่มใหม่ ↺`);
 }
 function resumeAt(R){
   if(!R||!R.id||!deck.length) return 0;
