@@ -31,7 +31,14 @@ function restartStudy(){
   a.forEach(c=>delete status[c.id]); saveStatus();
   if(S.stat){ S.stat=null; delete all[vKey()]; }
   try{ localStorage.setItem("fc3-resume",JSON.stringify(all)); }catch(e){}
-  renderList(); startStudy(); toast(`ล้างสถานะ ${a.length} คำ · เริ่มใหม่ ↺`);
+  renderList(); startStudy(); saveResume(true,true); toast(`ล้างสถานะ ${a.length} คำ · เริ่มใหม่ ↺`);
+}
+/* ซิงก์ดึงตำแหน่งใหม่มาจากอีกเครื่อง → ถ้าอยู่หน้าการ์ด ให้กระโดดไปใบนั้น */
+function resumeReapply(){
+  if(!deckKey||!deck.length) return;
+  const R=(store.get("fc3-resume",{})||{})[deckKey]; if(!R) return;
+  if(S.shuffled&&R.order){ const pos=new Map(R.order.map((id,i)=>[id,i])); deck.sort((a,b)=>(pos.has(a.id)?pos.get(a.id):1e9)-(pos.has(b.id)?pos.get(b.id):1e9)); }
+  idx=resumeAt(R);
 }
 function resumeAt(R){
   if(!R||!R.id||!deck.length) return 0;
@@ -40,12 +47,17 @@ function resumeAt(R){
   if(at>=0) for(let k=at+1;k<ord.length;k++){ i=deck.findIndex(c=>c.id===ord[k]); if(i>=0) return i; }
   return 0;
 }
-function saveResume(withOrder){
+/* t = เวลาที่ผู้ใช้ขยับการ์ดจริง ๆ (ใช้ตัดสินตอนซิงก์ข้ามเครื่อง: อันใหม่กว่าชนะ)
+   ตำแหน่งที่สร้างเองตอนเปิดชุดครั้งแรก = t:0 จะได้ไม่ไปทับตำแหน่งจากอีกเครื่อง · force = กดสุ่ม/เริ่มใหม่ */
+function saveResume(withOrder,force){
   if(!deckKey||!deck.length) return;
-  const all=store.get("fc3-resume",{})||{}, prev=all[deckKey]||{};
-  all[deckKey]={id:deck[idx]&&deck[idx].id, order:S.shuffled?(withOrder||!prev.order?deck.map(c=>c.id):prev.order):undefined, t:Date.now()};
+  const all=store.get("fc3-resume",{})||{}, prev=all[deckKey];
+  const id=deck[idx]&&deck[idx].id, order=S.shuffled?(withOrder||!prev||!prev.order?deck.map(c=>c.id):prev.order):undefined;
+  const changed=!prev||prev.id!==id||JSON.stringify(prev.order)!==JSON.stringify(order);
+  if(!changed&&!force) return;
+  all[deckKey]={id, order, t:(force||(prev&&changed))?Date.now():(prev&&prev.t)||0};
   const ks=Object.keys(all); if(ks.length>40) ks.sort((a,b)=>(all[a].t||0)-(all[b].t||0)).slice(0,ks.length-40).forEach(k=>delete all[k]);
-  try{ localStorage.setItem("fc3-resume",JSON.stringify(all)); }catch(e){}
+  store.set("fc3-resume",all);
 }
 function shuffle(d){for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}}
 $("backBtn").onclick=backToList; $("emptyBack").onclick=backToList;
@@ -135,7 +147,7 @@ $("cele").onclick=e=>{ if(e.target.id==="cele") $("cele").classList.remove("on")
 $("prevBtn").onclick=()=>go(-1); $("nextBtn").onclick=()=>go(1);
 $("goodBtn").onclick=()=>mark(true); $("badBtn").onclick=()=>mark(false);
 $("dirBtn").onclick=()=>{S.dir=S.dir==="jp"?"th":"jp";store.set("fc3-dir",S.dir);renderTools();show();toast(S.dir==="jp"?"ด้านหน้า: ภาษาญี่ปุ่น":"ด้านหน้า: ภาษาไทย")};
-$("shufBtn").onclick=()=>{S.shuffled=!S.shuffled; store.set("fc3-shuf",S.shuffled); if(S.shuffled) shuffle(deck); else deck.sort((a,b)=>a.ord-b.ord); idx=0; renderTools(); show(); saveResume(true); toast(S.shuffled?"สุ่มลำดับแล้ว":"เรียงตามชีท")};
+$("shufBtn").onclick=()=>{S.shuffled=!S.shuffled; store.set("fc3-shuf",S.shuffled); if(S.shuffled) shuffle(deck); else deck.sort((a,b)=>a.ord-b.ord); idx=0; renderTools(); show(); saveResume(true,true); toast(S.shuffled?"สุ่มลำดับแล้ว":"เรียงตามชีท")};
 $("hideBtn").onclick=()=>{S.hide=!S.hide;store.set("fc3-hide",S.hide);
   if(S.hide){ const cur=deck[idx]; deck=deck.filter(c=>stOf(c)!=="k"); idx=Math.max(0,deck.indexOf(cur)); }
   else { const cur=deck[idx]; deck=listItems(); if(S.shuffled) shuffle(deck); idx=Math.max(0,deck.indexOf(cur)); }

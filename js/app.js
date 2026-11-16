@@ -10,7 +10,7 @@ window.TatApp={
   toast,
   reload(){
     status=store.get("fc3-status",{})||{}; stars=new Set(store.get("fc3-star",[])||[]); W.reloadRes(); L.reload();
-    if(S.view==="list") renderList(); else if(S.view==="vpick") renderVPick(); else if(S.view==="home") renderHome(); else if(S.view==="cards") show(); else if(S.view==="write") W.enter(); else if(S.view==="profile") renderProfile();
+    if(S.view==="list") renderList(); else if(S.view==="vpick") renderVPick(); else if(S.view==="home") renderHome(); else if(S.view==="cards"){ S.shuffled=store.get("fc3-shuf",false); renderTools(); resumeReapply(); show(); } else if(S.view==="write") W.enter(); else if(S.view==="profile") renderProfile();
   },
   go(v){ setHash(v); showView(v); },
   profileChanged(){ if(S.view==="profile") renderProfile(); }

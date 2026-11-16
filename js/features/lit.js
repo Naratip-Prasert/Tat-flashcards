@@ -86,10 +86,16 @@ const L=(()=>{
   /* ▶ ทวนต่อจากเดิม: fc3-lit-resume = { setId: {order:[id], pos:{ตัวกรอง: id ใบล่าสุด}} } */
   const litRes=()=>store.get("fc3-lit-resume",{})||{};
   const fkey=()=>deck?"deck:"+[...deck].join(","):[fStory,fCat,onlyUnsure?1:0,onlyStar?1:0].join("|");
-  function saveLitRes(withOrder){ if(!D) return; const L2=list(); const all=litRes(), r=all[D.id]||{pos:{}};
-    r.pos=r.pos||{}; if(L2[idx]) r.pos[fkey()]=L2[idx].id; if(withOrder) r.order=order.slice();
+  /* t = เวลาที่ผู้ใช้ขยับการ์ดจริง (ซิงก์: ใหม่กว่าชนะ) · ตำแหน่งแรกที่สร้างเองไม่อัปเดต t จะได้ไม่ทับอีกเครื่อง */
+  function saveLitRes(withOrder,force){ if(!D) return; const L2=list(); const all=litRes(), r=all[D.id]||{pos:{},t:0};
+    r.pos=r.pos||{}; const fk=fkey(), id=L2[idx]?L2[idx].id:null, prevId=r.pos[fk];
+    const changed=id!=null&&prevId!==id, ordCh=withOrder&&JSON.stringify(r.order||null)!==JSON.stringify(order);
+    if(!changed&&!ordCh&&!force) return;
+    if(id!=null) r.pos[fk]=id; if(withOrder) r.order=order.slice();
+    if(force||ordCh||(changed&&prevId!=null)) r.t=Date.now(); else r.t=r.t||0;
     const pk=Object.keys(r.pos); if(pk.length>30) delete r.pos[pk[0]];
-    all[D.id]=r; try{ localStorage.setItem("fc3-lit-resume",JSON.stringify(all)); }catch(e){} }
+    all[D.id]=r; store.set("fc3-lit-resume",all); }
+  function applyOrder(){ order=CARDS.map(c=>c.id); const RS=litRes()[D.id]; if(RS&&RS.order){ const known=new Set(order); const kept=RS.order.filter(x=>known.has(x)), ks=new Set(kept); order=[...kept,...order.filter(x=>!ks.has(x))]; } }
   function resumeIdx(){ if(!D) return 0; const r=litRes()[D.id], id=r&&r.pos&&r.pos[fkey()]; if(id==null) return 0;
     const L2=list(), i=L2.findIndex(c=>c.id===id); if(i>=0) return i;
     const at=order.indexOf(id); if(at>=0) for(let k=at+1;k<order.length;k++){ const j=L2.findIndex(c=>c.id===order[k]); if(j>=0) return j; }
@@ -255,7 +261,7 @@ const L=(()=>{
     const all=litRes(), r=all[D.id]; if(r&&r.pos){ delete r.pos["deck:"+a.map(c=>c.id).join(",")]; }
     if(LF.stat){ LF.stat=null; a=llItems(); if(r&&r.pos) delete r.pos["deck:"+a.map(c=>c.id).join(",")]; }
     try{ localStorage.setItem("fc3-lit-resume",JSON.stringify(all)); }catch(e){}
-    renderLL(); $("liStudy").onclick(); toast(`ล้างสถานะ ${n} ใบ · เริ่มใหม่ ↺`); });
+    renderLL(); $("liStudy").onclick(); saveLitRes(false,true); toast(`ล้างสถานะ ${n} ใบ · เริ่มใหม่ ↺`); });
   $("liStudy").onclick=()=>{ const a=llItems(); if(!a.length) return; deck=new Set(a.map(c=>c.id)); deck.label=deckLabel(); idx=resumeIdx(); flipped=false; onlyUnsure=false; onlyStar=false; $("lUnsure").classList.remove("on"); setTab("cards"); };
   function deckLabel(){ const p=[]; if(LF.g!=="all") p.push((grpList().find(([k])=>String(k)===String(LF.g))||[,""])[1]); if(LF.star) p.push("★ ติดดาว"); if(LF.stat) p.push(LIT_ST[LF.stat].th); if(LF.q) p.push(`“${esc(LF.q)}”`); return p.join(" · ")||"ทั้งหมด"; }
   function deckBar(){ const b=$("lDeckBar"); b.hidden=!deck; $("lFilt").style.display=deck?"none":"";
@@ -378,6 +384,7 @@ const L=(()=>{
     // arg: {set, tab} จาก router · ไม่มี set = หน้าเลือกหมวด
     enter(arg){ arg=arg||{}; if(arg.set) openSet(arg.set,arg.tab); else showPick(); },
     reload(){ mark=store.get("fc3-lit",{})||{}; lstars=new Set(store.get("fc3-lit-star",[])||[]);
+      if(D){ const o=order.join(); applyOrder(); if(page==="set"&&tab==="cards"){ const L2=list(), r=litRes()[D.id], want=r&&r.pos&&r.pos[fkey()]; if(want!=null&&(!L2[idx]||L2[idx].id!==want||o!==order.join())){ idx=resumeIdx(); flipped=false; } } }
       if(S.view!=="lit") return; if(page==="pick") renderPick(); else if(tab==="cards") render(); else if(tab==="list") renderLL(); else if(tab==="quiz"){ if(QZ.stage==="setup") renderQuiz(); } else renderSum(); },
     progress:()=>{ const all=SETS.flatMap(s=>s.cards); return {known:known(all), total:all.length, sets:SETS.filter(s=>s.cards.length).length}; }
   };

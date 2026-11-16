@@ -7,7 +7,8 @@
 const FB = "10.12.2";
 const cfg = window.TAT_FIREBASE;
 const $ = id => document.getElementById(id);
-const KEYS = { status: "fc3-status", star: "fc3-star", sent: "fc3-sent", lit: "fc3-lit", litStar: "fc3-lit-star" };
+const KEYS = { status: "fc3-status", star: "fc3-star", sent: "fc3-sent", lit: "fc3-lit", litStar: "fc3-lit-star", resume: "fc3-resume", litRes: "fc3-lit-resume", shuf: "fc3-shuf" };
+const POS_KEYS = ["fc3-resume", "fc3-lit-resume"];      // ตำแหน่งการ์ดล่าสุด: ซิงก์ แต่รวมกันทีละชุดด้วย t (ไม่นับเป็น "ความคืบหน้า")
 const DOMAIN = "tatcard.app";                       // ชื่อผู้ใช้ → อีเมลภายใน (ไม่ต้องมีอีเมลจริง)
 const LS = { get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
              set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
@@ -17,9 +18,14 @@ const toast = m => window.TatApp && window.TatApp.toast(m);
 let fb = null, user = null, ref = null, unsub = null, timer = null, state = "init", lastErr = "";
 
 /* ---------------- local data ---------------- */
-const readLocal = () => ({ status: LS.get(KEYS.status) || {}, star: LS.get(KEYS.star) || [], sent: LS.get(KEYS.sent) || {}, lit: LS.get(KEYS.lit) || {}, litStar: LS.get(KEYS.litStar) || [] });
+const readLocal = () => ({ status: LS.get(KEYS.status) || {}, star: LS.get(KEYS.star) || [], sent: LS.get(KEYS.sent) || {}, lit: LS.get(KEYS.lit) || {}, litStar: LS.get(KEYS.litStar) || [],
+  resume: LS.get(KEYS.resume) || {}, litRes: LS.get(KEYS.litRes) || {}, shuf: LS.get(KEYS.shuf) ?? undefined });
+// ตำแหน่งการ์ด: รวมทีละชุด เอาอันที่ขยับล่าสุด (t มากกว่า)
+function mergePos(a, b) { const o = { ...(a || {}) }; Object.entries(b || {}).forEach(([k, v]) => { if (!o[k] || (v && (v.t || 0) > (o[k].t || 0))) o[k] = v; }); return o; }
+const core = d => ({ status: d.status, star: d.star, sent: d.sent, lit: d.lit, litStar: d.litStar });
 function writeLocal(d) {
   LS.set(KEYS.status, d.status || {}); LS.set(KEYS.star, d.star || []); LS.set(KEYS.sent, d.sent || {}); LS.set(KEYS.lit, d.lit || {}); LS.set(KEYS.litStar, d.litStar || []);
+  LS.set(KEYS.resume, d.resume || {}); LS.set(KEYS.litRes, d.litRes || {}); if (d.shuf !== undefined) LS.set(KEYS.shuf, !!d.shuf);
   window.TatApp && window.TatApp.reload();
 }
 const localT = () => +localStorage.getItem("fc3-sync-t") || 0;
@@ -37,7 +43,7 @@ function merge(a, b) {
   const lit = { ...(a.lit || {}) };
   Object.entries(b.lit || {}).forEach(([k, v]) => { if (!lit[k] || (R[v === "k" ? "k" : "l"] || 0) > (R[lit[k] === "k" ? "k" : "l"] || 0)) lit[k] = v; });
   const litStar = [...new Set([...(a.litStar || []), ...(b.litStar || [])])];
-  return { status, star, sent, lit, litStar };
+  return { status, star, sent, lit, litStar, resume: mergePos(a.resume, b.resume), litRes: mergePos(a.litRes, b.litRes), shuf: a.shuf !== undefined ? a.shuf : b.shuf };
 }
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -128,19 +134,28 @@ async function start(u) {
   if (!remote || !remote.data) { push = true; }
   else if (lastUid !== u.uid) { data = merge(local, remote.data); push = !same(data, remote.data); }     // first time on this device
   else if (localT() > (remote.t || 0)) { push = true; }                                                     // changed here while offline
-  else { data = remote.data; }
+  else { data = { ...remote.data, shuf: remote.data.shuf !== undefined ? remote.data.shuf : local.shuf }; }
+  // ตำแหน่งการ์ดล่าสุด รวมเสมอ (ทีละชุด อันที่ขยับล่าสุดชนะ) ไม่ว่าฝั่งไหนจะใหม่กว่า
+  const rd = (remote && remote.data) || {};
+  data = { ...data, resume: mergePos(local.resume, rd.resume), litRes: mergePos(local.litRes, rd.litRes) };
+  const pushPos = !same(data.resume, rd.resume || {}) || !same(data.litRes, rd.litRes || {});
   if (!same(data, local)) writeLocal(data);
   // profile (name / pictures / stamp): newest wins
   const lp = LS.get("fc3-profile"), rp = remote && remote.profile;
   if (rp && (!lp || (rp.t || 0) > (lp.t || 0))) applyProfile(rp);
   else if (lp && lp.t && (!rp || lp.t > (rp.t || 0))) pushProfileNow(lp);
   localStorage.setItem("fc3-sync-uid", u.uid);
-  if (push) { setLocalT(Math.max(Date.now(), localT())); await pushNow(); } else { setLocalT(remote ? remote.t || 0 : 0); if (state !== "offline") setState("synced"); }
+  if (push) { setLocalT(Math.max(Date.now(), localT())); await pushNow(); }
+  else { setLocalT(remote ? remote.t || 0 : 0); if (pushPos) await pushNow(); else if (state !== "offline") setState("synced"); }
   if (unsub) unsub();
   unsub = fb.onSnapshot(ref, s => {                                         // live updates from other devices
     if (s.metadata.hasPendingWrites || !s.exists()) return;
     const r = s.data();
-    if (r.dev !== DEV && (r.t || 0) > localT() && r.data) { setLocalT(r.t); writeLocal(r.data); toast("☁️ อัปเดตจากอีกเครื่องแล้ว"); }
+    if (r.dev !== DEV && r.data) {
+      const loc = readLocal(), pos = { resume: mergePos(loc.resume, r.data.resume), litRes: mergePos(loc.litRes, r.data.litRes) };
+      if ((r.t || 0) > localT()) { setLocalT(r.t); const nd = { ...r.data, ...pos }; const moved = !same(core(nd), core(loc)); writeLocal(nd); if (moved) toast("☁️ อัปเดตจากอีกเครื่องแล้ว"); }
+      else if (!same(pos.resume, loc.resume) || !same(pos.litRes, loc.litRes)) writeLocal({ ...loc, ...pos });
+    }
     const lp = LS.get("fc3-profile");
     if (r.profile && (!lp || (r.profile.t || 0) > (lp.t || 0))) applyProfile(r.profile);
     if (state !== "syncing") setState("synced");
@@ -157,14 +172,15 @@ async function pushNow() {
   if (!user || !ref) return;
   clearTimeout(timer); setState("syncing");
   try {
-    await fb.setDoc(ref, { data: readLocal(), t: localT(), dev: DEV, name: user.email.split("@")[0], updatedAt: fb.serverTimestamp() }, { merge: true });
+    const d = readLocal(); if (d.shuf === undefined) delete d.shuf;                   // Firestore ไม่รับค่า undefined
+    await fb.setDoc(ref, { data: d, t: localT(), dev: DEV, name: user.email.split("@")[0], updatedAt: fb.serverTimestamp() }, { mergeFields: ["data", "t", "dev", "name", "updatedAt"] });
     setState("synced");
   } catch (e) { lastErr = (e && e.code) || "unknown"; setState(navigator.onLine ? "error" : "offline"); }
 }
 // called by the app whenever progress changes
 window.__tatTouch = k => {
   if (!Object.values(KEYS).includes(k)) return;
-  setLocalT(Date.now());
+  if (!POS_KEYS.includes(k)) setLocalT(Date.now());
   if (!user) return;
   clearTimeout(timer); timer = setTimeout(pushNow, 1200);
 };
