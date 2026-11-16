@@ -232,7 +232,9 @@ const L=(()=>{
         <div class="irow"><div class="itxt">${s?`<div class="limeta"><i class="ldot" style="background:${s.c}"></i>${c.s?esc(s.t):"ภาพรวม"} · ${CATN[c.cat]}</div>`:""}<div class="liq">${c.q}</div></div>
           <div class="iact"><button class="ic star ${lstars.has(c.id)?"on":""}" aria-label="ติดดาว">${IC.star}</button></div></div>
         <div class="lia">${c.a}</div></div>`; }).join(""):`<div class="nores">ไม่มีการ์ดที่ตรงกับตัวกรองนี้</div>`;
-    const sb=$("liStudy"); sb.disabled=!a.length; sb.innerHTML=`ทบทวนชุดนี้ <small>· ${a.length} ใบ</small>`;
+    const sb=$("liStudy"); sb.disabled=!a.length; $("liRestart").disabled=!a.length;
+    const rp=a.length?liPeek(a):0;
+    sb.innerHTML=rp>0?`ทบทวนต่อ <small>· ใบที่ ${rp+1} / ${a.length}</small>`:`ทบทวนชุดนี้ <small>· ${a.length} ใบ</small>`;
     $("liQclr").style.display=LF.q?"block":"none";
   }
   $("liStats").onclick=e=>{ const b=e.target.closest(".stat"); if(!b) return; LF.stat=LF.stat===b.dataset.s?null:b.dataset.s; renderLL(); };
@@ -244,6 +246,12 @@ const L=(()=>{
       if(lstars.has(c.id)){ lstars.delete(c.id); b.classList.remove("on"); } else { lstars.add(c.id); b.classList.add("on"); }
       store.set("fc3-lit-star",[...lstars]); if(LF.star) renderLL(); else $("liChips").querySelector("[data-star] .n").textContent=starredIn(CARDS); return; }
     it.classList.toggle("open"); };
+  /* ตำแหน่งที่ค้างไว้ของชุดที่กรองในหน้าลิสต์ (ไม่เปลี่ยน state) */
+  function liPeek(a){ const k=[deck,onlyUnsure,onlyStar,idx]; deck=new Set(a.map(c=>c.id)); onlyUnsure=false; onlyStar=false;
+    const i=resumeIdx(); [deck,onlyUnsure,onlyStar,idx]=k; return i; }
+  $("liRestart").onclick=()=>{ const a=llItems(); if(!a.length||!D) return; const all=litRes(), r=all[D.id];
+    if(r&&r.pos){ delete r.pos["deck:"+a.map(c=>c.id).join(",")]; try{ localStorage.setItem("fc3-lit-resume",JSON.stringify(all)); }catch(e){} }
+    $("liStudy").onclick(); toast("เริ่มใหม่จากใบแรก ↺"); };
   $("liStudy").onclick=()=>{ const a=llItems(); if(!a.length) return; deck=new Set(a.map(c=>c.id)); deck.label=deckLabel(); idx=resumeIdx(); flipped=false; onlyUnsure=false; onlyStar=false; $("lUnsure").classList.remove("on"); setTab("cards"); };
   function deckLabel(){ const p=[]; if(LF.g!=="all") p.push((grpList().find(([k])=>String(k)===String(LF.g))||[,""])[1]); if(LF.star) p.push("★ ติดดาว"); if(LF.stat) p.push(LIT_ST[LF.stat].th); if(LF.q) p.push(`“${esc(LF.q)}”`); return p.join(" · ")||"ทั้งหมด"; }
   function deckBar(){ const b=$("lDeckBar"); b.hidden=!deck; $("lFilt").style.display=deck?"none":"";

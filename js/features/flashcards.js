@@ -6,7 +6,7 @@ function startStudy(){
   const parts=[sec?sec.th:"ทั้งหมวด"]; if(S.starOnly) parts.push("★ ติดดาว"); if(S.stat) parts.push(ST[S.stat].th); if(S.q) parts.push(`"${S.q}"`);
   studyLabel=`<b><span class="jp">${ch.jp}</span> ${esc(ch.th)}</b>${esc(parts.join(" · "))}`;
   if(S.hide){ const d=deck.filter(c=>stOf(c)!=="k"); if(d.length) deck=d; }
-  deckKey=[S.ch,curSec(),S.starOnly?1:0,S.stat||"",S.q||"",S.hide?1:0].join("|");
+  deckKey=vKey();
   const R=(store.get("fc3-resume",{})||{})[deckKey];
   if(S.shuffled){
     if(R&&R.order){ const pos=new Map(R.order.map((id,i)=>[id,i])); deck.sort((a,b)=>(pos.has(a.id)?pos.get(a.id):1e9)-(pos.has(b.id)?pos.get(b.id):1e9)); }
@@ -16,6 +16,19 @@ function startStudy(){
 }
 /* ▶ ทวนต่อจากเดิม: จำลำดับการ์ด (ถ้าสุ่ม) และใบล่าสุดของแต่ละชุด ใน fc3-resume = { deckKey: {id, order?} } */
 let deckKey="";
+const vKey=()=>[S.ch,curSec(),S.starOnly?1:0,S.stat||"",S.q||"",S.hide?1:0].join("|");
+/* ดูว่าชุดนี้ค้างอยู่ใบที่เท่าไร (ไม่เปลี่ยน state) → ใช้แสดงบนปุ่ม "ทบทวนต่อ" */
+function resumePeek(){
+  let d=listItems(); if(S.hide){ const x=d.filter(c=>stOf(c)!=="k"); if(x.length) d=x; }
+  const R=(store.get("fc3-resume",{})||{})[vKey()]; if(!R||!R.id||!d.length) return {i:0,n:d.length};
+  if(S.shuffled&&R.order){ const pos=new Map(R.order.map((id,i)=>[id,i])); d=d.slice().sort((a,b)=>(pos.has(a.id)?pos.get(a.id):1e9)-(pos.has(b.id)?pos.get(b.id):1e9)); }
+  const keep=deck; deck=d; const i=resumeAt(R); deck=keep; return {i,n:d.length};
+}
+function restartStudy(){
+  const all=store.get("fc3-resume",{})||{}; delete all[vKey()];
+  try{ localStorage.setItem("fc3-resume",JSON.stringify(all)); }catch(e){}
+  startStudy(); if(deck.length) toast("เริ่มใหม่จากใบแรก ↺");
+}
 function resumeAt(R){
   if(!R||!R.id||!deck.length) return 0;
   let i=deck.findIndex(c=>c.id===R.id); if(i>=0) return i;

@@ -74,7 +74,9 @@ function renderList(resetScroll){
   $("items").innerHTML = a.length ? a.map(itemHtml).join("") : `<div class="nores">ไม่มีคำที่ตรงกับตัวกรองนี้</div>`;
   const sb=$("studyBtn");
   sb.disabled=!a.length;
-  sb.innerHTML=`ทบทวนชุดนี้ <small>· ${a.length} คำ</small>`;
+  const rp=a.length&&typeof resumePeek==="function"?resumePeek():{i:0};
+  sb.innerHTML=rp.i>0?`ทบทวนต่อ <small>· ใบที่ ${rp.i+1} / ${rp.n}</small>`:`ทบทวนชุดนี้ <small>· ${a.length} คำ</small>`;
+  $("restartBtn").disabled=!a.length;
   $("qclr").style.display=S.q?"block":"none";
   if(resetScroll) $("scroll").scrollTop=0;
 }
@@ -98,3 +100,4 @@ $("resetCh").onclick=()=>{
   ALL.filter(c=>c.ch===S.ch).forEach(c=>delete status[c.id]); saveStatus(); renderList(); toast("ล้างแล้ว");
 };
 $("studyBtn").onclick=()=>startStudy();
+$("restartBtn").onclick=()=>restartStudy();

@@ -53,6 +53,9 @@
   box-shadow:0 6px 18px rgba(var(--accent-rgb),.35);display:flex;align-items:center;justify-content:center;gap:8px}
 .ctabtn small{font-weight:500;opacity:.85;font-size:13px}
 .ctabtn:disabled{opacity:.45;box-shadow:none}
+.ctarow{display:flex;gap:8px}.ctarow .ctabtn{flex:1;min-width:0}
+.rstbtn{flex:none;height:56px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line2);background:var(--card);color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.rstbtn:active{transform:scale(.97)}.rstbtn:disabled{opacity:.45}
 
 /* ---------- card view ---------- */
 .cbar{flex:none;display:flex;align-items:center;gap:6px;padding:calc(8px + env(safe-area-inset-top)) 12px 6px}
