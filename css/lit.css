@@ -184,3 +184,21 @@
 .liq .lpt{font-size:13px;margin-bottom:4px}.liq .lpoem{font-size:15.5px;line-height:2}
 .lptr{line-height:1.8}
 .lpoem rt{font-size:.55em;font-weight:400;letter-spacing:0;color:var(--muted);font-family:"Noto Sans JP",sans-serif}
+
+/* 📝 โน้ตของฉัน */
+.lnote{margin:4px 0 12px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,#f5c542 14%,var(--card));border:1px dashed color-mix(in srgb,#d9a400 45%,transparent)}
+.lnote.lnempty{background:none;border:none;padding:0;margin:2px 0 10px}
+.lnh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.lnh b{font-size:13px;color:#a77800}
+.lnotet{white-space:pre-wrap;font-size:15px;line-height:1.75;color:var(--ink)}
+.lnbtn{border:1px solid var(--line2);background:var(--card);color:var(--accent);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:700;cursor:pointer}
+.lnl{background:color-mix(in srgb,#f5c542 12%,transparent);border-radius:10px;padding:8px 10px;margin-top:6px;white-space:pre-wrap}
+.lnwrap{position:fixed;inset:0;z-index:60;background:rgba(30,20,30,.35);display:none;align-items:flex-end;justify-content:center}
+.lnwrap.on{display:flex}
+.lnbox{width:min(560px,100%);background:var(--card);border-radius:20px 20px 0 0;padding:14px 16px calc(14px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.15)}
+.lnhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.lnhd b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lnx{border:none;background:none;font-size:26px;line-height:1;color:var(--muted);cursor:pointer}
+#lnTa{width:100%;box-sizing:border-box;min-height:42vh;border:1px solid var(--line2);border-radius:12px;padding:10px 12px;font:inherit;font-size:16px;line-height:1.7;background:var(--bg);color:var(--ink);resize:vertical}
+.lnsub{font-size:12px;color:var(--muted);margin:6px 2px 10px}
+.lnbtns{display:flex;gap:8px}.lnbtns button{flex:1;height:46px;border-radius:999px;font-weight:700;font-size:15px;cursor:pointer}
+.lnsave{border:none;background:var(--accent);color:#fff}.lndel{border:1px solid var(--line2);background:var(--card);color:#d64545}

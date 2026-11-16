@@ -9,6 +9,7 @@ const L=(()=>{
   const SETS=(window.LIT_SETS||[]).slice().sort((a,b)=>(a.order||9)-(b.order||9));
   const BY=Object.fromEntries(SETS.map(s=>[s.id,s]));
   let mark=store.get("fc3-lit",{})||{}, lstars=new Set(store.get("fc3-lit-star",[])||[]);
+  let notes=store.get("fc3-lit-note",{})||{};       // 📝 โน้ตของฉัน (ต่อการ์ด) — เก็บในบัญชี/เครื่อง ไม่ได้อยู่ในโค้ดเว็บ
   let prefAll=store.get("fc3-lit-f",{})||{};
   if("s" in prefAll||"c" in prefAll) prefAll={uji:{s:prefAll.s,c:prefAll.c}};          // old single-set format
   const savePref=()=>{ prefAll[D.id]={s:fStory,c:fCat,r:rev}; store.set("fc3-lit-f",prefAll); };
@@ -105,9 +106,10 @@ const L=(()=>{
   function sides(c){
     const m=mark[c.id];
     const st=m==="k"?'<span class="ltag ok">✓ จำได้</span>':m==="u"?'<span class="ltag un">ยังไม่แม่น</span>':"";
+    const nb=noteHtml(c);
     if(D.poem){                                       // หมวดกลอน: หน้า = บทต้นฉบับ · หลัง = คำแปล/ผู้แต่ง/เรื่อง/คุณค่า
       const lb=D.labels, meta=`<div class="lmeta"><span class="ltag">${rev?lb[1]:lb[0]}</span>${st}</div>`;
-      const orig=`<div class="lpq">${c.q}</div>`, info=`<div class="lans"><div class="lqq">${c.t}</div>${c.a}</div>`;
+      const orig=`<div class="lpq">${c.q}</div>`, info=`<div class="lans"><div class="lqq">${c.t}</div>${nb}${c.a}</div>`;
       return rev?{ front:`${meta}<div class="lans">${c.a}</div><div class="lhint">แตะเพื่อดูบทต้นฉบับ</div>`, back:`${meta}${orig}` }
                 :{ front:`${meta}${orig}<div class="lhint">แตะเพื่อดูคำแปล · ผู้แต่ง · คุณค่า</div>`, back:`${meta}${info}` };
     }
@@ -115,7 +117,7 @@ const L=(()=>{
       const lb=D.labels||["คำ → คำอธิบาย","คำอธิบาย → คำ"], F=rev?c.a:c.q, B=rev?c.q:c.a;
       const meta=`<div class="lmeta">${c.g&&GN[c.g]?`<span class="ltag st">${esc(GN[c.g])}</span>`:""}<span class="ltag">${rev?lb[1]:lb[0]}</span>${st}</div>`;
       return { front:`${meta}<div class="lq lterm-q">${F}</div><div class="lhint">แตะเพื่อดูคำตอบ</div>`,
-               back:`${meta}<div class="lans"><div class="lqq">${F.replace(/<[^>]+>/g,"")}</div><div class="lterm-a">${B}</div></div>` };
+               back:`${meta}<div class="lans"><div class="lqq">${F.replace(/<[^>]+>/g,"")}</div><div class="lterm-a">${B}</div>${nb}</div>` };
     }
     const s=ST[c.s];
     // ด้านหน้าไม่บอกชื่อเรื่อง (ไม่งั้นเหมือนเฉลย) — ชื่อเรื่องโชว์ตอนพลิกดูคำตอบ
@@ -123,8 +125,28 @@ const L=(()=>{
     const meta=`<div class="lmeta"><span class="ltag st">${c.s?c.s+". "+esc(s.t):"ภาพรวม"}</span><span class="ltag">${CATN[c.cat]}</span>${st}</div>`;
     const plain=c.q.replace(/<small>.*?<\/small>/,"").replace(/<[^>]+>/g,"");
     return { front:`${metaF}<div class="lq">${c.q}</div><div class="lhint">แตะเพื่อดูคำตอบ</div>`,
-             back:`${meta}<div class="lans"><div class="lqq">${esc(plain)}</div>${c.a}</div>` };
+             back:`${meta}<div class="lans"><div class="lqq">${esc(plain)}</div>${c.a}${nb}</div>` };
   }
+  /* 📝 โน้ตของฉัน */
+  function noteHtml(c){ const n=notes[c.id];
+    return n?`<div class="lnote"><div class="lnh"><b>📝 โน้ตของฉัน</b><button class="lnbtn" data-note="${c.id}">✏️ แก้ไข</button></div><div class="lnotet">${esc(n)}</div></div>`
+            :`<div class="lnote lnempty"><button class="lnbtn" data-note="${c.id}">📝 เพิ่มโน้ต${D.poem?" · เช่น คำแปลจากหนังสือ":""}</button></div>`; }
+  const nw=document.createElement("div"); nw.className="lnwrap"; nw.id="lnWrap";
+  nw.innerHTML=`<div class="lnbox"><div class="lnhd"><b id="lnT">📝 โน้ตของฉัน</b><button class="lnx" id="lnX" aria-label="ปิด">×</button></div>
+    <textarea id="lnTa" rows="10" placeholder="พิมพ์โน้ตของการ์ดใบนี้ เช่น คำแปลจากหนังสือ / จุดที่อาจารย์เน้น"></textarea>
+    <div class="lnsub">เก็บไว้ในบัญชีของเรา ซิงก์ข้ามเครื่อง · คนอื่นที่เปิดเว็บไม่เห็น</div>
+    <div class="lnbtns"><button class="lndel" id="lnDel">ลบโน้ต</button><button class="lnsave" id="lnSave">บันทึก</button></div></div>`;
+  document.body.appendChild(nw);
+  let noteId=null;
+  function openNote(id){ noteId=id; const c=BYID[id]; $("lnT").textContent="📝 โน้ต · "+((c&&(c.t||c.q.replace(/<[^>]+>/g,"")))||"").slice(0,40);
+    $("lnTa").value=notes[id]||""; $("lnDel").hidden=!notes[id]; nw.classList.add("on"); setTimeout(()=>$("lnTa").focus(),60); }
+  const closeNote=()=>{ nw.classList.remove("on"); noteId=null; };
+  function saveNote(v){ if(noteId==null) return; v=(v||"").replace(/\s+$/,""); if(v) notes[noteId]=v; else delete notes[noteId];
+    store.set("fc3-lit-note",notes); closeNote(); toast(v?"บันทึกโน้ตแล้ว 📝":"ลบโน้ตแล้ว");
+    if(tab==="cards") paint(); else if(tab==="list") renderLL(); }
+  $("lnX").onclick=closeNote; nw.addEventListener("click",e=>{ if(e.target===nw) closeNote(); });
+  $("lnSave").onclick=()=>saveNote($("lnTa").value); $("lnDel").onclick=()=>saveNote("");
+  document.addEventListener("click",e=>{ const b=e.target.closest("[data-note]"); if(!b||S.view!=="lit") return; e.stopPropagation(); openNote(isNaN(+b.dataset.note)||!BYID[+b.dataset.note]?b.dataset.note:+b.dataset.note); },true);
   const backColor=c=>D.kind==="story"?ST[c.s].c:D.color;
   function paint(){ const L2=list(); if(!L2.length) return; const c=L2[idx], f=$("lFace"), sd=sides(c);
     f.innerHTML=flipped?sd.back:sd.front; f.classList.toggle("isback",flipped); f.scrollTop=0;
@@ -148,7 +170,7 @@ const L=(()=>{
       deck.innerHTML=`<div class="lcard" id="lCard" tabindex="0" aria-label="การ์ด แตะเพื่อพลิก"><div class="lface" id="lFace"></div><button class="lstar" id="lStarC" aria-label="ติดดาว">${IC.star}</button></div>
         <div class="lctl"><button class="nav" data-l="prev" aria-label="ก่อนหน้า">‹</button><button class="un" data-l="u">ยังไม่แม่น</button><button class="ok" data-l="k">จำได้แล้ว ✓</button><button class="nav" data-l="next" aria-label="ถัดไป">›</button></div>`;
       const card=$("lCard");
-      card.onclick=e=>{ if(e.target.closest("#lStarC")){ toggleStar(); return; } if(flipped&&String(getSelection())) return; flip(); };
+      card.onclick=e=>{ if(e.target.closest(".lnote")) return; if(e.target.closest("#lStarC")){ toggleStar(); return; } if(flipped&&String(getSelection())) return; flip(); };
       deck.querySelector(".lctl").onclick=e=>{ const a=e.target.closest("[data-l]"); if(!a) return; const v=a.dataset.l;
         if(v==="prev") go(-1); else if(v==="next") go(1); else markIt(v); };
       let sx=null,sy=null;
@@ -243,7 +265,7 @@ const L=(()=>{
       return `<div class="item litem" data-id="${c.id}">${st!=="n"?`<span class="st ${st}"></span>`:""}
         <div class="irow"><div class="itxt">${s?`<div class="limeta"><i class="ldot" style="background:${s.c}"></i>${c.s?esc(s.t):"ภาพรวม"} · ${CATN[c.cat]}</div>`:""}<div class="liq">${c.q}</div></div>
           <div class="iact"><button class="ic star ${lstars.has(c.id)?"on":""}" aria-label="ติดดาว">${IC.star}</button></div></div>
-        <div class="lia">${c.a}</div></div>`; }).join(""):`<div class="nores">ไม่มีการ์ดที่ตรงกับตัวกรองนี้</div>`;
+        <div class="lia">${c.a}</div>${notes[c.id]?`<div class="lia lnl"><b>📝 โน้ตของฉัน</b><br>${esc(notes[c.id])}</div>`:""}</div>`; }).join(""):`<div class="nores">ไม่มีการ์ดที่ตรงกับตัวกรองนี้</div>`;
     const sb=$("liStudy"); sb.disabled=!a.length; $("liRestart").disabled=!a.length;
     const rp=a.length?liPeek(a):0;
     sb.innerHTML=rp>0?`ทบทวนต่อ <small>· ใบที่ ${rp+1} / ${a.length}</small>`:`ทบทวนชุดนี้ <small>· ${a.length} ใบ</small>`;
@@ -394,7 +416,7 @@ const L=(()=>{
   return {
     // arg: {set, tab} จาก router · ไม่มี set = หน้าเลือกหมวด
     enter(arg){ arg=arg||{}; if(arg.set) openSet(arg.set,arg.tab); else showPick(); },
-    reload(){ mark=store.get("fc3-lit",{})||{}; lstars=new Set(store.get("fc3-lit-star",[])||[]);
+    reload(){ mark=store.get("fc3-lit",{})||{}; lstars=new Set(store.get("fc3-lit-star",[])||[]); notes=store.get("fc3-lit-note",{})||{};
       if(D){ const o=order.join(); applyOrder(); if(page==="set"&&tab==="cards"){ const L2=list(), r=litRes()[D.id], want=r&&r.pos&&r.pos[fkey()]; if(want!=null&&(!L2[idx]||L2[idx].id!==want||o!==order.join())){ idx=resumeIdx(); flipped=false; } } }
       if(S.view!=="lit") return; if(page==="pick") renderPick(); else if(tab==="cards") render(); else if(tab==="list") renderLL(); else if(tab==="quiz"){ if(QZ.stage==="setup") renderQuiz(); } else renderSum(); },
     progress:()=>{ const all=SETS.flatMap(s=>s.cards); return {known:known(all), total:all.length, sets:SETS.filter(s=>s.cards.length).length}; }

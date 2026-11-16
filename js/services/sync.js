@@ -7,7 +7,7 @@
 const FB = "10.12.2";
 const cfg = window.TAT_FIREBASE;
 const $ = id => document.getElementById(id);
-const KEYS = { status: "fc3-status", star: "fc3-star", sent: "fc3-sent", lit: "fc3-lit", litStar: "fc3-lit-star", resume: "fc3-resume", litRes: "fc3-lit-resume", shuf: "fc3-shuf" };
+const KEYS = { status: "fc3-status", star: "fc3-star", sent: "fc3-sent", lit: "fc3-lit", litStar: "fc3-lit-star", litNote: "fc3-lit-note", resume: "fc3-resume", litRes: "fc3-lit-resume", shuf: "fc3-shuf" };
 const POS_KEYS = ["fc3-resume", "fc3-lit-resume"];      // ตำแหน่งการ์ดล่าสุด: ซิงก์ แต่รวมกันทีละชุดด้วย t (ไม่นับเป็น "ความคืบหน้า")
 const DOMAIN = "tatcard.app";                       // ชื่อผู้ใช้ → อีเมลภายใน (ไม่ต้องมีอีเมลจริง)
 const LS = { get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
@@ -18,13 +18,13 @@ const toast = m => window.TatApp && window.TatApp.toast(m);
 let fb = null, user = null, ref = null, unsub = null, timer = null, state = "init", lastErr = "";
 
 /* ---------------- local data ---------------- */
-const readLocal = () => ({ status: LS.get(KEYS.status) || {}, star: LS.get(KEYS.star) || [], sent: LS.get(KEYS.sent) || {}, lit: LS.get(KEYS.lit) || {}, litStar: LS.get(KEYS.litStar) || [],
+const readLocal = () => ({ status: LS.get(KEYS.status) || {}, star: LS.get(KEYS.star) || [], sent: LS.get(KEYS.sent) || {}, lit: LS.get(KEYS.lit) || {}, litStar: LS.get(KEYS.litStar) || [], litNote: LS.get(KEYS.litNote) || {},
   resume: LS.get(KEYS.resume) || {}, litRes: LS.get(KEYS.litRes) || {}, shuf: LS.get(KEYS.shuf) ?? undefined });
 // ตำแหน่งการ์ด: รวมทีละชุด เอาอันที่ขยับล่าสุด (t มากกว่า)
 function mergePos(a, b) { const o = { ...(a || {}) }; Object.entries(b || {}).forEach(([k, v]) => { if (!o[k] || (v && (v.t || 0) > (o[k].t || 0))) o[k] = v; }); return o; }
-const core = d => ({ status: d.status, star: d.star, sent: d.sent, lit: d.lit, litStar: d.litStar });
+const core = d => ({ status: d.status, star: d.star, sent: d.sent, lit: d.lit, litStar: d.litStar, litNote: d.litNote || {} });
 function writeLocal(d) {
-  LS.set(KEYS.status, d.status || {}); LS.set(KEYS.star, d.star || []); LS.set(KEYS.sent, d.sent || {}); LS.set(KEYS.lit, d.lit || {}); LS.set(KEYS.litStar, d.litStar || []);
+  LS.set(KEYS.status, d.status || {}); LS.set(KEYS.star, d.star || []); LS.set(KEYS.sent, d.sent || {}); LS.set(KEYS.lit, d.lit || {}); LS.set(KEYS.litStar, d.litStar || []); LS.set(KEYS.litNote, d.litNote || {});
   LS.set(KEYS.resume, d.resume || {}); LS.set(KEYS.litRes, d.litRes || {}); if (d.shuf !== undefined) LS.set(KEYS.shuf, !!d.shuf);
   window.TatApp && window.TatApp.reload();
 }
@@ -43,7 +43,8 @@ function merge(a, b) {
   const lit = { ...(a.lit || {}) };
   Object.entries(b.lit || {}).forEach(([k, v]) => { if (!lit[k] || (R[v === "k" ? "k" : "l"] || 0) > (R[lit[k] === "k" ? "k" : "l"] || 0)) lit[k] = v; });
   const litStar = [...new Set([...(a.litStar || []), ...(b.litStar || [])])];
-  return { status, star, sent, lit, litStar, resume: mergePos(a.resume, b.resume), litRes: mergePos(a.litRes, b.litRes), shuf: a.shuf !== undefined ? a.shuf : b.shuf };
+  const litNote = { ...(b.litNote || {}), ...(a.litNote || {}) };
+  return { status, star, sent, lit, litStar, litNote, resume: mergePos(a.resume, b.resume), litRes: mergePos(a.litRes, b.litRes), shuf: a.shuf !== undefined ? a.shuf : b.shuf };
 }
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
